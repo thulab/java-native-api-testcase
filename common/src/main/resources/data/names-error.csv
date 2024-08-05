@@ -1,0 +1,12 @@
+name,comment,index
+#保留字（不能用于作为标识符）：,,
+ROOT,关键字ROOT,1
+TIME,关键字Time,2
+TIMESTAMP,关键字timestamp,3
+,空串,9
+root,root,11
+Root,Root,12
+1,单个数字,13
+#1a,数字开头,14
+123,全数字,15
+org-apache-IoTDB,减号,16

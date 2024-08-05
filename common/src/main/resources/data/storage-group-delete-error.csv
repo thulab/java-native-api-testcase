@@ -1,0 +1,6 @@
+input,comment
+,空值
+root.**,库内为空
+root.abc.bbbb,没有匹配
+#null,null值
+\0,结束符

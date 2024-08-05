@@ -1,0 +1,61 @@
+input,expect,comment
+,空串
+root,single root
+root..cx3,empty string
+Root.capital,case sensitive:capital
+ROOT.big,case sensitive:all big
+sg.root,prefix is not root
+root.sg.root,2层 root
+root.111,all number
+
+# 最大长度(似乎没有限制)
+root.abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567,length:65 characters with only character and dot
+root.`1234567891234567891234567891234567891234567891234567891234`,max database length 65:all number
+#root.汉语,中文
+root.`测试方法不必是无参数的。可以在每个测试方法上使用任意数量的参数，并指示 TestNG 使用 @Parameters`,中文
+# 关键字
+#保留字（不能用于作为标识符）：
+root.ROOT,关键字ROOT
+root.TIME,关键字Time
+root.TIMESTAMP,关键字timestamp
+
+# 特殊字符转义
+root.`\"a`,quote with backquotes
+root.`ab\``,` with backquotes
+root.`ab\,`,coma with backquotes
+root.`ab\|`,| with backquotes
+root.`ab\!`,! with backquotes
+root.`ab\@`,@ with backquotes
+root.`ab\#`,# with backquotes
+root.`ab\$`,$ with backquotes
+root.`ab\%`,% with backquotes
+root.`ab\^`,^ with backquotes
+root.`ab\&`,^ with backquotes
+root.`ab\*`,^ with backquotes
+root.`ab\(`,( with backquotes
+root.`ab\)`,) with backquotes
+root.`ab\-`,- with backquotes
+root.`ab\+`,+ with backquotes
+root.`ab\=`,= with backquotes
+root.`ab\]`,] with backquotes
+root.`ab\[`,[ with backquotes
+root.`ab\|`,| with backquotes
+root.`ab\{`,{ with backquotes
+root.`ab\}`,} with backquotes
+root.`ab\:`,: with backquotes
+root.`ab\;`,; with backquotes
+root.`ab\?`,? with backquotes
+root.`ab\<`,< with backquotes
+root.`ab\>`,> with backquotes
+root.`ab\'`,' with backquotes
+root.`ab\/`,/ with backquotes
+root.`ab\\`,\ with backquotes
+root.`ab\。`,。 with backquotes
+root.`ab\……`,…… with backquotes
+root.`ab\ `,white space with backquotes
+root.`ab\\t`,tab with backquotes
+# 国际化支持
+#root.中文,language:chinese characters
+#root.cx2.中文1.中文2,language:Chinese characters 4 level
+#root.にほんご,language:Japanese characters
+#root.quote4.`にほんご`,language:Japanese characters with backquotes

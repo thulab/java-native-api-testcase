@@ -1,0 +1,42 @@
+input,comment
+root.cx.test1,normal
+root.s,length:valid shortest
+root.1c,start with number
+root._ab,start with under line
+root._AB,case sensitive
+# 数字
+root.`111`.ts,all number with backquotes
+root.`10.123`.ts,real number with backquotes
+root.cx3.`www.Timecho.com`, dot with backquotes
+root.`123`.`456`,2 level with all number
+
+# 最大长度和层级测试
+root.abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456,length:64 characters
+root.l.l.l.l.l.l.l.l.l.l.l.l.l.l.l.l.l.l.l.l.l.l.l.l.l.l.l.l.l.l,length:max ? dots 64 characters
+root.`123456789123456789123456789123456789123456789123456789123`,max database length:all number
+# 关键字
+root.select,key word of select
+root.from.select.delete.show.create.set.where.group.order.by.upd,key words
+
+# IOTDB-4707(单机版能建不能查，分布式创建error)
+root.quote.`null`,null with backquotes
+root.quote.`and`,and with backquotes
+root.quote.`or`,or with backquotes
+
+# 国际化支持
+#root.中文,language:chinese characters
+#root.cx2.中文1.中文2,language:Chinese characters 4 level
+#root.にほんご,language:Japanese characters
+#root.quote4.`にほんご`,language:Japanese characters with backquotes
+# IOTDB-4707
+#root.française,language:French characters
+#root.اللغة العربية,language:Arabic characters
+#root.Español,language:Spanish characters
+#root.Русский,language:Russian characters
+#root.한국어,language:Korean characters
+#root.quote1.`française`,language:French characters with backquotes
+#root.quote2.`اللغة العربية`,language:Arabic characters with backquotes
+#root.quote3.`Español`,language:Spanish characters with backquotes
+#root.quote5.`Русский`,language:Russian characters with backquotes
+#root.quote6.`한국어`,language:Korean characters with backquotes
+
