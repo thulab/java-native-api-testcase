@@ -61,8 +61,8 @@ public class TestDynamicTemplateMin extends BaseTestSuite {
 
     @AfterMethod
     public void afterMethod() throws IoTDBConnectionException, StatementExecutionException {
-       cleanDatabases(verbose);
-       cleanTemplates(verbose);
+        cleanDatabases(verbose);
+        cleanTemplates(verbose);
     }
 
     private void business(List<Object> ... structs) throws IoTDBConnectionException, IOException, StatementExecutionException {

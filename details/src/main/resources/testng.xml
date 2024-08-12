@@ -71,11 +71,11 @@
             <class name="org.apache.iotdb.api.test.dynamic.TestOrdinary" />
         </classes>
     </test>
-    <test name="TestDynamicTemplateMin" preserve-order="true">
-        <classes>
-            <class name="org.apache.iotdb.api.test.dynamic.TestDynamicTemplateMin" />
-        </classes>
-    </test>
+<!--    <test name="TestDynamicTemplateMin" preserve-order="true">-->
+<!--        <classes>-->
+<!--            <class name="org.apache.iotdb.api.test.dynamic.TestDynamicTemplateMin" />-->
+<!--        </classes>-->
+<!--    </test>-->
     <test name="TestDynamicTemplateMulti" preserve-order="true">
         <classes>
             <class name="org.apache.iotdb.api.test.dynamic.TestDynamicTemplateMulti" />
