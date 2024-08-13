@@ -24,14 +24,17 @@ public class CustomDataProvider {
     private Reader reader;
 
     public Iterable<CSVRecord> readCSV(String filepath, char delimiter) throws IOException {
+        // 在Windows中使用
 //        String path = CustomDataProvider.class.getClassLoader().getResource(filepath).getPath();
 //        if (path.charAt(0) == '/') {
 //            path = path.substring(1);
 //        }
 //        logger.info("read csv:" + path);
 //        this.reader = Files.newBufferedReader(Paths.get(path));
+        // 在Linux中使用
         logger.info("read csv:"+CustomDataProvider.class.getClassLoader().getResource(filepath).getPath());
         this.reader = Files.newBufferedReader(Paths.get(CustomDataProvider.class.getClassLoader().getResource(filepath).getPath()));
+
         CSVFormat csvformat = CSVFormat.DEFAULT.withDelimiter(delimiter).withEscape('\\').withQuote('"').withIgnoreEmptyLines(true);
         Iterable<CSVRecord> records = csvformat.parse(reader);
         // 去除header
