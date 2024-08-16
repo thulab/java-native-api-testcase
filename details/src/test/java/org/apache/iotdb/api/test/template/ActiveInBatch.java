@@ -73,6 +73,7 @@ public class ActiveInBatch extends BaseTestSuite {
         });
     }
 
+    // TODO：未解决：Method ActiveInBatch.testEmptyError()[pri:20, instance:org.apache.iotdb.api.test.template.ActiveInBatch@57536d79] should have thrown an exception of type class org.apache.iotdb.rpc.StatementExecutionException
 //    @Test(priority = 20, expectedExceptions=StatementExecutionException.class)
     public void testEmptyError() throws IoTDBConnectionException, StatementExecutionException {
         session.createTimeseriesUsingSchemaTemplate(new ArrayList<>());

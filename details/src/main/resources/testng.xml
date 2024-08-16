@@ -41,6 +41,16 @@
         </classes>
     </test>
 
+    <test name="tableModel" preserve-order="true">
+        <classes>
+            <class name="org.apache.iotdb.api.test.tablemodel.normal.database_manage.TestDataBase_V1_Normal"></class>
+            <class name="org.apache.iotdb.api.test.tablemodel.normal.table_manage.TestTable_V1_Normal"></class>
+            <class name="org.apache.iotdb.api.test.tablemodel.normal.data_manage.TestSelect_V1_Normal"></class>
+            <class name="org.apache.iotdb.api.test.tablemodel.normal.data_manage.TestInsert_V1_Normal"></class>
+            <class name="org.apache.iotdb.api.test.tablemodel.error.data_manage.TestInsert_V1_Error"></class>
+        </classes>
+    </test>
+
     <test name="TestDataBase" preserve-order="true">
         <classes>
             <class name="org.apache.iotdb.api.test.detail.TestDataBase"></class>
