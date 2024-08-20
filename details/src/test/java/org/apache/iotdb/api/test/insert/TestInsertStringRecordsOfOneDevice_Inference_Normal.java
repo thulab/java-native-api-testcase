@@ -47,7 +47,7 @@ public class TestInsertStringRecordsOfOneDevice_Inference_Normal extends BaseTes
     // 存储物理量名称和数据类型
     private final Map<String, TSDataType> measureTSTypeInfos = new LinkedHashMap<>(10);
     // 预期的记录条数
-    private final int EXPECTANT = 5;
+    private final int EXPECTANT = 9;
 
     /**
      * 在测试类之前准备好环境（数据库、时间序列）

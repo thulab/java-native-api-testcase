@@ -30,8 +30,6 @@ public class TestInsertAlignedRecord_Normal extends BaseTestSuite {
     // 数据类型
 //    private TSDataType dataType;
 
-    // 存储时间序列路径
-    private final List<String> paths = new ArrayList<>(10);
     // 用于存储物理量
     private final ArrayList<String> measurements = new ArrayList<>();
     // 用于存储数据类型
@@ -69,7 +67,6 @@ public class TestInsertAlignedRecord_Normal extends BaseTestSuite {
         measureTSTypeInfos.put("s_date", TSDataType.DATE);
         // 3.2、遍历measureTSTypeInfos，将路径、物理量和数据类型存入对应集合中
         measureTSTypeInfos.forEach((key, value) -> {
-            paths.add(alignedDeviceId + "." + key);
             measurements.add(key);
             dataTypes.add(value);
         });

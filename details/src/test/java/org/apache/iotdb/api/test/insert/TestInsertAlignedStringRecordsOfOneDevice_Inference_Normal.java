@@ -38,16 +38,16 @@ public class TestInsertAlignedStringRecordsOfOneDevice_Inference_Normal extends 
     // 存储多个时间序列路径
     private final List<String> paths = new ArrayList<>(10);
     // 用于存储物理量
-    private final ArrayList<String> measurements = new ArrayList<>();
+    private ArrayList<String> measurements = new ArrayList<>();
     // 用于存储数据类型
-    private final ArrayList<TSDataType> dataTypes = new ArrayList<>();
+    private ArrayList<TSDataType> dataTypes = new ArrayList<>();
     // 用于存储值
-    private final ArrayList<String> values = new ArrayList<>();
+    private ArrayList<String> values = new ArrayList<>();
 
     // 存储物理量名称和数据类型
     private final Map<String, TSDataType> measureTSTypeInfos = new LinkedHashMap<>(10);
     // 预期的记录条数
-    private final int EXPECTANT = 5;
+    private final int EXPECTANT = 9;
 
     /**
      * 在测试类之前准备好环境（数据库、时间序列）
@@ -75,14 +75,17 @@ public class TestInsertAlignedStringRecordsOfOneDevice_Inference_Normal extends 
         measureTSTypeInfos.put("s_timestamp", TSDataType.TEXT);
         measureTSTypeInfos.put("s_date", TSDataType.TEXT);
         // 3.2、遍历measureTSTypeInfos，将路径、物理量和数据类型存入对应集合中
-        measureTSTypeInfos.forEach((key, value) -> {
-            paths.add(deviceId + "." + key);
-            measurements.add(key);
-            dataTypes.add(value);
-        });
-        // 将集合存入对应的集合中
-        measurementsList.add(measurements);
-        typesList.add(dataTypes);
+        for (int i = 0; i < 10; i++) {
+            measurements = new ArrayList<>(10);
+            dataTypes = new ArrayList<>(10);
+            measureTSTypeInfos.forEach((key, value) -> {
+                measurements.add(key);
+                dataTypes.add(value);
+            });
+            // 将集合存入对应的集合中
+            measurementsList.add(measurements);
+            typesList.add(dataTypes);
+        }
         // 3.3、创建并添加编码和压缩类型的列表
         List<TSEncoding> encodings = new ArrayList<>(10);
         List<CompressionType> compressionTypes = new ArrayList<>(10);
@@ -95,10 +98,10 @@ public class TestInsertAlignedStringRecordsOfOneDevice_Inference_Normal extends 
     }
 
     /**
-     * 测试 insertAlignedRecordsOfOneDevice 方法接口
+     * 测试 insertAlignedStringRecordsOfOneDevice 方法接口
      */
     @Test(priority = 10) // 测试执行的优先级为10
-    public void insertAlignedRecordsOfOneDevice() throws IOException, IoTDBConnectionException, StatementExecutionException {
+    public void insertAlignedStringRecordsOfOneDevice() throws IOException, IoTDBConnectionException, StatementExecutionException {
         int number = 1;
         // 遍历获取的单行数据，为设备添加值
         for (Iterator<Object[]> it = getSingleNormal(); it.hasNext(); ) {
@@ -106,6 +109,7 @@ public class TestInsertAlignedStringRecordsOfOneDevice_Inference_Normal extends 
             Object[] line = it.next();
             // 获取时间戳
             time = Long.valueOf((String) line[0]);
+            values = new ArrayList<>(10);
             // 打印行索引和时间戳
 //            out.println("########### 行号：" + number++ + "| 时间戳:" + line[0]);
             // 遍历每行逐个物理量的数据
@@ -135,7 +139,7 @@ public class TestInsertAlignedStringRecordsOfOneDevice_Inference_Normal extends 
                         values.add(line[i + 1] == null ? "stringnull" : (String) line[i + 1]);
                         break;
                     case BLOB:
-                        values.add("X'696f74646236'" );
+                        values.add("X'696f74646236'");
                         break;
                     case DATE:
                         values.add(line[i + 1] == null ? "2024-07-25": (String) line[i + 1]);
@@ -145,13 +149,9 @@ public class TestInsertAlignedStringRecordsOfOneDevice_Inference_Normal extends 
             // 添加值
             valuesList.add(values);
             times.add(Long.valueOf((String) line[0]));
-            // 插入数据
-            session.insertAlignedStringRecordsOfOneDevice(deviceId, times, measurementsList,valuesList);
-            // 清空容器
-            values.clear();
-            valuesList.clear();
-            times.clear();
         }
+        // 插入数据
+        session.insertAlignedStringRecordsOfOneDevice(deviceId, times, measurementsList,valuesList);
         // 执行SQL查询并计算行数
         countLines("select * from " + deviceId, verbose);
         // 对比是否操作成功

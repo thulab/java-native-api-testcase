@@ -39,7 +39,7 @@ public class TestInsertRecord_Inference_Normal extends BaseTestSuite {
     // 存储物理量名称和数据类型
     private final Map<String, TSDataType> measureTSTypeInfos = new LinkedHashMap<>(10);
     // 预期的记录条数
-    private final int EXPECTANT = 5;
+    private final int EXPECTANT = 10;
 
     /**
      * 在测试类之前准备好环境（数据库、时间序列）
@@ -129,7 +129,7 @@ public class TestInsertRecord_Inference_Normal extends BaseTestSuite {
                         values.add("X'696f74646236'" );
                         break;
                     case DATE:
-                        values.add(line[i + 1] == null ? null: (String) line[i + 1]);
+                        values.add(line[i + 1] == null ? null : (String) line[i + 1]);
                         break;
                 }
             }

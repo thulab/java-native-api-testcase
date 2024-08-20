@@ -43,13 +43,11 @@ public class TestInsertAlignedRecords_Normal extends BaseTestSuite {
     // 存储物理量名称和数据类型
     private Map<String, TSDataType> measureTSTypeInfos = new LinkedHashMap<>(10);
     // 存储单个设备多个物理量
-    private final List<String> measurements = new ArrayList<>(10);
+    private List<String> measurements = new ArrayList<>(10);
     // 存储单个设备多个数据类型
-    private final List<TSDataType> dataTypes = new ArrayList<>(10);
+    private List<TSDataType> dataTypes = new ArrayList<>(10);
     // 存储单个设备多个值
-    private final ArrayList<Object> values = new ArrayList<>(100);
-    // 存储路径
-    private final List<String> paths = new ArrayList<>(10);
+    private ArrayList<Object> values;
     // 预期的记录条数
     private final int expectCount = 30;
 
@@ -78,16 +76,20 @@ public class TestInsertAlignedRecords_Normal extends BaseTestSuite {
         measureTSTypeInfos.put("s_blob", TSDataType.BLOB);
         measureTSTypeInfos.put("s_timestamp", TSDataType.TIMESTAMP);
         measureTSTypeInfos.put("s_date", TSDataType.DATE);
-        // 3.2、遍历measureTSTypeInfos，将时间序列添加路径、物理量和数据类型存入对应集合中
-        measureTSTypeInfos.forEach((key, value) -> {
-            paths.add(alignedDeviceId1 + "." + key);
-            measurements.add(key);
-            dataTypes.add(value);
-        });
-        deviceIds.add(alignedDeviceId1);
-        measurementsList.add(measurements);
-        typesList.add(dataTypes);
-        // 3.3、为时间序列创建编码和压缩类型的列表
+        // 3.2、遍历measureTSTypeInfos，将路径、物理量和数据类型存入对应集合中
+        for (int i = 0; i < 10; i++) {
+            measurements = new ArrayList<>(10);
+            dataTypes = new ArrayList<>(10);
+            measureTSTypeInfos.forEach((key, value) -> {
+                measurements.add(key);
+                dataTypes.add(value);
+            });
+            // 将集合存入对应的集合中
+            deviceIds.add(alignedDeviceId1);
+            measurementsList.add(measurements);
+            typesList.add(dataTypes);
+        }
+        // 3.3、创建并添加编码和压缩类型的列表
         List<TSEncoding> encodings = new ArrayList<>(10);
         List<CompressionType> compressionTypes = new ArrayList<>(10);
         for (int i = 0; i < 10; i++) {
@@ -95,30 +97,37 @@ public class TestInsertAlignedRecords_Normal extends BaseTestSuite {
             compressionTypes.add(CompressionType.GZIP);
         }
         // 3.4、为设备1创建对齐时间序列
-        session.createAlignedTimeseries(alignedDeviceId1, measurements, dataTypes,
-                encodings, compressionTypes, null);
-        // 清空容器
-        paths.clear();
+        session.createAlignedTimeseries(alignedDeviceId1, measurements,dataTypes, encodings, compressionTypes, null);
 
-        // 遍历measureTSTypeInfos，将时间序列添加路径、物理量和数据类型存入对应集合中
-        measureTSTypeInfos.forEach((key, value) -> {paths.add(alignedDeviceId2 + "." + key);});
-        deviceIds.add(alignedDeviceId2);
-        measurementsList.add(measurements);
-        typesList.add(dataTypes);
-        // 为设备2创建对齐时间序列
-        session.createAlignedTimeseries(alignedDeviceId2, measurements, dataTypes,
-                encodings, compressionTypes, null);
-        // 清空容器;
-        paths.clear();
+        // 3.5、重复操作为设备2创建对齐时间序列
+        for (int i = 0; i < 10; i++) {
+            measurements = new ArrayList<>(10);
+            dataTypes = new ArrayList<>(10);
+            measureTSTypeInfos.forEach((key, value) -> {
+                measurements.add(key);
+                dataTypes.add(value);
+            });
+            // 将集合存入对应的集合中
+            deviceIds.add(alignedDeviceId2);
+            measurementsList.add(measurements);
+            typesList.add(dataTypes);
+        }
+        session.createAlignedTimeseries(alignedDeviceId2, measurements,dataTypes, encodings, compressionTypes, null);
 
-        // 遍历measureTSTypeInfos，将时间序列添加路径、物理量和数据类型存入对应集合中
-        measureTSTypeInfos.forEach((key, value) -> {paths.add(alignedDeviceId3 + "." + key);});
-        deviceIds.add(alignedDeviceId3);
-        measurementsList.add(measurements);
-        typesList.add(dataTypes);
-        // 为设备3创建对齐时间序列
-        session.createAlignedTimeseries(alignedDeviceId3, measurements, dataTypes,
-                encodings, compressionTypes, null);
+//         3.6、重复操作为设备3创建对齐时间序列
+        for (int i = 0; i < 10; i++) {
+            measurements = new ArrayList<>(10);
+            dataTypes = new ArrayList<>(10);
+            measureTSTypeInfos.forEach((key, value) -> {
+                measurements.add(key);
+                dataTypes.add(value);
+            });
+            // 将集合存入对应的集合中
+            deviceIds.add(alignedDeviceId3);
+            measurementsList.add(measurements);
+            typesList.add(dataTypes);
+        }
+        session.createAlignedTimeseries(alignedDeviceId3, measurements,dataTypes, encodings, compressionTypes, null);
     }
 
     /**
@@ -127,61 +136,55 @@ public class TestInsertAlignedRecords_Normal extends BaseTestSuite {
     @Test(priority = 10) // 测试执行的优先级为10
     public void insertAlignedRecords() throws IOException, IoTDBConnectionException, StatementExecutionException {
         int number = 1;
-        // 遍历获取的单行数据，为设备添加值
-        for (Iterator<Object[]> it = getSingleNormal(); it.hasNext(); ) {
-            // 获取每行数据
-            Object[] line = it.next();
-            // 打印行索引和时间戳
-//            out.println("########### 行号：" + number++ + "| 时间戳:" + line[0]);
-            // 遍历schemaList，为每列添加数据
-            for (int i = 0; i < measurementsList.get(0).size(); i++) {
-//                out.println("datatype=" + typesList.get(0).get(i)); // 打印数据类型
-//                out.println("line[" + (i + 1) + "]=" + line[i + 1]); // 打印当前行的列值
-                // 根据数据类型添加值到values中
-                switch (typesList.get(0).get(i)) {
-                    case BOOLEAN:
-                        values.add(line[i + 1] == null ? false : Boolean.valueOf((String) line[i + 1]));
-                        break;
-                    case INT32:
-                        values.add(line[i + 1] == null ? 1 : Integer.valueOf((String) line[i + 1]));
-                        break;
-                    case INT64:
-                        values.add(line[i + 1] == null ? 1L : Long.valueOf((String) line[i + 1]));
-                        break;
-                    case FLOAT:
-                        values.add(line[i + 1] == null ? 1.01f : Float.valueOf((String) line[i + 1]));
-                        break;
-                    case DOUBLE:
-                        values.add(line[i + 1] == null ? 1.0 : Double.valueOf((String) line[i + 1]));
-                        break;
-                    case TEXT:
-                    case STRING:
-                        values.add(line[i + 1] == null ? "stringnull" : line[i + 1]);
-                        break;
-                    case BLOB:
-                        values.add(line[i + 1] == null ? new Binary("iotdb", Charset.defaultCharset()) : new Binary((String) line[i + 1], Charset.defaultCharset()));
-                        break;
-                    case TIMESTAMP:
-                        values.add(line[i + 1] == null ? 1L : Long.valueOf((String) line[i + 1]));
-                        break;
-                    case DATE:
-                        values.add(line[i + 1] == null ? LocalDate.parse("2024-07-25") : LocalDate.parse((CharSequence) line[i + 1]));
-                        break;
+        for (int i = 0; i < 3; i++) {
+            // 遍历获取的单行数据，为设备添加值
+            for (Iterator<Object[]> it = getSingleNormal(); it.hasNext(); ) {
+                values = new ArrayList<>(10);
+                // 获取每行数据
+                Object[] line = it.next();
+                // 打印行索引和时间戳
+                //            out.println("########### 行号：" + number++ + "| 时间戳:" + line[0]);
+                // 遍历schemaList，为每列添加数据
+                for (int j = 0; j < measurements.size(); j++) {
+                    //                out.println("datatype=" + typesList.get(0).get(j)); // 打印数据类型
+                    //                out.println("line[" + (j + 1) + "]=" + line[j + 1]); // 打印当前行的列值
+                    // 根据数据类型添加值到values中
+                    switch (dataTypes.get(j)) {
+                        case BOOLEAN:
+                            values.add(line[j + 1] == null ? null : Boolean.valueOf((String) line[j + 1]));
+                            break;
+                        case INT32:
+                            values.add(line[j + 1] == null ? null : Integer.valueOf((String) line[j + 1]));
+                            break;
+                        case INT64:
+                        case TIMESTAMP:
+                            values.add(line[j + 1] == null ? null : Long.valueOf((String) line[j + 1]));
+                            break;
+                        case FLOAT:
+                            values.add(line[j + 1] == null ? null : Float.valueOf((String) line[j + 1]));
+                            break;
+                        case DOUBLE:
+                            values.add(line[j + 1] == null ? null : Double.valueOf((String) line[j + 1]));
+                            break;
+                        case TEXT:
+                        case STRING:
+                            values.add(line[j + 1] == null ? null : line[j + 1]);
+                            break;
+                        case BLOB:
+                            values.add(line[j + 1] == null ? null : new Binary((String) line[j + 1], Charset.defaultCharset()));
+                            break;
+                        case DATE:
+                            values.add(line[j + 1] == null ? null : LocalDate.parse((CharSequence) line[j + 1]));
+                            break;
+                    }
                 }
-            }
-            // 将数据复制三份
-            for (int j = 0; j < 3; j++) {
                 // 添加值
                 valuesList.add(values);
                 times.add(Long.valueOf((String) line[0]));
             }
-            // 插入数据
-            session.insertAlignedRecords(deviceIds, times, measurementsList, typesList, valuesList);
-            // 初始化
-            values.clear();
-            valuesList.clear();
-            times.clear();
         }
+        // 插入数据
+        session.insertAlignedRecords(deviceIds, times, measurementsList, typesList, valuesList);
         // 执行SQL查询并计算行数
         countLines("select * from " + alignedDeviceId1, verbose);
         countLines("select * from " + alignedDeviceId2, verbose);
@@ -197,7 +200,7 @@ public class TestInsertAlignedRecords_Normal extends BaseTestSuite {
      */
     @DataProvider(name = "insertSingleNormal")
     public Iterator<Object[]> getSingleNormal() throws IOException {
-        return new CustomDataProvider().load("data/insert-tablet-success1.csv").getData();
+        return new CustomDataProvider().load("data/insert-record-success.csv").getData();
     }
 
     /**

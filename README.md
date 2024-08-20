@@ -18,14 +18,17 @@ common/src/resources/config.properties
 details/src/resources/testng.xml
 ```
 
+（Note: Running in Linux and Windows environments requires modifying the corresponding configuration in org/Apache/iotdb/API/test/utls/Customs Data Provider. java）
+
 ## run
+
 ```shell
 # compile jar
 mvn clean package -DskipTests
 # run tests and generate html report
 mvn surefire-report:report
 ```
-运行时间大约1个小时
+Running time is approximately 20 minutes
 ## report
 After running, here is the reports:
 ```shell
