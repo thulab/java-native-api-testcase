@@ -79,6 +79,11 @@ public class ActiveInBatch extends BaseTestSuite {
         assert checkTemplateContainPath(templateName, database) : "挂载模版成功";
         paths.add(database+"."+name);
         session.createTimeseriesUsingSchemaTemplate(paths);
+        try{
+            Thread.sleep(10);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         assert paths.size() == getActivePathsCount(templateName, verbose) : "激活成功: expect "+paths.size()+" actual "+getActivePathsCount(templateName, verbose);
         assert checkUsingTemplate(paths.get(0), verbose) : paths.get(0)+"使用了模版";
         insertRecordSingle(database+"."+name+"."+name, tsDataType, isAligned, null);
