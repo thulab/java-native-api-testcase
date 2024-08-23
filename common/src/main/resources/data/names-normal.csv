@@ -10,7 +10,7 @@ ALTER,一般关键字,7
 ALTER_TIMESERIES,一般关键字,8
 ANY,一般关键字,9
 APPEND,一般关键字,10
-APPLY_TEMPLATE,一般关键字,11
+#APPLY_TEMPLATE,一般关键字,11
 AS,一般关键字,12
 ASC,一般关键字,13
 ATTRIBUTES,一般关键字,14
