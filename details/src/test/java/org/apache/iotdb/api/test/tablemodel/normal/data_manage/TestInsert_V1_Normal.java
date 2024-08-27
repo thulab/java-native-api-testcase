@@ -70,7 +70,7 @@ public class TestInsert_V1_Normal extends BaseTestSuite_TableModel {
                 "blob blob MEASUREMENT," +
                 "timestamp timestamp MEASUREMENT," +
                 "date date MEASUREMENT)");
-        session.executeNonQueryStatement("create table table2 (" +
+        session.executeNonQueryStatement("create table Table2 (" +
                 "device_id string id," +
                 "attribute STRING ATTRIBUTE," +
                 "boolean boolean MEASUREMENT," +
@@ -83,7 +83,7 @@ public class TestInsert_V1_Normal extends BaseTestSuite_TableModel {
                 "blob blob MEASUREMENT," +
                 "timestamp timestamp MEASUREMENT," +
                 "date date MEASUREMENT)");
-        session.executeNonQueryStatement("create table autocolumn (" +
+        session.executeNonQueryStatement("create table autoColumn (" +
                 "device_id string id," +
                 "attribute STRING ATTRIBUTE," +
                 "boolean boolean MEASUREMENT," +
@@ -195,7 +195,7 @@ public class TestInsert_V1_Normal extends BaseTestSuite_TableModel {
                 Tablet.ColumnType.MEASUREMENT,
                 Tablet.ColumnType.MEASUREMENT);
         // 构造tablet对象
-        Tablet tablet = new Tablet("table2", schemas, columnTypes,10);
+        Tablet tablet = new Tablet("Table2", schemas, columnTypes,10);
         // 获取解析后的数据
         for (Iterator<Object[]> it = getData2(); it.hasNext(); ) {
             expect++;
@@ -298,7 +298,7 @@ public class TestInsert_V1_Normal extends BaseTestSuite_TableModel {
                 Tablet.ColumnType.MEASUREMENT,
                 Tablet.ColumnType.MEASUREMENT);
         // 构造tablet对象
-        Tablet tablet = new Tablet("autotable", schemas, columnTypes,10);
+        Tablet tablet = new Tablet("autoTable", schemas, columnTypes,10);
         // 获取解析后的数据
         for (Iterator<Object[]> it = getData2(); it.hasNext(); ) {
             expect++;
@@ -405,7 +405,7 @@ public class TestInsert_V1_Normal extends BaseTestSuite_TableModel {
                 Tablet.ColumnType.MEASUREMENT,
                 Tablet.ColumnType.MEASUREMENT);
         // 构造tablet对象
-        Tablet tablet = new Tablet("autocolumn", schemas, columnTypes,10);
+        Tablet tablet = new Tablet("autoColumn", schemas, columnTypes,10);
         // 获取解析后的数据
         for (Iterator<Object[]> it = getData3(); it.hasNext(); ) {
             expect++;
@@ -460,7 +460,7 @@ public class TestInsert_V1_Normal extends BaseTestSuite_TableModel {
         session.insertRelationalTablet(tablet, true);
 
         // 计算实际表的数量
-        try (SessionDataSet dataSet = session.executeQueryStatement("select * from autocolumn")) {
+        try (SessionDataSet dataSet = session.executeQueryStatement("select * from autoColumn")) {
             while (dataSet.hasNext()) {
                 dataSet.next();
                 actual++;
