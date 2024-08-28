@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringJoiner;
 
+// TODO：里面的 SQL 语句很多用的是老版本的，之后若数据库不支持了需要全面更新
 public class BaseTestSuite {
     public Logger logger = Logger.getLogger(BaseTestSuite.class);
     public Session session = null;
@@ -61,6 +62,7 @@ public class BaseTestSuite {
             return records.hasNext();
         }
     }
+    // 返回sql语句查询到的结果行数
     public int countLines(String sql, boolean verbose) throws IoTDBConnectionException, StatementExecutionException {
         try (SessionDataSet records = session.executeQueryStatement(sql) ) {
             if (verbose) {
@@ -124,6 +126,7 @@ public class BaseTestSuite {
     public int getTimeSeriesCount(String timeSeries, boolean verbose) throws IoTDBConnectionException, StatementExecutionException {
         return getCount("count timeseries "+timeSeries, verbose);
     }
+    // 获取设备数量
     public int getDeviceCount(String device, boolean verbose) throws IoTDBConnectionException, StatementExecutionException {
         return getCount("count devices "+device, verbose);
     }
@@ -151,6 +154,7 @@ public class BaseTestSuite {
         }
     }
 
+    // 用于判断模板是否存在
     public boolean checkTemplateExists(String templateName) throws IoTDBConnectionException, StatementExecutionException {
         try (SessionDataSet dataSet = session.executeQueryStatement("show schema templates ") ) {
             SessionDataSet.DataIterator records = dataSet.iterator();
@@ -162,6 +166,7 @@ public class BaseTestSuite {
             return false;
         }
     }
+    // 用于查看挂载了某个设备模板的路径
     public boolean checkTemplateContainPath(String templateName, String path) throws IoTDBConnectionException, StatementExecutionException {
         try(SessionDataSet dataSet = PrepareConnection.getSession().executeQueryStatement("show paths set schema template "+templateName)) {
             while (dataSet.hasNext()) {
@@ -173,6 +178,7 @@ public class BaseTestSuite {
             return false;
         }
     }
+    // 查看某个设备模板下的物理量
     public boolean checkUsingTemplate(String device, boolean verbose) throws IoTDBConnectionException, StatementExecutionException {
         try(SessionDataSet dataSet = PrepareConnection.getSession().executeQueryStatement("show child nodes "+device)) {
             boolean result = dataSet.hasNext();
@@ -185,6 +191,7 @@ public class BaseTestSuite {
             return !result;
         }
     }
+    // 删除数据库
     public void cleanDatabases(boolean verbose) throws IoTDBConnectionException, StatementExecutionException {
         int count = getCount("count databases", verbose);
         if (verbose) {
@@ -194,6 +201,7 @@ public class BaseTestSuite {
             session.executeNonQueryStatement("drop database root.**");
         }
     }
+    // 删除设备模板
     public void cleanTemplates(boolean verbose) throws IoTDBConnectionException, StatementExecutionException {
         SessionDataSet records = session.executeQueryStatement("show schema templates");
         int count = 0;
@@ -391,6 +399,7 @@ public class BaseTestSuite {
         String sql = "show paths set schema template "+templateName;
         return countLines(sql, verbose);
     }
+    // 查看使用了某个设备模板的路径（即模板在该路径上已激活，序列已创建），并返回查询到的行数
     public int getActivePathsCount(String templateName, boolean verbose) throws IoTDBConnectionException, StatementExecutionException {
         String sql = "show paths using schema template "+templateName;
         return countLines(sql, verbose);
