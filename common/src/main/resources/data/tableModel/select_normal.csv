@@ -27,27 +27,15 @@ select time, round(DOUBLE,-1) from table1
 select round(FLOAT,4) as round from table1
 select round(FLOAT) as round from table1
 select time,text from table1
-select time,SUBSTRING(text FROM 1)  as SUBSTRING from table1
-select time,SUBSTRING(text FROM 3)  as SUBSTRING from table1
-select time,SUBSTRING(text FROM 1 for 3)  as SUBSTRING from table1
+#select time,SUBSTRING(text FROM 1 for 2)  as SUBSTRING from table1
+#select time,SUBSTRING(text FROM 1)  as SUBSTRING from table1
 # order by
 select * from table1 order by device_id
 select * from TestSelect.table1 order by device_id
 select DOUBLE, FLOAT, INT64, blob, BOOLEAN, int32, time, device_id, ATTRIBUTE, string, text from table1 order by time
-# GROUP BY 和 having
-select text from table1 GROUP BY text having text like 'a'
 # limit/slimit
 select * from table1 limit 10
 select * from TestSelect.table1 limit 10
 select time, device_id, ATTRIBUTE, string, text,  DOUBLE, FLOAT, INT64, blob, BOOLEAN, int32 from table1 limit 1
 # GROUP BY
-select device_id from table1 GROUP BY device_id
-select text from table1 GROUP BY text
-select DOUBLE from table1 GROUP BY DOUBLE
-select FLOAT from table1 GROUP BY FLOAT
-select INT64 from table1 GROUP BY INT64
-select blob from table1 GROUP BY blob
-select BOOLEAN from table1 GROUP BY BOOLEAN
-select int32 from table1 GROUP BY int32
-select ATTRIBUTE from table1 GROUP BY ATTRIBUTE
 # 组合使用

@@ -67,7 +67,7 @@ public class TestSelect_V1_Normal extends BaseTestSuite_TableModel {
             // 获取每行每列的数据
             for (Object selectSQL : selectSQLs) {
                 // 查询数据
-                session.executeNonQueryStatement((String) selectSQL);
+                session.executeQueryStatement((String) selectSQL);
             }
         }
     }
