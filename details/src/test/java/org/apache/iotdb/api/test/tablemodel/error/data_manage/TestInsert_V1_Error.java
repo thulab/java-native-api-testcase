@@ -150,7 +150,7 @@ public class TestInsert_V1_Error extends BaseTestSuite_TableModel {
                 }
             }
             // 插入数据
-            session.insertRelationalTablet(tablet, true);
+            session.insert(tablet);
         } catch (Exception e) {
         }
     }

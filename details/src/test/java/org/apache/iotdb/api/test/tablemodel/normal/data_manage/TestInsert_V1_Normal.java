@@ -247,7 +247,7 @@ public class TestInsert_V1_Normal extends BaseTestSuite_TableModel {
             }
         }
         // 插入数据
-        session.insertRelationalTablet(tablet, true);
+        session.insert(tablet);
 
         // 计算实际表的数量
         try (SessionDataSet dataSet = session.executeQueryStatement("select * from table2")) {
@@ -350,7 +350,7 @@ public class TestInsert_V1_Normal extends BaseTestSuite_TableModel {
             }
         }
         // 插入数据
-        session.insertRelationalTablet(tablet, true);
+        session.insert(tablet);
 
         // 计算实际表的数量
         try (SessionDataSet dataSet = session.executeQueryStatement("select * from autoTable")) {
@@ -457,7 +457,7 @@ public class TestInsert_V1_Normal extends BaseTestSuite_TableModel {
             }
         }
         // 插入数据
-        session.insertRelationalTablet(tablet, true);
+        session.insert(tablet);
 
         // 计算实际表的数量
         try (SessionDataSet dataSet = session.executeQueryStatement("select * from autoColumn")) {
