@@ -22,7 +22,7 @@ import java.util.regex.Pattern;
  * Author：肖林捷
  * Date：2024/8/8
  */
-public class TestTable_V1_Normal extends BaseTestSuite_TableModel {
+public class TestTable_V2_Normal extends BaseTestSuite_TableModel {
     /**
      * 创建测试环境
      */

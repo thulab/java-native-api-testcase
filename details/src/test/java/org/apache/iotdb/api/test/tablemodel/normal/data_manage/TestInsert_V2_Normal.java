@@ -7,6 +7,7 @@ import org.apache.iotdb.rpc.IoTDBConnectionException;
 import org.apache.iotdb.rpc.StatementExecutionException;
 import org.apache.tsfile.enums.TSDataType;
 import org.apache.tsfile.utils.Binary;
+import org.apache.tsfile.utils.BitMap;
 import org.apache.tsfile.write.record.Tablet;
 import org.apache.tsfile.write.schema.IMeasurementSchema;
 import org.apache.tsfile.write.schema.MeasurementSchema;
@@ -28,7 +29,7 @@ import java.util.List;
  * Author：肖林捷
  * Date：2024/8/9
  */
-public class TestInsert_V1_Normal extends BaseTestSuite_TableModel {
+public class TestInsert_V2_Normal extends BaseTestSuite_TableModel {
     /**
      * 创建测试环境
      */
@@ -158,10 +159,10 @@ public class TestInsert_V1_Normal extends BaseTestSuite_TableModel {
     }
 
     /**
-     * 测试使用 insertRelationalTablet 插入数据
+     * 测试使用 insert 插入数据（无空值）
      */
     @Test(priority = 20)
-    public void insertRelationalTablet() throws IoTDBConnectionException, StatementExecutionException, IOException {
+    public void insert_NoNull() throws IoTDBConnectionException, StatementExecutionException, IOException {
         // 期待数据库的数量
         int expect = 0;
         // 实际数据库的数量（先默认未0）
@@ -247,7 +248,7 @@ public class TestInsert_V1_Normal extends BaseTestSuite_TableModel {
             }
         }
         // 插入数据
-        session.insertRelationalTablet(tablet, true);
+        session.insert(tablet);
 
         // 计算实际表的数量
         try (SessionDataSet dataSet = session.executeQueryStatement("select * from table2")) {
@@ -257,14 +258,119 @@ public class TestInsert_V1_Normal extends BaseTestSuite_TableModel {
             }
         }
         // 判断数量是否符合预期
-        assert expect == actual : "TestInsert_V1_Normal 的 insertRelationalTablet 实际不一致期待：" + expect + "，实际：" + actual;
+        assert expect == actual : "TestInsert_V1_Normal 的 insert 实际不一致期待：" + expect + "，实际：" + actual;
     }
 
     /**
-     * 测试使用 insertRelationalTablet 插入数据——自动创建元数据
+     * 测试使用 insert 插入数据（有空值，使用bitmap）
+     */
+    @Test(priority = 20)
+    public void insert_Null() throws IoTDBConnectionException, StatementExecutionException, IOException {
+        // 期待数据库的数量
+        int expect = 0;
+        // 实际数据库的数量（先默认未0）
+        int actual = 0;
+        // 准备列
+        List<IMeasurementSchema> schemas = new ArrayList<>();
+        schemas.add(new MeasurementSchema("device_id", TSDataType.STRING));
+        schemas.add(new MeasurementSchema("attribute", TSDataType.STRING));
+        schemas.add(new MeasurementSchema("boolean", TSDataType.BOOLEAN));
+        schemas.add(new MeasurementSchema("int32", TSDataType.INT32));
+        schemas.add(new MeasurementSchema("int64", TSDataType.INT64));
+        schemas.add(new MeasurementSchema("FLOAT", TSDataType.FLOAT));
+        schemas.add(new MeasurementSchema("double", TSDataType.DOUBLE));
+        schemas.add(new MeasurementSchema("text", TSDataType.TEXT));
+        schemas.add(new MeasurementSchema("string", TSDataType.STRING));
+        schemas.add(new MeasurementSchema("blob", TSDataType.BLOB));
+        schemas.add(new MeasurementSchema("timestamp", TSDataType.TIMESTAMP));
+        schemas.add(new MeasurementSchema("date", TSDataType.DATE));
+        // 准备列类型
+        List<Tablet.ColumnType> columnTypes = Arrays.asList(
+                Tablet.ColumnType.ID,
+                Tablet.ColumnType.ATTRIBUTE,
+                Tablet.ColumnType.MEASUREMENT,
+                Tablet.ColumnType.MEASUREMENT,
+                Tablet.ColumnType.MEASUREMENT,
+                Tablet.ColumnType.MEASUREMENT,
+                Tablet.ColumnType.MEASUREMENT,
+                Tablet.ColumnType.MEASUREMENT,
+                Tablet.ColumnType.MEASUREMENT,
+                Tablet.ColumnType.MEASUREMENT,
+                Tablet.ColumnType.MEASUREMENT,
+                Tablet.ColumnType.MEASUREMENT);
+        // 构造tablet对象
+        Tablet tablet = new Tablet("Table2", schemas, columnTypes,10);
+        //BitMap bitMap = new BitMap(10);
+        // 获取解析后的数据
+        for (Iterator<Object[]> it = getData2(); it.hasNext(); ) {
+            expect++;
+            // 获取每行的SQL语句
+            Object[] line = it.next();
+            // 实例化有效行并切换行索引
+            int rowIndex = tablet.rowSize++;
+            // 添加时间戳
+            tablet.addTimestamp(rowIndex, Long.valueOf((String) line[0]));
+            // 获取每行每列的数据
+            for (int i = 0; i < schemas.size(); i++) {
+                // 根据数据类型添加值到tablet
+                switch (schemas.get(i).getType()) {
+                    case BOOLEAN:
+                        tablet.addValue(schemas.get(i).getMeasurementId(), rowIndex,
+                                line[i + 1] == null ? false : Boolean.valueOf((String) line[i + 1]));
+                        break;
+                    case INT32:
+                        tablet.addValue(schemas.get(i).getMeasurementId(), rowIndex,
+                                line[i + 1] == null ? 1 : Integer.valueOf((String) line[i + 1]));
+                        break;
+                    case INT64:
+                    case TIMESTAMP:
+                        tablet.addValue(schemas.get(i).getMeasurementId(), rowIndex,
+                                line[i + 1] == null ? 1L : Long.valueOf((String) line[i + 1]));
+                        break;
+                    case FLOAT:
+                        tablet.addValue(schemas.get(i).getMeasurementId(), rowIndex,
+                                line[i + 1] == null ? 1.01f : Float.valueOf((String) line[i + 1]));
+                        break;
+                    case DOUBLE:
+                        tablet.addValue(schemas.get(i).getMeasurementId(), rowIndex,
+                                line[i + 1] == null ? 1.0 : Double.valueOf((String) line[i + 1]));
+                        break;
+                    case TEXT:
+                    case STRING:
+                        tablet.addValue(schemas.get(i).getMeasurementId(), rowIndex,
+                                line[i + 1] == null ? "stringnull" : line[i + 1]);
+                        break;
+                    case BLOB:
+                        tablet.addValue(schemas.get(i).getMeasurementId(), rowIndex,
+                                line[i + 1] == null ? new Binary("iotdb", Charset.defaultCharset()) : new Binary((String) line[i + 1], Charset.defaultCharset()));
+                        break;
+                    case DATE:
+                        tablet.addValue(schemas.get(i).getMeasurementId(), rowIndex,
+                                line[i + 1] == null ? LocalDate.parse("2024-08-15") : LocalDate.parse((CharSequence) line[i + 1]));
+                        break;
+                }
+            }
+        }
+        // 插入数据
+        session.insert(tablet);
+
+        // 计算实际表的数量
+        try (SessionDataSet dataSet = session.executeQueryStatement("select * from table2")) {
+            while (dataSet.hasNext()) {
+                dataSet.next();
+                actual++;
+            }
+        }
+        // 判断数量是否符合预期
+        assert expect == actual : "TestInsert_V1_Normal 的 insert 实际不一致期待：" + expect + "，实际：" + actual;
+    }
+
+
+    /**
+     * 测试使用 insert 插入数据——自动创建元数据
      */
     @Test(priority = 30)
-    public void insertRelationalTablet_autoTable() throws IoTDBConnectionException, StatementExecutionException, IOException {
+    public void insert_autoTable() throws IoTDBConnectionException, StatementExecutionException, IOException {
         // 期待数据库的数量
         int expect = 0;
         // 实际数据库的数量（先默认未0）
@@ -350,7 +456,7 @@ public class TestInsert_V1_Normal extends BaseTestSuite_TableModel {
             }
         }
         // 插入数据
-        session.insertRelationalTablet(tablet, true);
+        session.insert(tablet);
 
         // 计算实际表的数量
         try (SessionDataSet dataSet = session.executeQueryStatement("select * from autoTable")) {
@@ -360,14 +466,14 @@ public class TestInsert_V1_Normal extends BaseTestSuite_TableModel {
             }
         }
         // 判断是否符合预期
-        assert expect == actual : "TestInsert_V1_Normal 的 insertRelationalTablet_autoTable 实际不一致期待：" + expect + "，实际：" + actual;
+        assert expect == actual : "TestInsert_V1_Normal 的 insert_autoTable 实际不一致期待：" + expect + "，实际：" + actual;
     }
 
     /**
-     * 测试使用 insertRelationalTablet 插入数据——自动创建标识、属性和测点列
+     * 测试使用 insert 插入数据——自动创建标识、属性和测点列
      */
     @Test(priority = 40)
-    public void insertRelationalTablet_autoColumn() throws IoTDBConnectionException, StatementExecutionException, IOException {
+    public void insert_autoColumn() throws IoTDBConnectionException, StatementExecutionException, IOException {
         // 期待数据库的数量
         int expect = 0;
         // 实际数据库的数量（先默认未0）
@@ -457,7 +563,7 @@ public class TestInsert_V1_Normal extends BaseTestSuite_TableModel {
             }
         }
         // 插入数据
-        session.insertRelationalTablet(tablet, true);
+        session.insert(tablet);
 
         // 计算实际表的数量
         try (SessionDataSet dataSet = session.executeQueryStatement("select * from autoColumn")) {
@@ -467,7 +573,7 @@ public class TestInsert_V1_Normal extends BaseTestSuite_TableModel {
             }
         }
         // 判断是否符合预期
-        assert expect == actual : "TestInsert_V1_Normal 的 insertRelationalTablet_autoTable 实际不一致期待：" + expect + "，实际：" + actual;
+        assert expect == actual : "TestInsert_V1_Normal 的 insert_autoTable 实际不一致期待：" + expect + "，实际：" + actual;
     }
 
     /**

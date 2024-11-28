@@ -2,22 +2,17 @@ package org.apache.iotdb.api.test.tablemodel.error.data_manage;
 
 import org.apache.iotdb.api.test.BaseTestSuite_TableModel;
 import org.apache.iotdb.api.test.utils.CustomDataProvider;
-import org.apache.iotdb.isession.SessionDataSet;
 import org.apache.iotdb.rpc.IoTDBConnectionException;
 import org.apache.iotdb.rpc.StatementExecutionException;
 import org.apache.tsfile.enums.TSDataType;
-import org.apache.tsfile.utils.Binary;
 import org.apache.tsfile.write.record.Tablet;
 import org.apache.tsfile.write.schema.IMeasurementSchema;
 import org.apache.tsfile.write.schema.MeasurementSchema;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
-import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import java.io.IOException;
-import java.nio.charset.Charset;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -29,7 +24,7 @@ import java.util.List;
  * Author：肖林捷
  * Date：2024/8/9
  */
-public class TestInsert_V1_Error extends BaseTestSuite_TableModel {
+public class TestInsert_V2_Error extends BaseTestSuite_TableModel {
     /**
      * 创建测试环境
      */
@@ -150,7 +145,7 @@ public class TestInsert_V1_Error extends BaseTestSuite_TableModel {
                 }
             }
             // 插入数据
-            session.insertRelationalTablet(tablet, true);
+            session.insert(tablet);
         } catch (Exception e) {
         }
     }

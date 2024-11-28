@@ -18,7 +18,7 @@ import java.util.Iterator;
  * Author：肖林捷
  * Date：2024/8/12
  */
-public class TestSelect_V1_Normal extends BaseTestSuite_TableModel {
+public class TestSelect_V2_Normal extends BaseTestSuite_TableModel {
     /**
      * 创建测试环境
      */

@@ -7,6 +7,7 @@ import org.apache.iotdb.isession.SessionDataSet;
 import org.apache.iotdb.rpc.IoTDBConnectionException;
 import org.apache.iotdb.rpc.StatementExecutionException;
 import org.apache.iotdb.session.Session;
+import org.apache.iotdb.session.pool.SessionPool;
 import org.apache.tsfile.read.common.RowRecord;
 import org.apache.tsfile.enums.TSDataType;
 import org.apache.tsfile.file.metadata.enums.CompressionType;
@@ -30,6 +31,7 @@ import java.util.StringJoiner;
 public class BaseTestSuite {
     public Logger logger = Logger.getLogger(BaseTestSuite.class);
     public Session session = null;
+    public SessionPool sessionPool = null;
     // 是对齐/非对齐序列。dynamic module. 动态模版相关
     protected boolean isAligned;
     // 是否打印查询结果
@@ -39,7 +41,11 @@ public class BaseTestSuite {
     protected long baseTime;
     @BeforeClass
     public void beforeSuite() throws IoTDBConnectionException, ParseException, IOException {
-        session = PrepareConnection.getSession();
+        if (ReadConfig.getInstance().getValue("is_sessionPool").equals("false")) {
+            session = PrepareConnection.getSession();
+        } else {
+            sessionPool = PrepareConnection.getSessionPool();
+        }
 //        logger.warn("############ BaseTestSuite BeforeClass ##########" );
         verbose = Boolean.parseBoolean(ReadConfig.getInstance().getValue("verbose"));
         isAligned = Boolean.parseBoolean(ReadConfig.getInstance().getValue("isAligned"));
@@ -47,11 +53,15 @@ public class BaseTestSuite {
         baseTime = parseDate();
     }
     @AfterClass
-    public void afterSuie() throws IoTDBConnectionException, StatementExecutionException {
+    public void afterSuie() throws IoTDBConnectionException, StatementExecutionException, IOException {
 //        logger.warn("############ BaseTestSuite AfterClass ##########" );
         cleanDatabases(verbose);
         cleanTemplates(verbose);
-        session.close();
+        if (ReadConfig.getInstance().getValue("is_sessionPool").equals("false")) {
+            session.close();
+        }else {
+            sessionPool.close();
+        }
     }
     private long parseDate() throws IOException, ParseException {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

@@ -1,11 +1,14 @@
 package org.apache.iotdb.api.test;
 
 import org.apache.iotdb.api.test.utils.PrepareConnection;
+import org.apache.iotdb.api.test.utils.ReadConfig;
+import org.apache.iotdb.isession.pool.ITableSessionPool;
 import org.apache.iotdb.rpc.IoTDBConnectionException;
-import org.apache.iotdb.session.Session;
+import org.apache.iotdb.isession.ITableSession;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
-import org.testng.log4testng.Logger;
+
+import java.io.IOException;
 
 /**
  * Title：基础测试工具（表面性）
@@ -14,24 +17,45 @@ import org.testng.log4testng.Logger;
  * Date：2024/8/9
  */
 public class BaseTestSuite_TableModel {
-    // 日志记录器，用于记录日志信息
-    public Logger logger = Logger.getLogger(BaseTestSuite_TableModel.class);
     // 表模型session会话
-    public Session session = null;
+    public static ITableSession session = null;
+    public static ITableSessionPool sessionPool = null;
 
     /**
      * 获取表模型的session
      */
     @BeforeClass
-    public void beforeSuite() throws IoTDBConnectionException {
-        // 获取表模型的session
-        session = PrepareConnection.getSession_TableModel();
+    public void beforeSuite() throws IoTDBConnectionException, IOException {
+
+        // 判断是否使用sessionPool
+        if (ReadConfig.getInstance().getValue("is_sessionPool").equals("false")) {
+            // 获取表模型的session
+            session = PrepareConnection.getSession_TableModel();
+        } else {
+            // 从sessionPool中获取
+            sessionPool = PrepareConnection.getSessionPool_TableModel();
+            session = sessionPool.getSession();
+        }
+
     }
 
+    /**
+     * 关闭表模型的session
+     */
     @AfterClass
-    public void afterSuie() throws IoTDBConnectionException {
-        // 关闭表模型的session
-        session.close();
+    public void afterSuite() throws IoTDBConnectionException, IOException {
+        // 判断是否使用sessionPool
+        if (ReadConfig.getInstance().getValue("is_sessionPool").equals("false")) {
+            // 关闭表模型的session
+            session.close();
+        } else {
+            // 关闭表模型的session
+            sessionPool = PrepareConnection.getSessionPool_TableModel();
+            session = sessionPool.getSession();
+            session.close();
+            sessionPool.close();
+        }
+
     }
 
 }

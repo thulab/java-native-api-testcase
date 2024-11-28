@@ -54,11 +54,13 @@
 
     <test name="tableModel" preserve-order="true">
         <classes>
-            <class name="org.apache.iotdb.api.test.tablemodel.normal.database_manage.TestDataBase_V1_Normal"></class>
-            <class name="org.apache.iotdb.api.test.tablemodel.normal.table_manage.TestTable_V1_Normal"></class>
-            <class name="org.apache.iotdb.api.test.tablemodel.normal.data_manage.TestSelect_V1_Normal"></class>
-            <class name="org.apache.iotdb.api.test.tablemodel.normal.data_manage.TestInsert_V1_Normal"></class>
-            <class name="org.apache.iotdb.api.test.tablemodel.error.data_manage.TestInsert_V1_Error"></class>
+            <class name="org.apache.iotdb.api.test.tablemodel.normal.database_manage.TestDataBase_V2_Normal"></class>
+            <class name="org.apache.iotdb.api.test.tablemodel.normal.table_manage.TestTable_V2_Normal"></class>
+            <class name="org.apache.iotdb.api.test.tablemodel.normal.data_manage.TestSelect_V2_Normal"></class>
+            <class name="org.apache.iotdb.api.test.tablemodel.normal.data_manage.TestInsert_V2_Normal"></class>
+            <class name="org.apache.iotdb.api.test.tablemodel.error.data_manage.TestInsert_V2_Error"></class>
+            <class name="org.apache.iotdb.api.test.tablemodel.normal.session.TestTableSessionBuilder"></class>
+            <class name="org.apache.iotdb.api.test.tablemodel.normal.session.TestTableSessionPoolBuilder"></class>
         </classes>
     </test>
 
