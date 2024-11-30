@@ -319,40 +319,38 @@ public class BaseTestSuite {
         int rowIndex = 0;
         long timestamp = baseTime;
         for (int row = 0; row < insertCount; row++) {
-            rowIndex = tablet.rowSize++;
             timestamp += 3600000; //+1小时
-//            System.out.println("row="+row+" rowIndex="+rowIndex);
             tablet.addTimestamp(rowIndex, timestamp);
-//            tablet.addTimestamp(rowIndex, row);
             for (int i = 0; i < schemaList.size(); i++) {
                 switch(schemaList.get(i).getType()) {
                     case BOOLEAN:
-                        tablet.addValue(schemaList.get(i).getMeasurementId(), rowIndex, GenerateValues.getBoolean());
+                        tablet.addValue(schemaList.get(i).getMeasurementName(), rowIndex, GenerateValues.getBoolean());
                         break;
                     case INT32:
-                        tablet.addValue(schemaList.get(i).getMeasurementId(), rowIndex, GenerateValues.getInt());
+                        tablet.addValue(schemaList.get(i).getMeasurementName(), rowIndex, GenerateValues.getInt());
                         break;
                     case INT64:
-                        tablet.addValue(schemaList.get(i).getMeasurementId(), rowIndex, GenerateValues.getLong(10));
+                        tablet.addValue(schemaList.get(i).getMeasurementName(), rowIndex, GenerateValues.getLong(10));
                         break;
                     case FLOAT:
-                        tablet.addValue(schemaList.get(i).getMeasurementId(), rowIndex, GenerateValues.getFloat(2,100,200));
+                        tablet.addValue(schemaList.get(i).getMeasurementName(), rowIndex, GenerateValues.getFloat(2,100,200));
                         break;
                     case DOUBLE:
-                        tablet.addValue(schemaList.get(i).getMeasurementId(), rowIndex, GenerateValues.getDouble(2,500,1000));
+                        tablet.addValue(schemaList.get(i).getMeasurementName(), rowIndex, GenerateValues.getDouble(2,500,1000));
                         break;
                     case TEXT:
-                        tablet.addValue(schemaList.get(i).getMeasurementId(), rowIndex, GenerateValues.getChinese());
+                        tablet.addValue(schemaList.get(i).getMeasurementName(), rowIndex, GenerateValues.getChinese());
                         break;
                 }
             }
+            rowIndex++;
         }
         if (isAligned) {
             session.insertAlignedTablet(tablet);
         } else {
             session.insertTablet(tablet);
         }
-        checkQueryResult("select count("+schemaList.get(0).getMeasurementId()+") from "
+        checkQueryResult("select count("+schemaList.get(0).getMeasurementName()+") from "
                 + device + ";", insertCount);
         if (insertCount == 0) {
             session.close();

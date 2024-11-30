@@ -68,81 +68,95 @@ public class TestInsert_V2_Error extends BaseTestSuite_TableModel {
      */
     @Test(priority = 10) // 测试执行的优先级为10
     public void insertRelationalTablet() throws IoTDBConnectionException, StatementExecutionException, IOException {
-        // 准备列
-        List<IMeasurementSchema> schemas = new ArrayList<>();
-        schemas.add(new MeasurementSchema("device_id", TSDataType.STRING));
-        schemas.add(new MeasurementSchema("attribute", TSDataType.STRING));
-        schemas.add(new MeasurementSchema("boolean", TSDataType.BOOLEAN));
-        schemas.add(new MeasurementSchema("int32", TSDataType.INT32));
-        schemas.add(new MeasurementSchema("int64", TSDataType.INT64));
-        schemas.add(new MeasurementSchema("float", TSDataType.FLOAT));
-        schemas.add(new MeasurementSchema("double", TSDataType.DOUBLE));
-        schemas.add(new MeasurementSchema("text", TSDataType.TEXT));
-        schemas.add(new MeasurementSchema("string", TSDataType.STRING));
-        schemas.add(new MeasurementSchema("blob", TSDataType.BLOB));
-        schemas.add(new MeasurementSchema("timestamp01", TSDataType.TIMESTAMP));
-        schemas.add(new MeasurementSchema("date", TSDataType.DATE));
-        // 准备列类型
-        List<Tablet.ColumnType> columnTypes = Arrays.asList(
-                Tablet.ColumnType.ID,
-                Tablet.ColumnType.ATTRIBUTE,
-                Tablet.ColumnType.MEASUREMENT,
-                Tablet.ColumnType.MEASUREMENT,
-                Tablet.ColumnType.MEASUREMENT,
-                Tablet.ColumnType.MEASUREMENT,
-                Tablet.ColumnType.MEASUREMENT,
-                Tablet.ColumnType.MEASUREMENT,
-                Tablet.ColumnType.MEASUREMENT,
-                Tablet.ColumnType.MEASUREMENT,
-                Tablet.ColumnType.MEASUREMENT,
-                Tablet.ColumnType.MEASUREMENT);
+        // 列名
+        List<String> measurementList = new ArrayList<>();
+        measurementList.add("device_id");
+        measurementList.add("attribute");
+        measurementList.add("boolean");
+        measurementList.add("int32");
+        measurementList.add("int64");
+        measurementList.add("FLOAT");
+        measurementList.add("double");
+        measurementList.add("text");
+        measurementList.add("string");
+        measurementList.add("blob");
+        measurementList.add("timestamp");
+        measurementList.add("date");
+        // 值类型
+        List<TSDataType> dataTypeList = new ArrayList<>();
+        dataTypeList.add(TSDataType.STRING);
+        dataTypeList.add(TSDataType.STRING);
+        dataTypeList.add(TSDataType.BOOLEAN);
+        dataTypeList.add(TSDataType.INT32);
+        dataTypeList.add(TSDataType.INT64);
+        dataTypeList.add(TSDataType.FLOAT);
+        dataTypeList.add(TSDataType.DOUBLE);
+        dataTypeList.add(TSDataType.TEXT);
+        dataTypeList.add(TSDataType.STRING);
+        dataTypeList.add(TSDataType.BLOB);
+        dataTypeList.add(TSDataType.TIMESTAMP);
+        dataTypeList.add(TSDataType.DATE);
+        // 列类型
+        List<Tablet.ColumnCategory> columnCategoryList = new ArrayList<>();
+        columnCategoryList.add(Tablet.ColumnCategory.ID);
+        columnCategoryList.add(Tablet.ColumnCategory.ATTRIBUTE);
+        columnCategoryList.add(Tablet.ColumnCategory.MEASUREMENT);
+        columnCategoryList.add(Tablet.ColumnCategory.MEASUREMENT);
+        columnCategoryList.add(Tablet.ColumnCategory.MEASUREMENT);
+        columnCategoryList.add(Tablet.ColumnCategory.MEASUREMENT);
+        columnCategoryList.add(Tablet.ColumnCategory.MEASUREMENT);
+        columnCategoryList.add(Tablet.ColumnCategory.MEASUREMENT);
+        columnCategoryList.add(Tablet.ColumnCategory.MEASUREMENT);
+        columnCategoryList.add(Tablet.ColumnCategory.MEASUREMENT);
+        columnCategoryList.add(Tablet.ColumnCategory.MEASUREMENT);
+        columnCategoryList.add(Tablet.ColumnCategory.MEASUREMENT);
         // 构造tablet对象
-        Tablet tablet = new Tablet("table2", schemas, columnTypes, 10);
+        Tablet tablet = new Tablet("table2", measurementList, dataTypeList, columnCategoryList, 10);
         try {
+            int rowIndex = 0;
             // 获取解析后的数据
             for (Iterator<Object[]> it = getData2(); it.hasNext(); ) {
                 // 获取每行的SQL语句
                 Object[] line = it.next();
-                // 实例化有效行并切换行索引
-                int rowIndex = tablet.rowSize++;
                 // 添加时间戳
                 tablet.addTimestamp(rowIndex, Long.valueOf((String) line[0]));
                 // 获取每行每列的数据
                 try {
-                    for (int i = 0; i < schemas.size(); i++) {
+                    for (int i = 0; i < tablet.getRowSize(); i++) {
                         // 根据数据类型添加值到tablet
-                        switch (schemas.get(i).getType()) {
+                        switch (dataTypeList.get(i)) {
                             case BOOLEAN:
-                                tablet.addValue(schemas.get(i).getMeasurementId(), rowIndex, line[i + 1]);
+                                tablet.addValue(measurementList.get(i), rowIndex, line[i + 1]);
                                 break;
                             case INT32:
-                                tablet.addValue(schemas.get(i).getMeasurementId(), rowIndex, line[i + 1]);
+                                tablet.addValue(measurementList.get(i), rowIndex, line[i + 1]);
                                 break;
                             case INT64:
                             case TIMESTAMP:
-                                tablet.addValue(schemas.get(i).getMeasurementId(), rowIndex, line[i + 1]);
+                                tablet.addValue(measurementList.get(i), rowIndex, line[i + 1]);
                                 break;
                             case FLOAT:
-                                tablet.addValue(schemas.get(i).getMeasurementId(), rowIndex, line[i + 1]);
+                                tablet.addValue(measurementList.get(i), rowIndex, line[i + 1]);
                                 break;
                             case DOUBLE:
-                                tablet.addValue(schemas.get(i).getMeasurementId(), rowIndex, line[i + 1]);
+                                tablet.addValue(measurementList.get(i), rowIndex, line[i + 1]);
                                 break;
                             case TEXT:
                             case STRING:
-                                tablet.addValue(schemas.get(i).getMeasurementId(), rowIndex, line[i + 1]);
+                                tablet.addValue(measurementList.get(i), rowIndex, line[i + 1]);
                                 break;
                             case BLOB:
-                                tablet.addValue(schemas.get(i).getMeasurementId(), rowIndex, line[i + 1]);
+                                tablet.addValue(measurementList.get(i), rowIndex, line[i + 1]);
                                 break;
                             case DATE:
-                                tablet.addValue(schemas.get(i).getMeasurementId(), rowIndex, line[i + 1]);
+                                tablet.addValue(measurementList.get(i), rowIndex, line[i + 1]);
                                 break;
                         }
                     }
                 } catch (Exception e) {
                     assert "java.lang.ClassCastException".equals(e.getClass().getName()) : "其他错误：" + e;
                 }
+                rowIndex++;
             }
             // 插入数据
             session.insert(tablet);

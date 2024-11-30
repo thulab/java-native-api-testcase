@@ -96,14 +96,12 @@ public class TestInsertAlignedTablets_Normal extends BaseTestSuite {
         Tablet tablet1 = new Tablet(deviceId, schemaList, 10);
         Tablet tablet2 = new Tablet(deviceId, schemaList, 10);
         Tablet tablet3 = new Tablet(deviceId, schemaList, 10);
-
+        int rowIndex = 0;
         // 2、遍历获取的单行数据，进行数据处理
         // 第一份文件的数据
         for (Iterator<Object[]> it = getSingleNormal(filepath1); it.hasNext(); ) {
             // 获取每行数据
             Object[] line = it.next();
-            // 实例化有效行并切换行索引
-            int rowIndex = tablet1.rowSize++;
             // 向tablet添加时间戳
             tablet1.addTimestamp(rowIndex, Long.valueOf((String) line[0]));
 //            out.println("########### 行号：" + (rowIndex + 1) + " | 时间戳:" + line[0] + " ###########"); // 打印行索引和时间戳
@@ -114,48 +112,49 @@ public class TestInsertAlignedTablets_Normal extends BaseTestSuite {
                 // 根据数据类型添加值到tablet
                 switch (schemaList.get(i).getType()) {
                     case BOOLEAN:
-                        tablet1.addValue(schemaList.get(i).getMeasurementId(), rowIndex,
+                        tablet1.addValue(schemaList.get(i).getMeasurementName(), rowIndex,
                                 line[i + 1] == null ? false : Boolean.valueOf((String) line[i + 1]));
                         break;
                     case INT32:
-                        tablet1.addValue(schemaList.get(i).getMeasurementId(), rowIndex,
+                        tablet1.addValue(schemaList.get(i).getMeasurementName(), rowIndex,
                                 line[i + 1] == null ? 1 : Integer.valueOf((String) line[i + 1]));
                         break;
                     case INT64:
                     case TIMESTAMP:
-                        tablet1.addValue(schemaList.get(i).getMeasurementId(), rowIndex,
+                        tablet1.addValue(schemaList.get(i).getMeasurementName(), rowIndex,
                                 line[i + 1] == null ? 1L : Long.valueOf((String) line[i + 1]));
                         break;
                     case FLOAT:
-                        tablet1.addValue(schemaList.get(i).getMeasurementId(), rowIndex,
+                        tablet1.addValue(schemaList.get(i).getMeasurementName(), rowIndex,
                                 line[i + 1] == null ? 1.01f : Float.valueOf((String) line[i + 1]));
                         break;
                     case DOUBLE:
-                        tablet1.addValue(schemaList.get(i).getMeasurementId(), rowIndex,
+                        tablet1.addValue(schemaList.get(i).getMeasurementName(), rowIndex,
                                 line[i + 1] == null ? 1.0 : Double.valueOf((String) line[i + 1]));
                         break;
                     case TEXT:
                     case STRING:
-                        tablet1.addValue(schemaList.get(i).getMeasurementId(), rowIndex,
+                        tablet1.addValue(schemaList.get(i).getMeasurementName(), rowIndex,
                                 line[i + 1] == null ? "stringnull" : line[i + 1]);
                         break;
                     case BLOB:
-                        tablet1.addValue(schemaList.get(i).getMeasurementId(), rowIndex,
+                        tablet1.addValue(schemaList.get(i).getMeasurementName(), rowIndex,
                                 line[i + 1] == null ? new Binary("iotdb", Charset.defaultCharset()) : new Binary((String) line[i + 1], Charset.defaultCharset()));
                         break;
                     case DATE:
-                        tablet1.addValue(schemaList.get(i).getMeasurementId(), rowIndex,
+                        tablet1.addValue(schemaList.get(i).getMeasurementName(), rowIndex,
                                 line[i + 1] == null ? LocalDate.parse("2024-07-25") : LocalDate.parse((CharSequence) line[i + 1]));
                         break;
                 }
             }
+            rowIndex++;
         }
+
+        rowIndex = 0;
         // 第二份文件的路径
         for (Iterator<Object[]> it = getSingleNormal(filepath2); it.hasNext(); ) {
             // 获取每行数据
             Object[] line = it.next();
-            // 实例化有效行并切换行索引
-            int rowIndex = tablet2.rowSize++;
             // 向tablet添加时间戳
             tablet2.addTimestamp(rowIndex, Long.valueOf((String) line[0]));
 //            out.println("########### 行号：" + (rowIndex + 1) + " | 时间戳:" + line[0] + " ###########"); // 打印行索引和时间戳
@@ -166,48 +165,49 @@ public class TestInsertAlignedTablets_Normal extends BaseTestSuite {
                 // 根据数据类型添加值到tablet
                 switch (schemaList.get(i).getType()) {
                     case BOOLEAN:
-                        tablet2.addValue(schemaList.get(i).getMeasurementId(), rowIndex,
+                        tablet2.addValue(schemaList.get(i).getMeasurementName(), rowIndex,
                                 line[i + 1] == null ? false : Boolean.valueOf((String) line[i + 1]));
                         break;
                     case INT32:
-                        tablet2.addValue(schemaList.get(i).getMeasurementId(), rowIndex,
+                        tablet2.addValue(schemaList.get(i).getMeasurementName(), rowIndex,
                                 line[i + 1] == null ? 1 : Integer.valueOf((String) line[i + 1]));
                         break;
                     case INT64:
                     case TIMESTAMP:
-                        tablet2.addValue(schemaList.get(i).getMeasurementId(), rowIndex,
+                        tablet2.addValue(schemaList.get(i).getMeasurementName(), rowIndex,
                                 line[i + 1] == null ? 1L : Long.valueOf((String) line[i + 1]));
                         break;
                     case FLOAT:
-                        tablet2.addValue(schemaList.get(i).getMeasurementId(), rowIndex,
+                        tablet2.addValue(schemaList.get(i).getMeasurementName(), rowIndex,
                                 line[i + 1] == null ? 1.01f : Float.valueOf((String) line[i + 1]));
                         break;
                     case DOUBLE:
-                        tablet2.addValue(schemaList.get(i).getMeasurementId(), rowIndex,
+                        tablet2.addValue(schemaList.get(i).getMeasurementName(), rowIndex,
                                 line[i + 1] == null ? 1.0 : Double.valueOf((String) line[i + 1]));
                         break;
                     case TEXT:
                     case STRING:
-                        tablet2.addValue(schemaList.get(i).getMeasurementId(), rowIndex,
+                        tablet2.addValue(schemaList.get(i).getMeasurementName(), rowIndex,
                                 line[i + 1] == null ? "stringnull" : line[i + 1]);
                         break;
                     case BLOB:
-                        tablet2.addValue(schemaList.get(i).getMeasurementId(), rowIndex,
+                        tablet2.addValue(schemaList.get(i).getMeasurementName(), rowIndex,
                                 line[i + 1] == null ? new Binary("iotdb", Charset.defaultCharset()) : new Binary((String) line[i + 1], Charset.defaultCharset()));
                         break;
                     case DATE:
-                        tablet2.addValue(schemaList.get(i).getMeasurementId(), rowIndex,
+                        tablet2.addValue(schemaList.get(i).getMeasurementName(), rowIndex,
                                 line[i + 1] == null ? LocalDate.parse("2024-07-25") : LocalDate.parse((CharSequence) line[i + 1]));
                         break;
                 }
             }
+            rowIndex++;
         }
+
+        rowIndex = 0;
         // 第三份文件的数据
         for (Iterator<Object[]> it = getSingleNormal(filepath3); it.hasNext(); ) {
             // 获取每行数据
             Object[] line = it.next();
-            // 实例化有效行并切换行索引
-            int rowIndex = tablet3.rowSize++;
             // 向tablet添加时间戳
             tablet3.addTimestamp(rowIndex, Long.valueOf((String) line[0]));
 //            out.println("########### 行号：" + (rowIndex + 1) + " | 时间戳:" + line[0] + " ###########"); // 打印行索引和时间戳
@@ -218,41 +218,42 @@ public class TestInsertAlignedTablets_Normal extends BaseTestSuite {
                 // 根据数据类型添加值到tablet
                 switch (schemaList.get(i).getType()) {
                     case BOOLEAN:
-                        tablet3.addValue(schemaList.get(i).getMeasurementId(), rowIndex,
+                        tablet3.addValue(schemaList.get(i).getMeasurementName(), rowIndex,
                                 line[i + 1] == null ? false : Boolean.valueOf((String) line[i + 1]));
                         break;
                     case INT32:
-                        tablet3.addValue(schemaList.get(i).getMeasurementId(), rowIndex,
+                        tablet3.addValue(schemaList.get(i).getMeasurementName(), rowIndex,
                                 line[i + 1] == null ? 1 : Integer.valueOf((String) line[i + 1]));
                         break;
                     case INT64:
                     case TIMESTAMP:
-                        tablet3.addValue(schemaList.get(i).getMeasurementId(), rowIndex,
+                        tablet3.addValue(schemaList.get(i).getMeasurementName(), rowIndex,
                                 line[i + 1] == null ? 1L : Long.valueOf((String) line[i + 1]));
                         break;
                     case FLOAT:
-                        tablet3.addValue(schemaList.get(i).getMeasurementId(), rowIndex,
+                        tablet3.addValue(schemaList.get(i).getMeasurementName(), rowIndex,
                                 line[i + 1] == null ? 1.01f : Float.valueOf((String) line[i + 1]));
                         break;
                     case DOUBLE:
-                        tablet3.addValue(schemaList.get(i).getMeasurementId(), rowIndex,
+                        tablet3.addValue(schemaList.get(i).getMeasurementName(), rowIndex,
                                 line[i + 1] == null ? 1.0 : Double.valueOf((String) line[i + 1]));
                         break;
                     case TEXT:
                     case STRING:
-                        tablet3.addValue(schemaList.get(i).getMeasurementId(), rowIndex,
+                        tablet3.addValue(schemaList.get(i).getMeasurementName(), rowIndex,
                                 line[i + 1] == null ? "stringnull" : line[i + 1]);
                         break;
                     case BLOB:
-                        tablet3.addValue(schemaList.get(i).getMeasurementId(), rowIndex,
+                        tablet3.addValue(schemaList.get(i).getMeasurementName(), rowIndex,
                                 line[i + 1] == null ? new Binary("iotdb", Charset.defaultCharset()) : new Binary((String) line[i + 1], Charset.defaultCharset()));
                         break;
                     case DATE:
-                        tablet3.addValue(schemaList.get(i).getMeasurementId(), rowIndex,
+                        tablet3.addValue(schemaList.get(i).getMeasurementName(), rowIndex,
                                 line[i + 1] == null ? LocalDate.parse("2024-07-25") : LocalDate.parse((CharSequence) line[i + 1]));
                         break;
                 }
             }
+            rowIndex++;
         }
         // 4、将生成的tablet添加的集合中
         tablets.put("1",tablet1);

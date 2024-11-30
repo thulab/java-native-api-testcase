@@ -97,37 +97,37 @@ public class TestNonAlignedTSAdd extends BaseTestSuite {
         tablet.initBitMaps();
         Iterator<Object[]> it = getSingleNormal();
         while (it.hasNext()) {
-            rowIndex = tablet.rowSize++;
             Object[] line = it.next();
             tablet.addTimestamp(rowIndex, Long.valueOf((String)line[0]));
             for (int i = 0; i < schemaList.size(); i++) {
                 col = i+1;
                 if (line[col] == null) {
                     tablet.bitMaps[i].mark(rowIndex);
-                    tablet.addValue(schemaList.get(i).getMeasurementId(), rowIndex, null);
+                    tablet.addValue(schemaList.get(i).getMeasurementName(), rowIndex, null);
                     continue;
                 }
                 switch(schemaList.get(i).getType()) {
                     case BOOLEAN:
-                        tablet.addValue(schemaList.get(i).getMeasurementId(), rowIndex, Boolean.valueOf((String)line[col]));
+                        tablet.addValue(schemaList.get(i).getMeasurementName(), rowIndex, Boolean.valueOf((String)line[col]));
                         break;
                     case INT32:
-                        tablet.addValue(schemaList.get(i).getMeasurementId(), rowIndex, Integer.valueOf((String)line[col]));
+                        tablet.addValue(schemaList.get(i).getMeasurementName(), rowIndex, Integer.valueOf((String)line[col]));
                         break;
                     case INT64:
-                        tablet.addValue(schemaList.get(i).getMeasurementId(), rowIndex, Long.valueOf((String)line[col]));
+                        tablet.addValue(schemaList.get(i).getMeasurementName(), rowIndex, Long.valueOf((String)line[col]));
                         break;
                     case FLOAT:
-                        tablet.addValue(schemaList.get(i).getMeasurementId(), rowIndex, Float.valueOf((String)line[col]));
+                        tablet.addValue(schemaList.get(i).getMeasurementName(), rowIndex, Float.valueOf((String)line[col]));
                         break;
                     case DOUBLE:
-                        tablet.addValue(schemaList.get(i).getMeasurementId(), rowIndex, Double.valueOf((String)line[col]));
+                        tablet.addValue(schemaList.get(i).getMeasurementName(), rowIndex, Double.valueOf((String)line[col]));
                         break;
                     case TEXT:
-                        tablet.addValue(schemaList.get(i).getMeasurementId(), rowIndex, line[col]);
+                        tablet.addValue(schemaList.get(i).getMeasurementName(), rowIndex, line[col]);
                         break;
                 }
             }
+            rowIndex++;
         }
         session.insertTablet(tablet);
         assert expectCount-1 == getRecordCount(device, verbose) : "插入record数目";

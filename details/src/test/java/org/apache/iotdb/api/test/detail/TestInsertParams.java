@@ -97,7 +97,6 @@ public class TestInsertParams extends BaseTestSuite {
         int rowIndex = 0;
         long timestamp = baseTime;
         for (int row = 0; row < insertCount; row++) {
-            rowIndex = tablet.rowSize++;
             timestamp += 3600000; //+1小时
 //            System.out.println("row="+row+" rowIndex="+rowIndex);
             tablet.addTimestamp(rowIndex, timestamp);
@@ -105,88 +104,88 @@ public class TestInsertParams extends BaseTestSuite {
             for (int i = 0; i < schemas.size(); i++) {
                 switch(schemas.get(i).getType()) {
                     case BOOLEAN:
-                        tablet.addValue(schemas.get(i).getMeasurementId(), rowIndex, GenerateValues.getBoolean());
+                        tablet.addValue(schemas.get(i).getMeasurementName(), rowIndex, GenerateValues.getBoolean());
                         break;
                     case INT32:
-                        tablet.addValue(schemas.get(i).getMeasurementId(), rowIndex, GenerateValues.getInt());
+                        tablet.addValue(schemas.get(i).getMeasurementName(), rowIndex, GenerateValues.getInt());
                         break;
                     case INT64:
-                        tablet.addValue(schemas.get(i).getMeasurementId(), rowIndex, GenerateValues.getLong(10));
+                        tablet.addValue(schemas.get(i).getMeasurementName(), rowIndex, GenerateValues.getLong(10));
                         break;
                     case FLOAT:
-                        tablet.addValue(schemas.get(i).getMeasurementId(), rowIndex, GenerateValues.getFloat(2,100,200));
+                        tablet.addValue(schemas.get(i).getMeasurementName(), rowIndex, GenerateValues.getFloat(2,100,200));
                         break;
                     case DOUBLE:
-                        tablet.addValue(schemas.get(i).getMeasurementId(), rowIndex, GenerateValues.getDouble(2,500,1000));
+                        tablet.addValue(schemas.get(i).getMeasurementName(), rowIndex, GenerateValues.getDouble(2,500,1000));
                         break;
                     case TEXT:
-                        tablet.addValue(schemas.get(i).getMeasurementId(), rowIndex, GenerateValues.getChinese());
+                        tablet.addValue(schemas.get(i).getMeasurementName(), rowIndex, GenerateValues.getChinese());
                         break;
                 }
             }
+            rowIndex++;
         }
         PrepareConnection.getSession().insertTablet(tablet);
     }
 
     @Test(priority = 14)
     public void testInsertTablet_NoValue() throws IoTDBConnectionException, StatementExecutionException {
-        Tablet tablet = new Tablet(device, schemaList);
+        Tablet tablet = new Tablet(device, schemaList, 1);
         session.insertTablet(tablet);
     }
     @Test(priority = 15, expectedExceptions = ClassCastException.class)
     public void testInsertTablet_typeError() throws IoTDBConnectionException, StatementExecutionException {
-        Tablet tablet = new Tablet(device, schemaList);
+        Tablet tablet = new Tablet(device, schemaList, 1);
         int row = 0;
-        int rowIndex = tablet.rowSize++;
+        int rowIndex = 0;
         tablet.addTimestamp(rowIndex, row);
-        tablet.addValue(schemaList.get(0).getMeasurementId(), rowIndex, 1.0);
+        tablet.addValue(schemaList.get(0).getMeasurementName(), rowIndex, 1.0);
         session.insertTablet(tablet);
     }
     @Test(priority = 16, expectedExceptions = ClassCastException.class)
     public void testInsertTablet_typeError2() throws IoTDBConnectionException, StatementExecutionException {
-        Tablet tablet = new Tablet(device, schemaList);
+        Tablet tablet = new Tablet(device, schemaList, 1);
         int row = 0;
-        int rowIndex = tablet.rowSize++;
+        int rowIndex = 0;
         tablet.addTimestamp(rowIndex, row);
-        tablet.addValue(schemaList.get(0).getMeasurementId(), rowIndex, "1.0");
+        tablet.addValue(schemaList.get(0).getMeasurementName(), rowIndex, "1.0");
         session.insertTablet(tablet);
     }
     @Test(priority = 17)
     public void testInsertTablet_rowIndex0() throws IoTDBConnectionException, StatementExecutionException {
-        Tablet tablet = new Tablet(device, schemaList);
+        Tablet tablet = new Tablet(device, schemaList, 1);
         int row = 0;
         int rowIndex = 0;
         tablet.addTimestamp(rowIndex, row);
-        tablet.addValue(schemaList.get(0).getMeasurementId(), rowIndex, 3.5f);
+        tablet.addValue(schemaList.get(0).getMeasurementName(), rowIndex, 3.5f);
         session.insertTablet(tablet);
         checkResult(0L, 3.5f);
     }
     @Test(priority = 18)
     public void testInsertTablet_rowIndex2() throws IoTDBConnectionException, StatementExecutionException {
-        Tablet tablet = new Tablet(device, schemaList);
-        int row = 0;
-        int rowIndex = 2;
+        Tablet tablet = new Tablet(device, schemaList, 1);
+        int rowIndex = 0;
         tablet.addTimestamp(rowIndex, rowIndex);
-        tablet.addValue(schemaList.get(0).getMeasurementId(), rowIndex, 8.8f);
+        tablet.addValue(schemaList.get(0).getMeasurementName(), rowIndex, 8.8f);
         session.insertTablet(tablet);
         checkResult(rowIndex,8.8f);
     }
     @Test(priority = 19, expectedExceptions = ArrayIndexOutOfBoundsException.class)
     public void testInsertTablet_rowIndexNegative() throws IoTDBConnectionException, StatementExecutionException {
-        Tablet tablet = new Tablet(device, schemaList);
+        Tablet tablet = new Tablet(device, schemaList, 1);
         int row = 0;
         int rowIndex = -2;
         tablet.addTimestamp(rowIndex, row);
-        tablet.addValue(schemaList.get(0).getMeasurementId(), rowIndex, 18.8f);
+        tablet.addValue(schemaList.get(0).getMeasurementName(), rowIndex, 18.8f);
         session.insertTablet(tablet);
     }
     @Test(priority = 20, expectedExceptions = IndexOutOfBoundsException.class)
     public void testInsertTablet_schemaOutOfIndex() throws IoTDBConnectionException, StatementExecutionException {
-        Tablet tablet = new Tablet(device, schemaList);
+        Tablet tablet = new Tablet(device, schemaList, 1);
         int row = 0;
-        int rowIndex = tablet.rowSize++;
+        int rowIndex = 0;
         tablet.addTimestamp(rowIndex, row);
-        tablet.addValue(schemaList.get(2).getMeasurementId(), rowIndex, 18.8f);
+        tablet.addValue(schemaList.get(2).getMeasurementName(), rowIndex, 18.8f);
         session.insertTablet(tablet);
     }
 //    @Test(priority = 21)
@@ -197,7 +196,7 @@ public class TestInsertParams extends BaseTestSuite {
 //        int row = 0;
 //        int rowIndex = tablet.rowSize++;
 //        tablet.addTimestamp(rowIndex, row);
-//        tablet.addValue(schemaList.get(0).getMeasurementId(), rowIndex, 18.8f);
+//        tablet.addValue(schemaList.get(0).getMeasurementName(), rowIndex, 18.8f);
 //        session.insertTablet(tablet);
 //    }
 //    @Test(priority = 22)
@@ -208,7 +207,7 @@ public class TestInsertParams extends BaseTestSuite {
 //        int row = 0;
 //        int rowIndex = tablet.rowSize++;
 //        tablet.addTimestamp(rowIndex, row);
-//        tablet.addValue(schemaList.get(0).getMeasurementId(), rowIndex, 18.8f);
+//        tablet.addValue(schemaList.get(0).getMeasurementName(), rowIndex, 18.8f);
 //        session.insertTablet(tablet);
 //    }
 //    @Test(priority = 23)
@@ -219,7 +218,7 @@ public class TestInsertParams extends BaseTestSuite {
 //        int row = 0;
 //        int rowIndex = tablet.rowSize++;
 //        tablet.addTimestamp(rowIndex, row);
-//        tablet.addValue(schemaList.get(0).getMeasurementId(), rowIndex, 18.8f);
+//        tablet.addValue(schemaList.get(0).getMeasurementName(), rowIndex, 18.8f);
 //        session.insertTablet(tablet);
 //    }
 //    @Test(priority = 24)
@@ -230,7 +229,7 @@ public class TestInsertParams extends BaseTestSuite {
 //        int row = 0;
 //        int rowIndex = tablet.rowSize++;
 //        tablet.addTimestamp(rowIndex, row);
-//        tablet.addValue(schemaList.get(0).getMeasurementId(), rowIndex, 18.8f);
+//        tablet.addValue(schemaList.get(0).getMeasurementName(), rowIndex, 18.8f);
 //        session.insertTablet(tablet);
 //    }
 //    @Test(priority = 25) // TIMECHODB-143
@@ -241,27 +240,27 @@ public class TestInsertParams extends BaseTestSuite {
 //        int row = 0;
 //        int rowIndex = tablet.rowSize++;
 //        tablet.addTimestamp(rowIndex, row);
-//        tablet.addValue(schemaList.get(2).getMeasurementId(), rowIndex, 18.8f);
+//        tablet.addValue(schemaList.get(2).getMeasurementName(), rowIndex, 18.8f);
 //        session.insertTablet(tablet);
 //    }
     @Test(priority = 26)
     public void testInsertTablet_timestampNegative() throws IoTDBConnectionException, StatementExecutionException {
-        Tablet tablet = new Tablet(device, schemaList);
+        Tablet tablet = new Tablet(device, schemaList, 1);
         int row = 0;
-        int rowIndex = tablet.rowSize++;
+        int rowIndex = 0;
         tablet.addTimestamp(rowIndex, -1);
-        tablet.addValue(schemaList.get(0).getMeasurementId(), rowIndex, -11.8f);
+        tablet.addValue(schemaList.get(0).getMeasurementName(), rowIndex, -11.8f);
         session.insertTablet(tablet);
         checkResult(-1, -11.8f);
     }
     @Test(priority = 27)
     public void testInsertTablet_timestampFuture() throws IoTDBConnectionException, StatementExecutionException {
-        Tablet tablet = new Tablet(device, schemaList);
+        Tablet tablet = new Tablet(device, schemaList, 1);
         int row = 0;
-        int rowIndex = tablet.rowSize++;
+        int rowIndex = 0;
         // "2098-12-09T08:00:00+08:00"
         tablet.addTimestamp(rowIndex, 4068921600000L);
-        tablet.addValue(schemaList.get(0).getMeasurementId(), rowIndex, -1.8f);
+        tablet.addValue(schemaList.get(0).getMeasurementName(), rowIndex, -1.8f);
         session.insertTablet(tablet);
         checkResult(4068921600000L,-1.8f);
     }
@@ -370,7 +369,6 @@ public class TestInsertParams extends BaseTestSuite {
         int rowIndex = 0;
         long timestamp = baseTime;
         for (int row = 0; row < insertCount; row++) {
-            rowIndex = tablet.rowSize++;
             timestamp += 3600000; //+1小时
 //            System.out.println("row="+row+" rowIndex="+rowIndex);
             tablet.addTimestamp(rowIndex, timestamp);
@@ -378,13 +376,14 @@ public class TestInsertParams extends BaseTestSuite {
             for (int i = 0; i < schemas.size(); i++) {
                 switch(schemas.get(i).getType()) {
                     case BOOLEAN:
-                        tablet.addValue(schemas.get(i).getMeasurementId(), rowIndex, GenerateValues.getBoolean());
+                        tablet.addValue(schemas.get(i).getMeasurementName(), rowIndex, GenerateValues.getBoolean());
                         break;
                     case INT32:
-                        tablet.addValue(schemas.get(i).getMeasurementId(), rowIndex, GenerateValues.getInt());
+                        tablet.addValue(schemas.get(i).getMeasurementName(), rowIndex, GenerateValues.getInt());
                         break;
                 }
             }
+            rowIndex++;
         }
         PrepareConnection.getSession().insertTablet(tablet);
     }

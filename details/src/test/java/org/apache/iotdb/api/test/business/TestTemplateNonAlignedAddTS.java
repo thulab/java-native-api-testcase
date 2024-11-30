@@ -94,37 +94,37 @@ public class TestTemplateNonAlignedAddTS extends BaseTestSuite {
         tablet.initBitMaps();
         Iterator<Object[]> it = getSingleNormal();
         while (it.hasNext()) {
-            rowIndex = tablet.rowSize++;
             Object[] line = it.next();
             tablet.addTimestamp(rowIndex, Long.valueOf((String)line[0]));
             for (int i = 0; i < schemaList.size(); i++) {
                 col = i+1;
                 if (line[col] == null) {
                     tablet.bitMaps[i].mark(rowIndex);
-                    tablet.addValue(schemaList.get(i).getMeasurementId(), rowIndex, null);
+                    tablet.addValue(schemaList.get(i).getMeasurementName(), rowIndex, null);
                     continue;
                 }
                 switch(schemaList.get(i).getType()) {
                     case BOOLEAN:
-                        tablet.addValue(schemaList.get(i).getMeasurementId(), rowIndex, Boolean.valueOf((String)line[col]));
+                        tablet.addValue(schemaList.get(i).getMeasurementName(), rowIndex, Boolean.valueOf((String)line[col]));
                         break;
                     case INT32:
-                        tablet.addValue(schemaList.get(i).getMeasurementId(), rowIndex, Integer.valueOf((String)line[col]));
+                        tablet.addValue(schemaList.get(i).getMeasurementName(), rowIndex, Integer.valueOf((String)line[col]));
                         break;
                     case INT64:
-                        tablet.addValue(schemaList.get(i).getMeasurementId(), rowIndex, Long.valueOf((String)line[col]));
+                        tablet.addValue(schemaList.get(i).getMeasurementName(), rowIndex, Long.valueOf((String)line[col]));
                         break;
                     case FLOAT:
-                        tablet.addValue(schemaList.get(i).getMeasurementId(), rowIndex, Float.valueOf((String)line[col]));
+                        tablet.addValue(schemaList.get(i).getMeasurementName(), rowIndex, Float.valueOf((String)line[col]));
                         break;
                     case DOUBLE:
-                        tablet.addValue(schemaList.get(i).getMeasurementId(), rowIndex, Double.valueOf((String)line[col]));
+                        tablet.addValue(schemaList.get(i).getMeasurementName(), rowIndex, Double.valueOf((String)line[col]));
                         break;
                     case TEXT:
-                        tablet.addValue(schemaList.get(i).getMeasurementId(), rowIndex, line[col]);
+                        tablet.addValue(schemaList.get(i).getMeasurementName(), rowIndex, line[col]);
                         break;
                 }
             }
+            rowIndex++;
         }
 //        if (isAligned) {
 //            session.insertAlignedTablet(tablet);
@@ -261,14 +261,14 @@ public class TestTemplateNonAlignedAddTS extends BaseTestSuite {
         tablet.initBitMaps();
 
         for (int i=0; i<2; i++) {
-            rowIndex = tablet.rowSize++;
             tablet.addTimestamp(rowIndex, times[i]);
-            tablet.addValue(schemaList.get(0).getMeasurementId(), rowIndex, true);
-            tablet.addValue(schemaList.get(1).getMeasurementId(), rowIndex, i);
-            tablet.addValue(schemaList.get(2).getMeasurementId(), rowIndex, times[i]);
-            tablet.addValue(schemaList.get(3).getMeasurementId(), rowIndex, (i+1)*130.33f);
-            tablet.addValue(schemaList.get(4).getMeasurementId(), rowIndex, (i+1)*14400.44);
-            tablet.addValue(schemaList.get(5).getMeasurementId(), rowIndex, "doUpdateAfterAddTS_origin:"+i);
+            tablet.addValue(schemaList.get(0).getMeasurementName(), rowIndex, true);
+            tablet.addValue(schemaList.get(1).getMeasurementName(), rowIndex, i);
+            tablet.addValue(schemaList.get(2).getMeasurementName(), rowIndex, times[i]);
+            tablet.addValue(schemaList.get(3).getMeasurementName(), rowIndex, (i+1)*130.33f);
+            tablet.addValue(schemaList.get(4).getMeasurementName(), rowIndex, (i+1)*14400.44);
+            tablet.addValue(schemaList.get(5).getMeasurementName(), rowIndex, "doUpdateAfterAddTS_origin:"+i);
+            rowIndex++;
         }
         if (isAligned) {
             session.insertAlignedTablet(tablet);

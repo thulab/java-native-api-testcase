@@ -144,44 +144,44 @@ public class TestInsert extends BaseTestSuite {
                 switch (schemaList.get(i).getType()) {
                     case BOOLEAN:
                         if (line[i+1] == null) {
-                            tablet.addValue(schemaList.get(i).getMeasurementId(), rowIndex, false);
+                            tablet.addValue(schemaList.get(i).getMeasurementName(), rowIndex, false);
                         } else {
-                            tablet.addValue(schemaList.get(i).getMeasurementId(), rowIndex, Boolean.valueOf((String) line[i + 1]));
+                            tablet.addValue(schemaList.get(i).getMeasurementName(), rowIndex, Boolean.valueOf((String) line[i + 1]));
                         }
                         break;
                     case INT32:
                         if (line[i+1] == null) {
-                            tablet.addValue(schemaList.get(i).getMeasurementId(), rowIndex, 1);
+                            tablet.addValue(schemaList.get(i).getMeasurementName(), rowIndex, 1);
                         } else {
-                            tablet.addValue(schemaList.get(i).getMeasurementId(), rowIndex, Integer.valueOf((String) line[i + 1]));
+                            tablet.addValue(schemaList.get(i).getMeasurementName(), rowIndex, Integer.valueOf((String) line[i + 1]));
                         }
                         break;
                     case INT64:
                         if (line[i+1] == null) {
-                            tablet.addValue(schemaList.get(i).getMeasurementId(), rowIndex, 1L);
+                            tablet.addValue(schemaList.get(i).getMeasurementName(), rowIndex, 1L);
                         } else {
-                            tablet.addValue(schemaList.get(i).getMeasurementId(), rowIndex, Long.valueOf((String) line[i + 1]));
+                            tablet.addValue(schemaList.get(i).getMeasurementName(), rowIndex, Long.valueOf((String) line[i + 1]));
                         }
                         break;
                     case FLOAT:
                         if (line[i+1] == null) {
-                            tablet.addValue(schemaList.get(i).getMeasurementId(), rowIndex, 1.01f);
+                            tablet.addValue(schemaList.get(i).getMeasurementName(), rowIndex, 1.01f);
                         } else {
-                            tablet.addValue(schemaList.get(i).getMeasurementId(), rowIndex, Float.valueOf((String) line[i + 1]));
+                            tablet.addValue(schemaList.get(i).getMeasurementName(), rowIndex, Float.valueOf((String) line[i + 1]));
                         }
                         break;
                     case DOUBLE:
                         if (line[i+1] == null) {
-                            tablet.addValue(schemaList.get(i).getMeasurementId(), rowIndex, 1.0);
+                            tablet.addValue(schemaList.get(i).getMeasurementName(), rowIndex, 1.0);
                         } else {
-                            tablet.addValue(schemaList.get(i).getMeasurementId(), rowIndex, Double.valueOf((String) line[i + 1]));
+                            tablet.addValue(schemaList.get(i).getMeasurementName(), rowIndex, Double.valueOf((String) line[i + 1]));
                         }
                         break;
                     case TEXT:
                         if (line[i+1] == null) {
-                            tablet.addValue(schemaList.get(i).getMeasurementId(), rowIndex, "stringnull");
+                            tablet.addValue(schemaList.get(i).getMeasurementName(), rowIndex, "stringnull");
                         } else {
-                            tablet.addValue(schemaList.get(i).getMeasurementId(), rowIndex, (String) line[i + 1]);
+                            tablet.addValue(schemaList.get(i).getMeasurementName(), rowIndex, (String) line[i + 1]);
                         }
                         break;
                 }
@@ -220,7 +220,7 @@ public class TestInsert extends BaseTestSuite {
 //                    // mark null value
 //                    tablet.bitMaps[s].mark((int) row);
 //                }
-//                tablet.addValue(schemaList.get(s).getMeasurementId(), rowIndex, 0);
+//                tablet.addValue(schemaList.get(s).getMeasurementName(), rowIndex, 0);
 //            }
 //            if (tablet.rowSize == tablet.getMaxRowNumber()) {
 //                session.insertTablet(tablet, true);
@@ -257,7 +257,7 @@ public class TestInsert extends BaseTestSuite {
 //            int rowIndex = 0;
 //            tablet.addTimestamp(rowIndex, Long.valueOf((String) line[0]));
 //            for (int i = 0; i < schemaList.size(); i++) {
-//                tablet.addValue(schemaList.get(i).getMeasurementId(), rowIndex, line[i+1]);
+//                tablet.addValue(schemaList.get(i).getMeasurementName(), rowIndex, line[i+1]);
 //            }
 //            tabletMap.put(device, tablet);
 //        }
@@ -283,7 +283,7 @@ public class TestInsert extends BaseTestSuite {
 //            }
 //            tablet.addTimestamp(rowIndex, Long.valueOf((String) line[0]));
 //            for (int i = 0; i < schemaList.size(); i++) {
-//                tablet.addValue(schemaList.get(i).getMeasurementId(), rowIndex, line[i+2]);
+//                tablet.addValue(schemaList.get(i).getMeasurementName(), rowIndex, line[i+2]);
 //                if (line[i+2] == null) {
 //                    tablet.bitMaps[i].mark(rowIndex);
 //                }
@@ -306,7 +306,7 @@ public class TestInsert extends BaseTestSuite {
 //            int rowIndex = 0;
 //            tablet.addTimestamp(rowIndex, Long.valueOf((String) line[0]));
 //            for (int i = 0; i < schemaList.size(); i++) {
-//                tablet.addValue(schemaList.get(i).getMeasurementId(), rowIndex, line[i+1]);
+//                tablet.addValue(schemaList.get(i).getMeasurementName(), rowIndex, line[i+1]);
 //            }
 //            tabletMap.put(alignedDevice, tablet);
 //        }
@@ -332,7 +332,7 @@ public class TestInsert extends BaseTestSuite {
 //            }
 //            tablet.addTimestamp(rowIndex, Long.valueOf((String) line[0]));
 //            for (int i = 0; i < schemaList.size(); i++) {
-//                tablet.addValue(schemaList.get(i).getMeasurementId(), rowIndex, line[i+2]);
+//                tablet.addValue(schemaList.get(i).getMeasurementName(), rowIndex, line[i+2]);
 //                if (line[i+2] == null) {
 //                    tablet.bitMaps[i].mark(rowIndex);
 //                }
@@ -539,12 +539,12 @@ public class TestInsert extends BaseTestSuite {
 //        Tablet tablet = new Tablet(device, schemaList, 1);
 //        int rowIndex = 0;
 //        tablet.addTimestamp(rowIndex, Long.valueOf(time));
-//        tablet.addValue(schemaList.get(0).getMeasurementId(), rowIndex, s_boolean);
-//        tablet.addValue(schemaList.get(1).getMeasurementId(), rowIndex, s_int);
-//        tablet.addValue(schemaList.get(2).getMeasurementId(), rowIndex, s_long);
-//        tablet.addValue(schemaList.get(3).getMeasurementId(), rowIndex, s_float);
-//        tablet.addValue(schemaList.get(4).getMeasurementId(), rowIndex, s_double);
-//        tablet.addValue(schemaList.get(5).getMeasurementId(), rowIndex, s_text);
+//        tablet.addValue(schemaList.get(0).getMeasurementName(), rowIndex, s_boolean);
+//        tablet.addValue(schemaList.get(1).getMeasurementName(), rowIndex, s_int);
+//        tablet.addValue(schemaList.get(2).getMeasurementName(), rowIndex, s_long);
+//        tablet.addValue(schemaList.get(3).getMeasurementName(), rowIndex, s_float);
+//        tablet.addValue(schemaList.get(4).getMeasurementName(), rowIndex, s_double);
+//        tablet.addValue(schemaList.get(5).getMeasurementName(), rowIndex, s_text);
 //        Session s = PrepareConnection.getSession();
 //        try {
 //            s.insertTablet(tablet);
@@ -561,12 +561,12 @@ public class TestInsert extends BaseTestSuite {
 //        Tablet tablet = new Tablet(alignedDevice, schemaList, 1);
 //        int rowIndex = 0;
 //        tablet.addTimestamp(rowIndex, Long.valueOf(time));
-//        tablet.addValue(schemaList.get(0).getMeasurementId(), rowIndex, s_boolean);
-//        tablet.addValue(schemaList.get(1).getMeasurementId(), rowIndex, s_int);
-//        tablet.addValue(schemaList.get(2).getMeasurementId(), rowIndex, s_long);
-//        tablet.addValue(schemaList.get(3).getMeasurementId(), rowIndex, s_float);
-//        tablet.addValue(schemaList.get(4).getMeasurementId(), rowIndex, s_double);
-//        tablet.addValue(schemaList.get(5).getMeasurementId(), rowIndex, s_text);
+//        tablet.addValue(schemaList.get(0).getMeasurementName(), rowIndex, s_boolean);
+//        tablet.addValue(schemaList.get(1).getMeasurementName(), rowIndex, s_int);
+//        tablet.addValue(schemaList.get(2).getMeasurementName(), rowIndex, s_long);
+//        tablet.addValue(schemaList.get(3).getMeasurementName(), rowIndex, s_float);
+//        tablet.addValue(schemaList.get(4).getMeasurementName(), rowIndex, s_double);
+//        tablet.addValue(schemaList.get(5).getMeasurementName(), rowIndex, s_text);
 //        Session s = PrepareConnection.getSession();
 //        try {
 //            s.insertAlignedTablet(tablet);
@@ -588,7 +588,7 @@ public class TestInsert extends BaseTestSuite {
 //            int rowIndex = 0;
 //            tablet.addTimestamp(rowIndex, Long.valueOf((String) line[0]));
 //            for (int i = 0; i < schemaList.size(); i++) {
-//                tablet.addValue(schemaList.get(i).getMeasurementId(), rowIndex, line[i+1]);
+//                tablet.addValue(schemaList.get(i).getMeasurementName(), rowIndex, line[i+1]);
 //            }
 //            tabletMap.put(alignedDevice, tablet);
 //        }
@@ -605,7 +605,7 @@ public class TestInsert extends BaseTestSuite {
 //            int rowIndex = 0;
 //            tablet.addTimestamp(rowIndex, Long.valueOf((String) line[0]));
 //            for (int i = 0; i < schemaList.size(); i++) {
-//                tablet.addValue(schemaList.get(i).getMeasurementId(), rowIndex, line[i+1]);
+//                tablet.addValue(schemaList.get(i).getMeasurementName(), rowIndex, line[i+1]);
 //            }
 //            tabletMap.put(alignedDevice, tablet);
 //        }
@@ -655,12 +655,12 @@ public class TestInsert extends BaseTestSuite {
 //        Tablet tablet = new Tablet(alignedDevice, schemaList, 1);
 //        int rowIndex = 0;
 //        tablet.addTimestamp(rowIndex, 1672023281895L);
-//        tablet.addValue(schemaList.get(0).getMeasurementId(), rowIndex, true);
-//        tablet.addValue(schemaList.get(1).getMeasurementId(), rowIndex, 33);
-//        tablet.addValue(schemaList.get(2).getMeasurementId(), rowIndex, 104L);
-//        tablet.addValue(schemaList.get(3).getMeasurementId(), rowIndex, 12.54f);
-//        tablet.addValue(schemaList.get(4).getMeasurementId(), rowIndex, 204.39);
-//        tablet.addValue(schemaList.get(5).getMeasurementId(), rowIndex, "insert aligned device with insertTablet");
+//        tablet.addValue(schemaList.get(0).getMeasurementName(), rowIndex, true);
+//        tablet.addValue(schemaList.get(1).getMeasurementName(), rowIndex, 33);
+//        tablet.addValue(schemaList.get(2).getMeasurementName(), rowIndex, 104L);
+//        tablet.addValue(schemaList.get(3).getMeasurementName(), rowIndex, 12.54f);
+//        tablet.addValue(schemaList.get(4).getMeasurementName(), rowIndex, 204.39);
+//        tablet.addValue(schemaList.get(5).getMeasurementName(), rowIndex, "insert aligned device with insertTablet");
 //
 //        Assert.assertThrows(StatementExecutionException.class, ()->{session.insertTablet(tablet);});
 //    }
@@ -673,12 +673,12 @@ public class TestInsert extends BaseTestSuite {
 //        Tablet tablet = new Tablet(device, schemaList, 1);
 //        int rowIndex = 0;
 //        tablet.addTimestamp(rowIndex, 1672023281895L);
-//        tablet.addValue(schemaList.get(0).getMeasurementId(), rowIndex, false);
-//        tablet.addValue(schemaList.get(1).getMeasurementId(), rowIndex, 11);
-//        tablet.addValue(schemaList.get(2).getMeasurementId(), rowIndex, 305L);
-//        tablet.addValue(schemaList.get(3).getMeasurementId(), rowIndex, 45.55f);
-//        tablet.addValue(schemaList.get(4).getMeasurementId(), rowIndex, 303.78);
-//        tablet.addValue(schemaList.get(5).getMeasurementId(), rowIndex, "insert non-aligned device with insertAlignedTablet");
+//        tablet.addValue(schemaList.get(0).getMeasurementName(), rowIndex, false);
+//        tablet.addValue(schemaList.get(1).getMeasurementName(), rowIndex, 11);
+//        tablet.addValue(schemaList.get(2).getMeasurementName(), rowIndex, 305L);
+//        tablet.addValue(schemaList.get(3).getMeasurementName(), rowIndex, 45.55f);
+//        tablet.addValue(schemaList.get(4).getMeasurementName(), rowIndex, 303.78);
+//        tablet.addValue(schemaList.get(5).getMeasurementName(), rowIndex, "insert non-aligned device with insertAlignedTablet");
 //        Assert.assertThrows(StatementExecutionException.class, ()->{session.insertAlignedTablet(tablet);});
 //    }
 //    @Test(priority = 105)

@@ -131,44 +131,44 @@ public class TestInsertNormalWithoutCreate extends BaseTestSuite {
         switch(schemaList.get(colIndex).getType()) {
             case BOOLEAN:
                 if (value == null) {
-                    tablet.addValue(schemaList.get(colIndex).getMeasurementId(), rowIndex, GenerateValues.getBoolean());
+                    tablet.addValue(schemaList.get(colIndex).getMeasurementName(), rowIndex, GenerateValues.getBoolean());
                 } else {
-                    tablet.addValue(schemaList.get(colIndex).getMeasurementId(), rowIndex, Boolean.parseBoolean(value));
+                    tablet.addValue(schemaList.get(colIndex).getMeasurementName(), rowIndex, Boolean.parseBoolean(value));
                 }
                 break;
             case INT32:
                 if (value == null) {
-                    tablet.addValue(schemaList.get(colIndex).getMeasurementId(), rowIndex, GenerateValues.getInt());
+                    tablet.addValue(schemaList.get(colIndex).getMeasurementName(), rowIndex, GenerateValues.getInt());
                 } else {
-                    tablet.addValue(schemaList.get(colIndex).getMeasurementId(), rowIndex, Integer.parseInt(value));
+                    tablet.addValue(schemaList.get(colIndex).getMeasurementName(), rowIndex, Integer.parseInt(value));
                 }
                 break;
             case INT64:
                 if (value == null) {
-                    tablet.addValue(schemaList.get(colIndex).getMeasurementId(), rowIndex, GenerateValues.getLong(10));
+                    tablet.addValue(schemaList.get(colIndex).getMeasurementName(), rowIndex, GenerateValues.getLong(10));
                 } else {
-                    tablet.addValue(schemaList.get(colIndex).getMeasurementId(), rowIndex, Long.parseLong(value));
+                    tablet.addValue(schemaList.get(colIndex).getMeasurementName(), rowIndex, Long.parseLong(value));
                 }
                 break;
             case FLOAT:
                 if (value == null) {
-                    tablet.addValue(schemaList.get(colIndex).getMeasurementId(), rowIndex, GenerateValues.getFloat(2, 100, 200));
+                    tablet.addValue(schemaList.get(colIndex).getMeasurementName(), rowIndex, GenerateValues.getFloat(2, 100, 200));
                 } else {
-                    tablet.addValue(schemaList.get(colIndex).getMeasurementId(), rowIndex, Float.parseFloat(value));
+                    tablet.addValue(schemaList.get(colIndex).getMeasurementName(), rowIndex, Float.parseFloat(value));
                 }
                 break;
             case DOUBLE:
                 if (value == null) {
-                    tablet.addValue(schemaList.get(colIndex).getMeasurementId(), rowIndex, GenerateValues.getDouble(2, 500, 1000));
+                    tablet.addValue(schemaList.get(colIndex).getMeasurementName(), rowIndex, GenerateValues.getDouble(2, 500, 1000));
                 } else {
-                    tablet.addValue(schemaList.get(colIndex).getMeasurementId(), rowIndex, Double.parseDouble(value));
+                    tablet.addValue(schemaList.get(colIndex).getMeasurementName(), rowIndex, Double.parseDouble(value));
                 }
                 break;
             case TEXT:
                 if (value == null) {
-                    tablet.addValue(schemaList.get(colIndex).getMeasurementId(), rowIndex, GenerateValues.getChinese());
+                    tablet.addValue(schemaList.get(colIndex).getMeasurementName(), rowIndex, GenerateValues.getChinese());
                 } else {
-                    tablet.addValue(schemaList.get(colIndex).getMeasurementId(), rowIndex, value);
+                    tablet.addValue(schemaList.get(colIndex).getMeasurementName(), rowIndex, value);
                 }
                 break;
         }
@@ -185,12 +185,12 @@ public class TestInsertNormalWithoutCreate extends BaseTestSuite {
 
         int rowIndex = 0;
         for (Iterator<Object[]> it = getSingleNormal(); it.hasNext(); ) {
-            rowIndex = tablet.rowSize++;
             Object[] line = it.next();
             tablet.addTimestamp(rowIndex, Long.valueOf((String)line[0]));
             for (int i = 0; i < schemaList.size(); i++) {
                 insertValue(rowIndex, i, tablet, (String)line[i+1]);
             }
+            rowIndex++;
         }
         session.insertTablet(tablet);
         // 使用对齐方式插入非对齐tablet
@@ -214,10 +214,9 @@ public class TestInsertNormalWithoutCreate extends BaseTestSuite {
         Tablet tablet = new Tablet(device, schemaList, 100);
         // Method 1 to add tablet data
         tablet.initBitMaps();
-
+        int rowIndex = 0;
         long timestamp = 1672023281895L;
         for (long row = 0; row < schemaList.size(); row++) {
-            int rowIndex = tablet.rowSize++;
             timestamp += 1000;
             tablet.addTimestamp(rowIndex, timestamp++);
             for (int s = 0; s < schemaList.size(); s++) {
@@ -227,9 +226,10 @@ public class TestInsertNormalWithoutCreate extends BaseTestSuite {
                 }
                 insertValue(rowIndex, s, tablet, null);
             }
+            rowIndex++;
         }
 
-        if (tablet.rowSize != 0) {
+        if (tablet.getRowSize() != 0) {
             session.insertTablet(tablet);
             Map tablet_map = new HashMap<>();
             tablet_map.put(device, tablet);
@@ -257,12 +257,12 @@ public class TestInsertNormalWithoutCreate extends BaseTestSuite {
         tablet.initBitMaps();
         for (Iterator<Object[]> it = getSingleNormal(); it.hasNext();) {
             Object[] line =  it.next();
-            rowIndex = tablet.rowSize++;
             tablet.addTimestamp(rowIndex, Long.valueOf((String) line[0]));
             for (int i = 0; i < schemaList.size(); i++) {
                 insertValue(rowIndex, i, tablet, (String)line[i+1]);
             }
             tabletMap.put(device, tablet);
+            rowIndex++;
         }
         session.insertTablets(tabletMap);
         afterMethod(expectCount,-1,"insert tablets non aligned");
@@ -284,7 +284,6 @@ public class TestInsertNormalWithoutCreate extends BaseTestSuite {
                 tablet.initBitMaps();
                 rowIndex = 0;
             }
-            rowIndex = tablet.rowSize++;
             tablet.addTimestamp(rowIndex, Long.valueOf((String) line[0]));
             for (int i = 0; i < schemaList.size(); i++) {
                 insertValue(rowIndex,i, tablet, (String)line[i+2]);
@@ -292,6 +291,7 @@ public class TestInsertNormalWithoutCreate extends BaseTestSuite {
                     tablet.bitMaps[i].mark(rowIndex);
                 }
             }
+            rowIndex++;
         }
         tabletMap.put(d, tablet);
         session.insertAlignedTablets(tabletMap);
@@ -308,13 +308,13 @@ public class TestInsertNormalWithoutCreate extends BaseTestSuite {
         int rowIndex = 0;
         for (Iterator<Object[]> it = getSingleNormal(); it.hasNext();) {
             Object[] line =  it.next();
-            rowIndex = tablet.rowSize++;
             tablet.initBitMaps();
             tablet.addTimestamp(rowIndex, Long.valueOf((String) line[0]));
             for (int i = 0; i < schemaList.size(); i++) {
                 insertValue(rowIndex, i, tablet, (String)line[i+1]);
             }
             tabletMap.put(alignedDevice, tablet);
+            rowIndex++;
         }
         session.insertAlignedTablets(tabletMap);
         afterMethod(-1,expectCount,"insert tablets non aligned");
@@ -336,7 +336,6 @@ public class TestInsertNormalWithoutCreate extends BaseTestSuite {
                 tablet.initBitMaps();
                 rowIndex = 0;
             }
-            rowIndex = tablet.rowSize++;
             tablet.addTimestamp(rowIndex, Long.valueOf((String) line[0]));
             for (int i = 0; i < schemaList.size(); i++) {
                 insertValue(rowIndex, i, tablet, (String)line[i+2]);
@@ -344,6 +343,7 @@ public class TestInsertNormalWithoutCreate extends BaseTestSuite {
                     tablet.bitMaps[i].mark(rowIndex);
                 }
             }
+            rowIndex++;
         }
         tabletMap.put(d, tablet);
         session.insertAlignedTablets(tabletMap);
