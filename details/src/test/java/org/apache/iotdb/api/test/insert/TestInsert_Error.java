@@ -88,7 +88,7 @@ public class TestInsert_Error extends TestInsertUtil {
             // 插入数据
             session.insertTablet(tablet);
         } catch (Exception e) {
-            assert "java.lang.ClassCastException".equals(e.getClass().getName()) : "InsertTabletError1 测试失败-其他错误:" + e;
+            assert "java.lang.IllegalArgumentException".equals(e.getClass().getName()) : "InsertTabletError1 测试失败-其他错误:" + e;
         }
     }
 
@@ -160,7 +160,7 @@ public class TestInsert_Error extends TestInsertUtil {
             // 插入数据
             session.insertAlignedTablet(tablet);
         } catch (Exception e) {
-            assert "java.lang.ClassCastException".equals(e.getClass().getName()) : "InsertAlignedTabletError1 测试失败-其他错误:" + e;
+            assert "java.lang.IllegalArgumentException".equals(e.getClass().getName()) : "InsertAlignedTabletError1 测试失败-其他错误:" + e;
         }
     }
 
@@ -553,7 +553,7 @@ public class TestInsert_Error extends TestInsertUtil {
             // 插入数据
             session.insertTablets(tablets);
         } catch (Exception e) {
-            assert "java.lang.ClassCastException".equals(e.getClass().getName()): "InsertTabletsError1 测试失败-其他错误:" + e;
+            assert "java.lang.IllegalArgumentException".equals(e.getClass().getName()): "InsertTabletsError1 测试失败-其他错误:" + e;
         }
     }
 
@@ -626,7 +626,7 @@ public class TestInsert_Error extends TestInsertUtil {
             // 插入数据
             session.insertAlignedTablets(tablets);
         } catch (Exception e) {
-            assert "java.lang.ClassCastException".equals(e.getClass().getName()): "InsertAlignedTabletsError1 测试失败-其他错误:" + e;
+            assert "java.lang.IllegalArgumentException".equals(e.getClass().getName()): "InsertAlignedTabletsError1 测试失败-其他错误:" + e;
         }
     }
 

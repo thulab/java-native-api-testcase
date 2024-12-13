@@ -86,7 +86,7 @@ public class TestInsertParams extends BaseTestSuite {
     }
     // TIMECHODB-530
 //    @Test(priority = 13, expectedExceptions = NullPointerException.class)
-    @Test(priority = 13, expectedExceptions = IoTDBConnectionException.class)
+    @Test(priority = 13, expectedExceptions = IllegalArgumentException.class)
     public void testInsertTablet_schemaListNullIn2() throws IoTDBConnectionException, StatementExecutionException {
         int insertCount = 1;
         List<IMeasurementSchema> schemas = new ArrayList<>(3);
@@ -133,7 +133,7 @@ public class TestInsertParams extends BaseTestSuite {
         Tablet tablet = new Tablet(device, schemaList, 1);
         session.insertTablet(tablet);
     }
-    @Test(priority = 15, expectedExceptions = ClassCastException.class)
+    @Test(priority = 15, expectedExceptions = IllegalArgumentException.class)
     public void testInsertTablet_typeError() throws IoTDBConnectionException, StatementExecutionException {
         Tablet tablet = new Tablet(device, schemaList, 1);
         int row = 0;
@@ -142,7 +142,7 @@ public class TestInsertParams extends BaseTestSuite {
         tablet.addValue(schemaList.get(0).getMeasurementName(), rowIndex, 1.0);
         session.insertTablet(tablet);
     }
-    @Test(priority = 16, expectedExceptions = ClassCastException.class)
+    @Test(priority = 16, expectedExceptions = IllegalArgumentException.class)
     public void testInsertTablet_typeError2() throws IoTDBConnectionException, StatementExecutionException {
         Tablet tablet = new Tablet(device, schemaList, 1);
         int row = 0;

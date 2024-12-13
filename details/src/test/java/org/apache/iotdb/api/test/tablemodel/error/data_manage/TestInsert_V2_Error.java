@@ -154,7 +154,7 @@ public class TestInsert_V2_Error extends BaseTestSuite_TableModel {
                         }
                     }
                 } catch (Exception e) {
-                    assert "java.lang.ClassCastException".equals(e.getClass().getName()) : "其他错误：" + e;
+                    assert "java.lang.IllegalArgumentException".equals(e.getClass().getName()) : "其他错误：" + e;
                 }
                 rowIndex++;
             }
