@@ -5,16 +5,14 @@ import org.apache.iotdb.api.test.utils.CustomDataProvider;
 import org.apache.iotdb.isession.SessionDataSet;
 import org.apache.iotdb.rpc.IoTDBConnectionException;
 import org.apache.iotdb.rpc.StatementExecutionException;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
+import org.testng.annotations.*;
 
 import java.io.IOException;
 import java.util.Iterator;
 
 /**
  * Title：测试数据库操作-正常情况
- * Describe：基于表模型V1版本，测试数据库所有的操作，包括创建数据库、查看数据库、使用数据库和删除数据库的正常情况
+ * Describe：基于表模型V2版本，测试数据库所有的操作，包括创建数据库、查看数据库、使用数据库和删除数据库的正常情况
  * Author：肖林捷
  * Date：2024/8/8
  */
@@ -24,12 +22,15 @@ public class TestDataBase_V2_Normal extends BaseTestSuite_TableModel {
      * 创建测试环境
      */
     @BeforeClass
-    public void afterTest() throws IoTDBConnectionException, StatementExecutionException {
+    public void beforeTest() throws IoTDBConnectionException, StatementExecutionException {
         // 判断是否存在数据库
         try (SessionDataSet dataSet = session.executeQueryStatement("show databases")) {
             while (dataSet.hasNext()) {
-                // 删除数据库
-                session.executeNonQueryStatement("drop database " + dataSet.next().getFields().get(0));
+                String dbName = dataSet.next().getFields().get(0).getStringValue();
+                if (!dbName.equals("information_schema")) {
+                    // 删除数据库
+                    session.executeNonQueryStatement("drop database " + dbName);
+                }
             }
         }
     }
@@ -69,7 +70,7 @@ public class TestDataBase_V2_Normal extends BaseTestSuite_TableModel {
             }
         }
         // 判断是否符合预期
-        assert expect == actual : "TestDataBase_V1_Normal的createDataBase实际不一致期待：" + expect + "，实际：" + actual;
+        assert expect == actual - 1 : "TestDataBase_V1_Normal的createDataBase实际不一致期待：" + expect + "，实际：" + (actual - 1);  // 实际会比预期要多，因为会多一个 information_schema 数据库
     }
 
     /**
@@ -98,7 +99,7 @@ public class TestDataBase_V2_Normal extends BaseTestSuite_TableModel {
             }
         }
         // 判断是否符合预期
-        assert expect == actual : "TestDataBase_V1_Normal的showDataBase实际不一致期待：" + expect + "，实际：" + actual;
+        assert expect == actual - 1 : "TestDataBase_V1_Normal的showDataBase实际不一致期待：" + expect + "，实际：" + (actual - 1);
     }
 
     /**
@@ -149,7 +150,25 @@ public class TestDataBase_V2_Normal extends BaseTestSuite_TableModel {
             }
         }
         // 判断是否符合预期
-        assert expect == actual : "TestDataBase_V1_Normal的dropDataBase实际不一致期待：" + expect + "，实际：" + actual;
+        assert expect == actual - 1 : "TestDataBase_V1_Normal的showDataBase实际不一致期待：" + expect + "，实际：" + (actual - 1);
+    }
+
+
+    /**
+     * 清空环境
+     */
+    @AfterClass
+    public void afterTest() throws IoTDBConnectionException, StatementExecutionException {
+        // 判断是否存在数据库
+        try (SessionDataSet dataSet = session.executeQueryStatement("show databases")) {
+            while (dataSet.hasNext()) {
+                String dbName = dataSet.next().getFields().get(0).getStringValue();
+                if (!dbName.equals("information_schema")) {
+                    // 删除数据库
+                    session.executeNonQueryStatement("drop database " + dbName);
+                }
+            }
+        }
     }
 
 }

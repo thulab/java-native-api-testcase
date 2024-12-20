@@ -124,7 +124,7 @@ public class TestDynamicTemplateMulti extends BaseTestSuite {
         assert 1 == getTimeSeriesCount(database + ".**", verbose) : "激活成功, ts:1";
         insertTabletMulti(d.get(0), schemaList_clean, 10, isAligned);
 
-        int tsCount = getTimeSeriesCount(databases.get(0)+".**", verbose);
+        int tsCount = getTimeSeriesCount(databases.get(0) + ".**", verbose);
         // template1
         String templateName = templateNames.get(0);
         Template template = new Template(templateName, isAligned);
@@ -147,7 +147,7 @@ public class TestDynamicTemplateMulti extends BaseTestSuite {
         session.createTimeseriesUsingSchemaTemplate(devicePaths);
         assert checkUsingTemplate(devicePaths.get(0), verbose) : "激活成功:使用了模版" + templateName;
         tsCount += deviceCount * schemaList.size();
-        assert tsCount == getTimeSeriesCount(databases.get(0)+".**", verbose) : "激活成功, ts:" + tsCount;
+        assert tsCount == getTimeSeriesCount(databases.get(0) + ".**", verbose) : "激活成功, ts:" + tsCount;
         for (int i = 0; i < devicePaths.size(); i++) {
             insertTabletMulti(devicePaths.get(i), schemaList, 10, isAligned);
         }
@@ -159,15 +159,15 @@ public class TestDynamicTemplateMulti extends BaseTestSuite {
         int templateCount_t = getTemplateCount(verbose);
         deactiveTemplate(this.templateName_clean, d.get(0));
         assert 0 == getActivePathsCount(this.templateName_clean, verbose);
-        assert 0 == getTimeSeriesCount( d.get(0) + ".**", verbose) : "解除模版会删除序列";
+        assert 0 == getTimeSeriesCount(d.get(0) + ".**", verbose) : "解除模版会删除序列";
         session.unsetSchemaTemplate(database, this.templateName_clean);
         assert 0 == getSetPathsCount(this.templateName_clean, verbose) : "模版引用数目 == 0";
-        assert 0 == getTimeSeriesCount(database+".**", verbose) : "删除成功";
+        assert 0 == getTimeSeriesCount(database + ".**", verbose) : "删除成功";
         session.dropSchemaTemplate(this.templateName_clean);
         session.deleteDatabase(database);
         assert setCount == getSetPathsCount(templateName, verbose) : "对其他模版无影响：挂载数目";
         assert activeCount == getActivePathsCount(templateName, verbose) : "对其他模版无影响：激活数目";
-        assert templateCount_t-1 == getTemplateCount(verbose) : "template数目减一";
+        assert templateCount_t - 1 == getTemplateCount(verbose) : "template数目减一";
 
         //template2
         createTemplate(databaseCount, deviceCount, templateNames.get(1), "int");

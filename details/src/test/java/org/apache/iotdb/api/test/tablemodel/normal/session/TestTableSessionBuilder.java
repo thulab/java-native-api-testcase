@@ -129,6 +129,16 @@ public class TestTableSessionBuilder  {
                          new TableSessionBuilder()
                                  .database("testDataBase1")
                                  .build()) {
+                // 判断是否存在数据库
+                try (SessionDataSet dataSet = session.executeQueryStatement("show databases")) {
+                    while (dataSet.hasNext()) {
+                        String dbName = dataSet.next().getFields().get(0).getStringValue();
+                        if (!dbName.equals("information_schema")) {
+                            // 删除数据库
+                            session.executeNonQueryStatement("drop database " + dbName);
+                        }
+                    }
+                }
                 session.executeNonQueryStatement("create database testDataBase1");
                 session.executeNonQueryStatement("create table table1 (" +
                         "device_id string id, " +
@@ -159,7 +169,14 @@ public class TestTableSessionBuilder  {
                                  .database("testDataBase2")
                                  .build()) {
                 // 判断是否和预期符号
-                String result = session.executeQueryStatement("show databases").next().getFields().get(0).toString();
+                String result = null;
+                SessionDataSet dataSet = session.executeQueryStatement("show databases");
+                while (dataSet.hasNext()) {
+                    String dbName = dataSet.next().getFields().get(0).getStringValue();
+                    if (!dbName.equals("information_schema")) {
+                        result = dbName;
+                    }
+                }
                 String expect = "testdatabase2";
                 assert result.equals(expect) : result + " != " + expect + " 结果和预期不符合，结果为：" + result + " 预期为：" + expect;
                 session.executeNonQueryStatement("drop database testDataBase2");
