@@ -150,18 +150,18 @@ public class TestTableSessionPoolBuilder {
                 }
                 session.executeNonQueryStatement("create database testDataBase1");
                 session.executeNonQueryStatement("create table table1 (" +
-                        "device_id string id, " +
+                        "device_id string TAG, " +
                         "ATTRIBUTE STRING ATTRIBUTE, " +
-                        "string string MEASUREMENT, " +
-                        "text text MEASUREMENT," +
-                        " DOUBLE DOUBLE MEASUREMENT," +
-                        " FLOAT FLOAT MEASUREMENT, " +
-                        "INT64 INT64 MEASUREMENT, " +
-                        "blob blob MEASUREMENT, " +
-                        "BOOLEAN BOOLEAN MEASUREMENT, " +
-                        "INT32 INT32 MEASUREMENT," +
-                        "timestamp timestamp MEASUREMENT," +
-                        "date date MEASUREMENT)");
+                        "string string FIELD, " +
+                        "text text FIELD," +
+                        " DOUBLE DOUBLE FIELD," +
+                        " FLOAT FLOAT FIELD, " +
+                        "INT64 INT64 FIELD, " +
+                        "blob blob FIELD, " +
+                        "BOOLEAN BOOLEAN FIELD, " +
+                        "INT32 INT32 FIELD," +
+                        "timestamp timestamp FIELD," +
+                        "date date FIELD)");
                 // 判断是否和预期符号
                 String result = session.executeQueryStatement("show tables").next().getFields().get(0).toString();
                 String expect = "table1";
@@ -204,18 +204,18 @@ public class TestTableSessionPoolBuilder {
                 ITableSession session = sessionPool.getSession();
                 session.executeNonQueryStatement("create database \"没问题testDataBase1234__\"");
                 session.executeNonQueryStatement("create table table1 (" +
-                        "device_id string id, " +
+                        "device_id string TAG, " +
                         "ATTRIBUTE STRING ATTRIBUTE, " +
-                        "string string MEASUREMENT, " +
-                        "text text MEASUREMENT," +
-                        " DOUBLE DOUBLE MEASUREMENT," +
-                        " FLOAT FLOAT MEASUREMENT, " +
-                        "INT64 INT64 MEASUREMENT, " +
-                        "blob blob MEASUREMENT, " +
-                        "BOOLEAN BOOLEAN MEASUREMENT, " +
-                        "INT32 INT32 MEASUREMENT," +
-                        "timestamp timestamp MEASUREMENT," +
-                        "date date MEASUREMENT)");
+                        "string string FIELD, " +
+                        "text text FIELD," +
+                        " DOUBLE DOUBLE FIELD," +
+                        " FLOAT FLOAT FIELD, " +
+                        "INT64 INT64 FIELD, " +
+                        "blob blob FIELD, " +
+                        "BOOLEAN BOOLEAN FIELD, " +
+                        "INT32 INT32 FIELD," +
+                        "timestamp timestamp FIELD," +
+                        "date date FIELD)");
                 // 判断是否和预期符号
                 String result = session.executeQueryStatement("show tables").next().getFields().get(0).toString();
                 String expect = "table1";
@@ -235,18 +235,18 @@ public class TestTableSessionPoolBuilder {
                 ITableSession session = sessionPool.getSession();
                 session.executeNonQueryStatement("create database \"没问题testDataBase1234__\"");
                 session.executeNonQueryStatement("create table table1 (" +
-                        "device_id string id, " +
+                        "device_id string TAG, " +
                         "ATTRIBUTE STRING ATTRIBUTE, " +
-                        "string string MEASUREMENT, " +
-                        "text text MEASUREMENT," +
-                        " DOUBLE DOUBLE MEASUREMENT," +
-                        " FLOAT FLOAT MEASUREMENT, " +
-                        "INT64 INT64 MEASUREMENT, " +
-                        "blob blob MEASUREMENT, " +
-                        "BOOLEAN BOOLEAN MEASUREMENT, " +
-                        "INT32 INT32 MEASUREMENT," +
-                        "timestamp timestamp MEASUREMENT," +
-                        "date date MEASUREMENT)");
+                        "string string FIELD, " +
+                        "text text FIELD," +
+                        " DOUBLE DOUBLE FIELD," +
+                        " FLOAT FLOAT FIELD, " +
+                        "INT64 INT64 FIELD, " +
+                        "blob blob FIELD, " +
+                        "BOOLEAN BOOLEAN FIELD, " +
+                        "INT32 INT32 FIELD," +
+                        "timestamp timestamp FIELD," +
+                        "date date FIELD)");
                 // 判断是否和预期符号
                 String result = session.executeQueryStatement("show tables").next().getFields().get(0).toString();
                 String expect = "table1";
@@ -333,7 +333,7 @@ public class TestTableSessionPoolBuilder {
                 session.executeNonQueryStatement("use testFetchSize2");
                 int expect = 0;
                 for (int i = 0; i < 10; i++) {
-                    session.executeNonQueryStatement("create table table" + i + " (id STRING ID, attr STRING ATTRIBUTE, m INT32 MEASUREMENT)");
+                    session.executeNonQueryStatement("create table table" + i + " (TAG STRING TAG, attr STRING ATTRIBUTE, m INT32 FIELD)");
                     expect++;
                 }
                 int result = 0;
@@ -360,7 +360,7 @@ public class TestTableSessionPoolBuilder {
                 session.executeNonQueryStatement("use testFetchSize3");
                 int expect = 0;
                 for (int i = 0; i < 10; i++) {
-                    session.executeNonQueryStatement("create table table" + i + " (id STRING ID, attr STRING ATTRIBUTE, m INT32 MEASUREMENT)");
+                    session.executeNonQueryStatement("create table table" + i + " (TAG STRING TAG, attr STRING ATTRIBUTE, m INT32 FIELD)");
                     expect++;
                 }
                 int result = 0;
@@ -405,7 +405,7 @@ public class TestTableSessionPoolBuilder {
                 session.executeNonQueryStatement("use testFetchSize2");
                 int expect = 0;
                 for (int i = 0; i < 10; i++) {
-                    session.executeNonQueryStatement("create table table" + i + " (id STRING ID, attr STRING ATTRIBUTE, m INT32 MEASUREMENT)");
+                    session.executeNonQueryStatement("create table table" + i + " (TAG STRING TAG, attr STRING ATTRIBUTE, m INT32 FIELD)");
                     expect++;
                 }
                 int result = 0;
@@ -433,7 +433,7 @@ public class TestTableSessionPoolBuilder {
                 session.executeNonQueryStatement("use testFetchSize3");
                 int expect = 0;
                 for (int i = 0; i < 10; i++) {
-                    session.executeNonQueryStatement("create table table" + i + " (id STRING ID, attr STRING ATTRIBUTE, m INT32 MEASUREMENT)");
+                    session.executeNonQueryStatement("create table table" + i + " (TAG STRING TAG, attr STRING ATTRIBUTE, m INT32 FIELD)");
                     expect++;
                 }
                 int result = 0;

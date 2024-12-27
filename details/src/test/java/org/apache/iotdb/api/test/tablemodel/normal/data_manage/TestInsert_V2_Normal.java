@@ -47,54 +47,54 @@ public class TestInsert_V2_Normal extends BaseTestSuite_TableModel {
         session.executeNonQueryStatement("use TestInsert");
         // 创建表
         session.executeNonQueryStatement("create table table1 (" +
-                "device_id string id, " +
+                "device_id string TAG, " +
                 "ATTRIBUTE STRING ATTRIBUTE, " +
-                "string string MEASUREMENT, " +
-                "text text MEASUREMENT," +
-                " DOUBLE DOUBLE MEASUREMENT," +
-                " FLOAT FLOAT MEASUREMENT, " +
-                "INT64 INT64 MEASUREMENT, " +
-                "blob blob MEASUREMENT, " +
-                "BOOLEAN BOOLEAN MEASUREMENT, " +
-                "INT32 INT32 MEASUREMENT," +
-                "timestamp timestamp MEASUREMENT," +
-                "date date MEASUREMENT)");
+                "string string FIELD, " +
+                "text text FIELD," +
+                " DOUBLE DOUBLE FIELD," +
+                " FLOAT FLOAT FIELD, " +
+                "INT64 INT64 FIELD, " +
+                "blob blob FIELD, " +
+                "BOOLEAN BOOLEAN FIELD, " +
+                "INT32 INT32 FIELD," +
+                "timestamp timestamp FIELD," +
+                "date date FIELD)");
         session.executeNonQueryStatement("create table \"table\" (" +
-                "device_id string id," +
+                "device_id string TAG," +
                 "attribute STRING ATTRIBUTE," +
-                "boolean boolean MEASUREMENT," +
-                "int32 int32 MEASUREMENT," +
-                "int64 int64 MEASUREMENT," +
-                "float float MEASUREMENT," +
-                "double double MEASUREMENT," +
-                "text text MEASUREMENT," +
-                "string string MEASUREMENT," +
-                "blob blob MEASUREMENT," +
-                "timestamp timestamp MEASUREMENT," +
-                "date date MEASUREMENT)");
+                "boolean boolean FIELD," +
+                "int32 int32 FIELD," +
+                "int64 int64 FIELD," +
+                "float float FIELD," +
+                "double double FIELD," +
+                "text text FIELD," +
+                "string string FIELD," +
+                "blob blob FIELD," +
+                "timestamp timestamp FIELD," +
+                "date date FIELD)");
         session.executeNonQueryStatement("create table Table2 (" +
-                "device_id string id," +
+                "device_id string TAG," +
                 "attribute STRING ATTRIBUTE," +
-                "boolean boolean MEASUREMENT," +
-                "int32 int32 MEASUREMENT," +
-                "int64 int64 MEASUREMENT," +
-                "float float MEASUREMENT," +
-                "double double MEASUREMENT," +
-                "text text MEASUREMENT," +
-                "string string MEASUREMENT," +
-                "blob blob MEASUREMENT," +
-                "timestamp timestamp MEASUREMENT," +
-                "date date MEASUREMENT)");
+                "boolean boolean FIELD," +
+                "int32 int32 FIELD," +
+                "int64 int64 FIELD," +
+                "float float FIELD," +
+                "double double FIELD," +
+                "text text FIELD," +
+                "string string FIELD," +
+                "blob blob FIELD," +
+                "timestamp timestamp FIELD," +
+                "date date FIELD)");
         session.executeNonQueryStatement("create table autoCreateColumn (" +
-                "device_id string id," +
+                "device_id string TAG," +
                 "attribute STRING ATTRIBUTE," +
-                "boolean boolean MEASUREMENT," +
-                "DOUBLE DOUBLE MEASUREMENT," +
-                "text text MEASUREMENT," +
-                "string string MEASUREMENT," +
-                "blob blob MEASUREMENT," +
-                "timestamp timestamp MEASUREMENT," +
-                "date date MEASUREMENT)");
+                "boolean boolean FIELD," +
+                "DOUBLE DOUBLE FIELD," +
+                "text text FIELD," +
+                "string string FIELD," +
+                "blob blob FIELD," +
+                "timestamp timestamp FIELD," +
+                "date date FIELD)");
     }
 
     /**
@@ -198,18 +198,18 @@ public class TestInsert_V2_Normal extends BaseTestSuite_TableModel {
         dataTypeList.add(TSDataType.DATE);
         // 列类型
         List<Tablet.ColumnCategory> columnCategoryList = new ArrayList<>();
-        columnCategoryList.add(Tablet.ColumnCategory.ID);
+        columnCategoryList.add(Tablet.ColumnCategory.TAG);
         columnCategoryList.add(Tablet.ColumnCategory.ATTRIBUTE);
-        columnCategoryList.add(Tablet.ColumnCategory.MEASUREMENT);
-        columnCategoryList.add(Tablet.ColumnCategory.MEASUREMENT);
-        columnCategoryList.add(Tablet.ColumnCategory.MEASUREMENT);
-        columnCategoryList.add(Tablet.ColumnCategory.MEASUREMENT);
-        columnCategoryList.add(Tablet.ColumnCategory.MEASUREMENT);
-        columnCategoryList.add(Tablet.ColumnCategory.MEASUREMENT);
-        columnCategoryList.add(Tablet.ColumnCategory.MEASUREMENT);
-        columnCategoryList.add(Tablet.ColumnCategory.MEASUREMENT);
-        columnCategoryList.add(Tablet.ColumnCategory.MEASUREMENT);
-        columnCategoryList.add(Tablet.ColumnCategory.MEASUREMENT);
+        columnCategoryList.add(Tablet.ColumnCategory.FIELD);
+        columnCategoryList.add(Tablet.ColumnCategory.FIELD);
+        columnCategoryList.add(Tablet.ColumnCategory.FIELD);
+        columnCategoryList.add(Tablet.ColumnCategory.FIELD);
+        columnCategoryList.add(Tablet.ColumnCategory.FIELD);
+        columnCategoryList.add(Tablet.ColumnCategory.FIELD);
+        columnCategoryList.add(Tablet.ColumnCategory.FIELD);
+        columnCategoryList.add(Tablet.ColumnCategory.FIELD);
+        columnCategoryList.add(Tablet.ColumnCategory.FIELD);
+        columnCategoryList.add(Tablet.ColumnCategory.FIELD);
         // 构造tablet对象
         Tablet tablet = new Tablet("Table2", measurementList, dataTypeList, columnCategoryList, 10);
         
@@ -316,18 +316,18 @@ public class TestInsert_V2_Normal extends BaseTestSuite_TableModel {
         dataTypeList.add(TSDataType.DATE);
         // 列类型
         List<Tablet.ColumnCategory> columnCategoryList = new ArrayList<>();
-        columnCategoryList.add(Tablet.ColumnCategory.ID);
+        columnCategoryList.add(Tablet.ColumnCategory.TAG);
         columnCategoryList.add(Tablet.ColumnCategory.ATTRIBUTE);
-        columnCategoryList.add(Tablet.ColumnCategory.MEASUREMENT);
-        columnCategoryList.add(Tablet.ColumnCategory.MEASUREMENT);
-        columnCategoryList.add(Tablet.ColumnCategory.MEASUREMENT);
-        columnCategoryList.add(Tablet.ColumnCategory.MEASUREMENT);
-        columnCategoryList.add(Tablet.ColumnCategory.MEASUREMENT);
-        columnCategoryList.add(Tablet.ColumnCategory.MEASUREMENT);
-        columnCategoryList.add(Tablet.ColumnCategory.MEASUREMENT);
-        columnCategoryList.add(Tablet.ColumnCategory.MEASUREMENT);
-        columnCategoryList.add(Tablet.ColumnCategory.MEASUREMENT);
-        columnCategoryList.add(Tablet.ColumnCategory.MEASUREMENT);
+        columnCategoryList.add(Tablet.ColumnCategory.FIELD);
+        columnCategoryList.add(Tablet.ColumnCategory.FIELD);
+        columnCategoryList.add(Tablet.ColumnCategory.FIELD);
+        columnCategoryList.add(Tablet.ColumnCategory.FIELD);
+        columnCategoryList.add(Tablet.ColumnCategory.FIELD);
+        columnCategoryList.add(Tablet.ColumnCategory.FIELD);
+        columnCategoryList.add(Tablet.ColumnCategory.FIELD);
+        columnCategoryList.add(Tablet.ColumnCategory.FIELD);
+        columnCategoryList.add(Tablet.ColumnCategory.FIELD);
+        columnCategoryList.add(Tablet.ColumnCategory.FIELD);
         // 构造tablet对象
         Tablet tablet = new Tablet("autoTable", measurementList, dataTypeList, columnCategoryList, 10);
         int rowIndex = 0;
@@ -437,20 +437,20 @@ public class TestInsert_V2_Normal extends BaseTestSuite_TableModel {
         dataTypeList.add(TSDataType.DATE);
         // 列类型
         List<Tablet.ColumnCategory> columnCategoryList = new ArrayList<>();
-        columnCategoryList.add(Tablet.ColumnCategory.ID);
-        columnCategoryList.add(Tablet.ColumnCategory.ID);
+        columnCategoryList.add(Tablet.ColumnCategory.TAG);
+        columnCategoryList.add(Tablet.ColumnCategory.TAG);
         columnCategoryList.add(Tablet.ColumnCategory.ATTRIBUTE);
         columnCategoryList.add(Tablet.ColumnCategory.ATTRIBUTE);
-        columnCategoryList.add(Tablet.ColumnCategory.MEASUREMENT);
-        columnCategoryList.add(Tablet.ColumnCategory.MEASUREMENT);
-        columnCategoryList.add(Tablet.ColumnCategory.MEASUREMENT);
-        columnCategoryList.add(Tablet.ColumnCategory.MEASUREMENT);
-        columnCategoryList.add(Tablet.ColumnCategory.MEASUREMENT);
-        columnCategoryList.add(Tablet.ColumnCategory.MEASUREMENT);
-        columnCategoryList.add(Tablet.ColumnCategory.MEASUREMENT);
-        columnCategoryList.add(Tablet.ColumnCategory.MEASUREMENT);
-        columnCategoryList.add(Tablet.ColumnCategory.MEASUREMENT);
-        columnCategoryList.add(Tablet.ColumnCategory.MEASUREMENT);
+        columnCategoryList.add(Tablet.ColumnCategory.FIELD);
+        columnCategoryList.add(Tablet.ColumnCategory.FIELD);
+        columnCategoryList.add(Tablet.ColumnCategory.FIELD);
+        columnCategoryList.add(Tablet.ColumnCategory.FIELD);
+        columnCategoryList.add(Tablet.ColumnCategory.FIELD);
+        columnCategoryList.add(Tablet.ColumnCategory.FIELD);
+        columnCategoryList.add(Tablet.ColumnCategory.FIELD);
+        columnCategoryList.add(Tablet.ColumnCategory.FIELD);
+        columnCategoryList.add(Tablet.ColumnCategory.FIELD);
+        columnCategoryList.add(Tablet.ColumnCategory.FIELD);
         // 构造tablet对象
         Tablet tablet = new Tablet("autoCreateColumn", measurementList, dataTypeList, columnCategoryList,10);
         

@@ -41,18 +41,18 @@ public class TestInsert_V2_Error extends BaseTestSuite_TableModel {
         session.executeNonQueryStatement("use TestInsert");
         // 创建表
         session.executeNonQueryStatement("create table table2 (" +
-                "device_id string id," +
+                "device_id string TAG," +
                 "attribute STRING ATTRIBUTE," +
-                "boolean boolean MEASUREMENT," +
-                "int32 int32 MEASUREMENT," +
-                "int64 int64 MEASUREMENT," +
-                "float float MEASUREMENT," +
-                "double double MEASUREMENT," +
-                "text text MEASUREMENT," +
-                "string string MEASUREMENT," +
-                "blob blob MEASUREMENT," +
-                "timestamp01 timestamp MEASUREMENT," +
-                "date date MEASUREMENT)");
+                "boolean boolean FIELD," +
+                "int32 int32 FIELD," +
+                "int64 int64 FIELD," +
+                "float float FIELD," +
+                "double double FIELD," +
+                "text text FIELD," +
+                "string string FIELD," +
+                "blob blob FIELD," +
+                "timestamp01 timestamp FIELD," +
+                "date date FIELD)");
     }
 
     /**
@@ -98,18 +98,18 @@ public class TestInsert_V2_Error extends BaseTestSuite_TableModel {
         dataTypeList.add(TSDataType.DATE);
         // 列类型
         List<Tablet.ColumnCategory> columnCategoryList = new ArrayList<>();
-        columnCategoryList.add(Tablet.ColumnCategory.ID);
+        columnCategoryList.add(Tablet.ColumnCategory.TAG);
         columnCategoryList.add(Tablet.ColumnCategory.ATTRIBUTE);
-        columnCategoryList.add(Tablet.ColumnCategory.MEASUREMENT);
-        columnCategoryList.add(Tablet.ColumnCategory.MEASUREMENT);
-        columnCategoryList.add(Tablet.ColumnCategory.MEASUREMENT);
-        columnCategoryList.add(Tablet.ColumnCategory.MEASUREMENT);
-        columnCategoryList.add(Tablet.ColumnCategory.MEASUREMENT);
-        columnCategoryList.add(Tablet.ColumnCategory.MEASUREMENT);
-        columnCategoryList.add(Tablet.ColumnCategory.MEASUREMENT);
-        columnCategoryList.add(Tablet.ColumnCategory.MEASUREMENT);
-        columnCategoryList.add(Tablet.ColumnCategory.MEASUREMENT);
-        columnCategoryList.add(Tablet.ColumnCategory.MEASUREMENT);
+        columnCategoryList.add(Tablet.ColumnCategory.FIELD);
+        columnCategoryList.add(Tablet.ColumnCategory.FIELD);
+        columnCategoryList.add(Tablet.ColumnCategory.FIELD);
+        columnCategoryList.add(Tablet.ColumnCategory.FIELD);
+        columnCategoryList.add(Tablet.ColumnCategory.FIELD);
+        columnCategoryList.add(Tablet.ColumnCategory.FIELD);
+        columnCategoryList.add(Tablet.ColumnCategory.FIELD);
+        columnCategoryList.add(Tablet.ColumnCategory.FIELD);
+        columnCategoryList.add(Tablet.ColumnCategory.FIELD);
+        columnCategoryList.add(Tablet.ColumnCategory.FIELD);
         // 构造tablet对象
         Tablet tablet = new Tablet("table2", measurementList, dataTypeList, columnCategoryList, 10);
         try {

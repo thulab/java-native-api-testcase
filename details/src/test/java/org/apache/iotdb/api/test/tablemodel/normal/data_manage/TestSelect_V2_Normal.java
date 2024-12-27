@@ -34,7 +34,7 @@ public class TestSelect_V2_Normal extends BaseTestSuite_TableModel {
         // 使用数据库
         session.executeNonQueryStatement("use TestSelect");
         // 创建表
-        session.executeNonQueryStatement("create table table1 (device_id string id, ATTRIBUTE STRING ATTRIBUTE, string string MEASUREMENT, text text MEASUREMENT, DOUBLE DOUBLE MEASUREMENT, FLOAT FLOAT MEASUREMENT, INT64 INT64 MEASUREMENT, blob blob MEASUREMENT, BOOLEAN BOOLEAN MEASUREMENT, INT32 INT32 MEASUREMENT)");
+        session.executeNonQueryStatement("create table table1 (device_id string TAG, ATTRIBUTE STRING ATTRIBUTE, string string FIELD, text text FIELD, DOUBLE DOUBLE FIELD, FLOAT FLOAT FIELD, INT64 INT64 FIELD, blob blob FIELD, BOOLEAN BOOLEAN FIELD, INT32 INT32 FIELD)");
         // 插入数据
         session.executeNonQueryStatement("insert into table1 (device_id, ATTRIBUTE, string, text,  DOUBLE, FLOAT, INT64, blob, BOOLEAN, int32) values('1', '1', 'string', 'text',  111.111, 111.111, 10, x'696F746462', true, 10)");
         session.executeNonQueryStatement("insert into table1 (device_id, ATTRIBUTE, string, text,  DOUBLE, FLOAT, INT64, blob, BOOLEAN, int32) values('11', '1', 'string', 'text',  666.666, 666.666, 10, x'696F746462', true, 10)");
