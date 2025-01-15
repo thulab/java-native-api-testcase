@@ -16,27 +16,26 @@ import java.util.*;
 
 /**
  * 读取csv文件，返回除第一行header外的数据，供给给测试方法使用
- * Author: xue.chang@timecho.com
  */
 public class CustomDataProvider {
-    private Logger logger = Logger.getLogger(CustomDataProvider.class);
-    private List<Object[]> testCases = new ArrayList<>();
+    private final Logger logger = Logger.getLogger(CustomDataProvider.class);
+    private final List<Object[]> testCases = new ArrayList<>();
     private Reader reader;
 
     /**
-     * 读取并解析CSV文件
+     * 读取并解析CSV文件（树模型）
      */
-    public Iterable<CSVRecord> readCSV(String filepath, char delimiter) throws IOException {
+    public Iterable<CSVRecord> readCSV_tree(String filepath, char delimiter) throws IOException {
         // 在Windows中使用
-//        String path = CustomDataProvider.class.getClassLoader().getResource(filepath).getPath();
-//        if (path.charAt(0) == '/') {
-//            path = path.substring(1);
-//        }
-//        logger.info("read csv:" + path);
-//        this.reader = Files.newBufferedReader(Paths.get(path));
+        String path = Objects.requireNonNull(CustomDataProvider.class.getClassLoader().getResource(filepath)).getPath();
+        if (path.charAt(0) == '/') {
+            path = path.substring(1);
+        }
+        logger.info("read csv:" + path);
+        this.reader = Files.newBufferedReader(Paths.get(path));
         // 在Linux中使用
-        logger.info("read csv:" + CustomDataProvider.class.getClassLoader().getResource(filepath).getPath());
-        this.reader = Files.newBufferedReader(Paths.get(CustomDataProvider.class.getClassLoader().getResource(filepath).getPath()));
+//        logger.info("read csv:" + CustomDataProvider.class.getClassLoader().getResource(filepath).getPath());
+//        this.reader = Files.newBufferedReader(Paths.get(CustomDataProvider.class.getClassLoader().getResource(filepath).getPath()));
 
         CSVFormat csvformat = CSVFormat.DEFAULT.withDelimiter(delimiter).withEscape('\\').withQuote('"').withIgnoreEmptyLines(true);
         Iterable<CSVRecord> records = csvformat.parse(reader);
@@ -46,19 +45,19 @@ public class CustomDataProvider {
     }
 
     /**
-     * 读取并解析CSV文件(表模型的)
+     * 读取并解析CSV文件（表模型的）
      */
     public Iterable<CSVRecord> readCSV_table(String filepath) throws IOException {
         // 在Windows中使用
-//        String path = CustomDataProvider.class.getClassLoader().getResource(filepath).getPath();
-//        if (path.charAt(0) == '/') {
-//            path = path.substring(1);
-//        }
-//        logger.info("read csv:" + path);
-//        this.reader = Files.newBufferedReader(Paths.get(path));
+        String path = Objects.requireNonNull(CustomDataProvider.class.getClassLoader().getResource(filepath)).getPath();
+        if (path.charAt(0) == '/') {
+            path = path.substring(1);
+        }
+        logger.info("read csv:" + path);
+        this.reader = Files.newBufferedReader(Paths.get(path));
         // 在Linux中使用
-        logger.info("read csv:" + CustomDataProvider.class.getClassLoader().getResource(filepath).getPath());
-        this.reader = Files.newBufferedReader(Paths.get(CustomDataProvider.class.getClassLoader().getResource(filepath).getPath()));
+//        logger.info("read csv:" + CustomDataProvider.class.getClassLoader().getResource(filepath).getPath());
+//        this.reader = Files.newBufferedReader(Paths.get(CustomDataProvider.class.getClassLoader().getResource(filepath).getPath()));
 
         // 设置CSV文件的格式
         CSVFormat csvformat = CSVFormat.MYSQL;
@@ -71,9 +70,6 @@ public class CustomDataProvider {
 
     /**
      * 处理map
-     *
-     * @param cols
-     * @return
      */
     private Map<String, String> processMapField(@NotNull String cols) {
         if (cols.equals("null")) {
@@ -99,9 +95,6 @@ public class CustomDataProvider {
 
     /**
      * 处理list
-     *
-     * @param cols
-     * @return
      */
     private @NotNull List processListField(@NotNull String cols) {
         if (cols.equals("null")) {
@@ -128,9 +121,7 @@ public class CustomDataProvider {
         } else {
             List<String> result = new ArrayList<>();
             if (!cols.equals("empty")) {
-                for (String item_l : cols.split(",")) {
-                    result.add(item_l);
-                }
+                result.addAll(Arrays.asList(cols.split(",")));
             }
             return result;
         }
@@ -138,14 +129,9 @@ public class CustomDataProvider {
 
     /**
      * 解析包括map,list在内的自定义格式
-     *
-     * @param filepath
-     * @param delimiter
-     * @return
-     * @throws IOException
      */
     public CustomDataProvider load(String filepath, char delimiter) throws IOException {
-        Iterable<CSVRecord> records = this.readCSV(filepath, delimiter);
+        Iterable<CSVRecord> records = this.readCSV_tree(filepath, delimiter);
         for (CSVRecord record : records) {
             // 解析每一行
             List<Object> columns_arr = new ArrayList<>();
@@ -154,7 +140,7 @@ public class CustomDataProvider {
             String cols = record_iter.next();
             boolean breakFlag = false;
             if (!cols.startsWith("#")) {
-                while (true) {
+                do {
                     if (cols.startsWith("m:")) {
                         cols = cols.substring(2);
                         columns_arr.add(processMapField(cols));
@@ -171,10 +157,8 @@ public class CustomDataProvider {
                     } else {
                         breakFlag = true;
                     }
-                    if (breakFlag) break;
-                }
-//                out.println(columns_arr);
-                this.testCases.add(columns_arr.stream().toArray());
+                } while (!breakFlag);
+                this.testCases.add(columns_arr.toArray());
             }
         }
         return this;
@@ -199,7 +183,7 @@ public class CustomDataProvider {
             boolean breakFlag = false;
             // 判断是否以"#"开头
             if (!cols.startsWith("#")) {
-                while (true) {
+                do {
                     // 不是则直接添加到列表
                     columns_arr.add(cols);
                     // 检查是否还有更多的列数据
@@ -209,10 +193,9 @@ public class CustomDataProvider {
                         breakFlag = true; // 如果没有更多的列数据，设置标记为true
                     }
                     // 如果标记为true，则跳出循环
-                    if (breakFlag) break;
-                }
+                } while (!breakFlag);
                 // 将解析后的列数据转换为数组，并添加到testCases列表中
-                this.testCases.add(columns_arr.stream().toArray());
+                this.testCases.add(columns_arr.toArray());
             }
         }
         return this;
@@ -220,14 +203,9 @@ public class CustomDataProvider {
 
     /**
      * 加载csv,直接返回String类型
-     *
-     * @param filepath
-     * @param delimiter
-     * @return
-     * @throws IOException
      */
     public List<List<String>> loadString(String filepath, char delimiter) throws IOException {
-        Iterable<CSVRecord> records = this.readCSV(filepath, delimiter);
+        Iterable<CSVRecord> records = this.readCSV_tree(filepath, delimiter);
         List<List<String>> result = new ArrayList<>();
         for (CSVRecord record : records) {
             // 解析每一行
@@ -252,14 +230,10 @@ public class CustomDataProvider {
      * 第一列 TSDataType
      * 第二列 TSEncoding
      * 第三列 CompressionType
-     *
-     * @param filepath
-     * @return
-     * @throws IOException
      */
     public List<List<Object>> parseTSStructure(String filepath) throws IOException {
         List<List<Object>> result = new ArrayList<>();
-        Iterable<CSVRecord> records = this.readCSV(filepath, ',');
+        Iterable<CSVRecord> records = this.readCSV_tree(filepath, ',');
         for (CSVRecord record : records) {
             Iterator<String> recordIter = record.iterator();
             // 如果以#开头，那么跳过
@@ -280,6 +254,9 @@ public class CustomDataProvider {
         return result;
     }
 
+    /**
+     * 解析数据类型
+     */
     public TSDataType parseDataType(String datatypeStr) {
         switch (datatypeStr.toLowerCase()) {
             case "boolean":
@@ -296,13 +273,24 @@ public class CustomDataProvider {
                 return TSDataType.VECTOR;
             case "text":
                 return TSDataType.TEXT;
+            case "string":
+                return TSDataType.STRING;
+            case "time":
+                return TSDataType.TIMESTAMP;
+            case "blob":
+                return TSDataType.BLOB;
+            case "date":
+                return TSDataType.DATE;
             case "null":
                 return null;
             default:
-                throw new RuntimeException("bad input");
+                throw new RuntimeException("bad input DataType: " + datatypeStr);
         }
     }
 
+    /**
+     * 解析编码方式
+     */
     public TSEncoding parseEncoding(String encodingStr) {
         switch (encodingStr.toUpperCase()) {
             case "PLAIN":
@@ -332,10 +320,13 @@ public class CustomDataProvider {
             case "RLBE":
                 return TSEncoding.RLBE;
             default:
-                throw new RuntimeException("bad input:" + encodingStr);
+                throw new RuntimeException("bad input Encoding: " + encodingStr);
         }
     }
 
+    /**
+     * 解析压缩方式
+     */
     public CompressionType parseCompressionType(String compressStr) {
         compressStr.toUpperCase();
         switch (compressStr) {
@@ -345,14 +336,6 @@ public class CustomDataProvider {
                 return CompressionType.SNAPPY;
             case "GZIP":
                 return CompressionType.GZIP;
-//            case "LZO":
-//                return CompressionType.LZO;
-//            case "SDT":
-//                return CompressionType.SDT;
-//            case "PAA":
-//                return CompressionType.PAA;
-//            case "PLA":
-//                return CompressionType.PLA;
             case "LZ4":
                 return CompressionType.LZ4;
             case "ZSTD":
@@ -360,20 +343,15 @@ public class CustomDataProvider {
             case "LZMA2":
                 return CompressionType.LZMA2;
             default:
-                throw new RuntimeException("bad input：" + compressStr);
+                throw new RuntimeException("bad input CompressionType：" + compressStr);
         }
     }
 
     /**
      * 获取第一列
-     *
-     * @param filepath
-     * @param delimiter
-     * @return
-     * @throws IOException
      */
     public List<String> getFirstColumns(String filepath, char delimiter) throws IOException {
-        Iterable<CSVRecord> records = this.readCSV(filepath, delimiter);
+        Iterable<CSVRecord> records = this.readCSV_tree(filepath, delimiter);
         List<String> columns_arr = new ArrayList<>();
         for (CSVRecord record : records) {
             // 解析每一行
@@ -381,7 +359,6 @@ public class CustomDataProvider {
             // 如果以#开头，那么跳过
             String first_cols = record_iter.next();
             if (!first_cols.startsWith("#")) {
-                //out.println("####### "+first_cols);
                 columns_arr.add(first_cols);
             }
         }
@@ -391,13 +368,9 @@ public class CustomDataProvider {
 
     /**
      * 解析csv文件，将第一列device和第二列tsName拼接为完整的path,返回path list
-     *
-     * @param filepath
-     * @return
-     * @throws IOException
      */
     public List<String> getDeviceAndTs(String filepath) throws IOException {
-        Iterable<CSVRecord> records = this.readCSV(filepath, ',');
+        Iterable<CSVRecord> records = this.readCSV_tree(filepath, ',');
         List<String> columns_arr = new ArrayList<>();
         for (CSVRecord record : records) {
             // 解析每一行
@@ -405,7 +378,6 @@ public class CustomDataProvider {
             // 如果以#开头，那么跳过
             String first_cols = record_iter.next();
             if (!first_cols.startsWith("#")) {
-                //out.println("####### "+first_cols);
                 columns_arr.add(first_cols + "." + record_iter.next());
             }
         }
@@ -419,13 +391,9 @@ public class CustomDataProvider {
 
     /**
      * 加载 props, attributes and tags 格式csv
-     *
-     * @param filepath
-     * @return
-     * @throws IOException
      */
     public List<Map<String, String>> loadProps(String filepath) throws IOException {
-        Iterable<CSVRecord> records = this.readCSV(filepath, ',');
+        Iterable<CSVRecord> records = this.readCSV_tree(filepath, ',');
         List<Map<String, String>> result = new ArrayList<>();
         for (CSVRecord record : records) {
             // 解析每一行
@@ -433,7 +401,6 @@ public class CustomDataProvider {
             // 如果以#开头，那么跳过
             String first_cols = recordIter.next();
             if (!first_cols.startsWith("#")) {
-                //out.println("####### "+first_cols);
                 if (first_cols.startsWith("m:")) {
                     first_cols = first_cols.substring(2);
                 }
@@ -449,10 +416,6 @@ public class CustomDataProvider {
 
     /**
      * 加载csv文件（表模型）
-     *
-     * @param filepath
-     * @return
-     * @throws IOException
      */
     public CustomDataProvider load_table(String filepath, boolean isSQL) throws IOException {
         // 判断是否是sql语句
@@ -466,18 +429,6 @@ public class CustomDataProvider {
     }
 
     public Iterator<Object[]> getData() throws IOException {
-        return (Iterator<Object[]>) testCases.iterator();
+        return testCases.iterator();
     }
-
-//    public static void main(String[] args) throws IOException {
-//
-//        Iterator<Object[]> i = new CustomDataProvider().load("data/timeseries-multi.csv").getData();
-//        while (i.hasNext()) {
-//            for(Object r: i.next()) {
-//                out.println(r.toString());
-//            }
-//            out.println("--------------");
-//        }
-//
-//    }
 }

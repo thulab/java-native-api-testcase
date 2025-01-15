@@ -1,4 +1,4 @@
-Time,s_boolean,s_int,s_long,s_float,s_double,s_text
+Time,s_boolean,s_int,s_long,s_float,s_double,s_text,s_string,s_timestamp,s_blob,s_data
 1669109398772,0,0,0,0,0,0
 1669109398755,1,2147483647,0,0,0,max_int
 1669109398756,true,-2147483648,0,0,0,min_int
@@ -15,4 +15,4 @@ Time,s_boolean,s_int,s_long,s_float,s_double,s_text
 1669109402000,true,1,1,null,1,float_null
 1669109403000,true,1,1,1,null,double_null
 1669109404000,true,1,1,1,1,null
-1669109405000,FALSE,210,310,710.01,1810.21,Alphabet Rent News & Trends Here we explore timely issues and emerging trends that are shaping our new future. View all Micro-mobility and the last-mile trend E-Mobility & e-fuels 
+1669109405000,FALSE,210,310,710.01,1810.21,AlphabetRent News & Trends Here we explore timely issues and emerging trends that are shaping our new future. View all Micro-mobility and the last-mile trend E-Mobility & e-fuels

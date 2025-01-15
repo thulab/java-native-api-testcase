@@ -14,7 +14,7 @@ import org.testng.annotations.DataProvider;
 import java.io.IOException;
 import java.util.*;
 
-public class TestInsertUtil extends BaseTestSuite {
+public class TestInsertUtil extends BaseTestSuite_TreeModel {
     // 数据库名称
     protected static String database = "root.testInsert";
     // 设备名称
