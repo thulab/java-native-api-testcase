@@ -24,7 +24,7 @@ import java.util.*;
  */
 public class TestNonAlignedTS extends BaseTestSuite_TreeModel {
     private String device = "root.business.nonAligned";
-    private String database = device.substring(0,device.lastIndexOf('.'));
+    private String database = device.substring(0, device.lastIndexOf('.'));
     private int expectCount = 17;
 
     private List<String> paths = new ArrayList<>(6);
@@ -47,7 +47,7 @@ public class TestNonAlignedTS extends BaseTestSuite_TreeModel {
         measureTSTypeInfos.put("s_double", TSDataType.DOUBLE);
         measureTSTypeInfos.put("s_text", TSDataType.TEXT);
 
-        measureTSTypeInfos.forEach((key,value) -> {
+        measureTSTypeInfos.forEach((key, value) -> {
             paths.add(device + "." + key);
             measurements.add(key);
             dataTypes.add(value);
@@ -59,6 +59,7 @@ public class TestNonAlignedTS extends BaseTestSuite_TreeModel {
     public void afterClass() throws IoTDBConnectionException, StatementExecutionException {
         session.deleteStorageGroup(database);
     }
+
     public Iterator<Object[]> getSingleNormal() throws IOException {
         return new CustomDataProvider().load("data/business-insert-records.csv").getData();
     }
@@ -68,7 +69,7 @@ public class TestNonAlignedTS extends BaseTestSuite_TreeModel {
         List<TSEncoding> encodings = new ArrayList<>(6);
         List<CompressionType> compressors = new ArrayList<>(6);
         List<String> alias = new ArrayList<>(6);
-        for (int i = 0; i <3 ; i++) {
+        for (int i = 0; i < 3; i++) {
             encodings.add(TSEncoding.RLE);
         }
         encodings.add(TSEncoding.GORILLA);
@@ -78,14 +79,14 @@ public class TestNonAlignedTS extends BaseTestSuite_TreeModel {
         for (int i = 0; i < 6; i++) {
             compressors.add(CompressionType.SNAPPY);
         }
-        measureTSTypeInfos.forEach((key,value) -> {
-            alias.add("aligned_"+key);
+        measureTSTypeInfos.forEach((key, value) -> {
+            alias.add("aligned_" + key);
         });
 
         session.createMultiTimeseries(paths, dataTypes,
-                encodings,compressors,
-                null,null,null, alias);
-        assert  6 == getTimeSeriesCount(device+".*", false) : "创建TS数目";
+                encodings, compressors,
+                null, null, null, alias);
+        assert 6 == getTimeSeriesCount(device + ".*", false) : "创建TS数目";
     }
 
     @Test(priority = 20)
@@ -98,27 +99,27 @@ public class TestNonAlignedTS extends BaseTestSuite_TreeModel {
         Iterator<Object[]> it = getSingleNormal();
         while (it.hasNext()) {
             Object[] line = it.next();
-            tablet.addTimestamp(rowIndex, Long.valueOf((String)line[0]));
+            tablet.addTimestamp(rowIndex, Long.valueOf((String) line[0]));
             for (int i = 0; i < schemaList.size(); i++) {
-                col = i+1;
+                col = i + 1;
                 if (line[col] == null) {
                     continue;
                 }
-                switch(schemaList.get(i).getType()) {
+                switch (schemaList.get(i).getType()) {
                     case BOOLEAN:
-                        tablet.addValue(schemaList.get(i).getMeasurementName(), rowIndex, Boolean.valueOf((String)line[col]));
+                        tablet.addValue(schemaList.get(i).getMeasurementName(), rowIndex, Boolean.valueOf((String) line[col]));
                         break;
                     case INT32:
-                        tablet.addValue(schemaList.get(i).getMeasurementName(), rowIndex, Integer.valueOf((String)line[col]));
+                        tablet.addValue(schemaList.get(i).getMeasurementName(), rowIndex, Integer.valueOf((String) line[col]));
                         break;
                     case INT64:
-                        tablet.addValue(schemaList.get(i).getMeasurementName(), rowIndex, Long.valueOf((String)line[col]));
+                        tablet.addValue(schemaList.get(i).getMeasurementName(), rowIndex, Long.valueOf((String) line[col]));
                         break;
                     case FLOAT:
-                        tablet.addValue(schemaList.get(i).getMeasurementName(), rowIndex, Float.valueOf((String)line[col]));
+                        tablet.addValue(schemaList.get(i).getMeasurementName(), rowIndex, Float.valueOf((String) line[col]));
                         break;
                     case DOUBLE:
-                        tablet.addValue(schemaList.get(i).getMeasurementName(), rowIndex, Double.valueOf((String)line[col]));
+                        tablet.addValue(schemaList.get(i).getMeasurementName(), rowIndex, Double.valueOf((String) line[col]));
                         break;
                     case TEXT:
                         tablet.addValue(schemaList.get(i).getMeasurementName(), rowIndex, line[col]);
@@ -128,17 +129,19 @@ public class TestNonAlignedTS extends BaseTestSuite_TreeModel {
             rowIndex++;
         }
         session.insertTablet(tablet);
-        assert expectCount-1 == getRecordCount(device, verbose) : "插入record数目";
+        assert expectCount - 1 == getRecordCount(device, verbose) : "插入record数目";
 //        Assert.assertThrows(StatementExecutionException.class, ()->session.insertAlignedTablet(tablet));
     }
+
     @Test(priority = 30)
     public void testQuery() throws IoTDBConnectionException, StatementExecutionException {
-        checkQueryResult("select s_double from "+ device +" where time=2022-11-22T17:29:58.754+08:00;", 1899.21);
+        checkQueryResult("select s_double from " + device + " where time=2022-11-22T17:29:58.754+08:00;", TSDataType.DOUBLE, 1899.21);
     }
+
     @Test(priority = 40)
     public void testUpdate() throws IoTDBConnectionException, StatementExecutionException {
         long timestamp = 1669109398772L;
-        checkQueryResult("select s_text from "+device +" where time="+timestamp+";",  0);
+        checkQueryResult("select s_text from " + device + " where time=" + timestamp + ";", TSDataType.TEXT, 0);
 
         List<Long> times = new ArrayList<>(1);
         List<List<String>> measurementsList = new ArrayList<>(1);
@@ -156,15 +159,16 @@ public class TestNonAlignedTS extends BaseTestSuite_TreeModel {
         values.add("update_value");
         valuesList.add(values);
         session.insertRecordsOfOneDevice(device, times, measurementsList, datatypeList, valuesList);
-        checkQueryResult("select s_text from "+device +" where time="+timestamp+";", "update_value");
-        checkQueryResult("select s_long from "+device +" where time="+timestamp+";", 2);
+        checkQueryResult("select s_text from " + device + " where time=" + timestamp + ";", TSDataType.TEXT, "update_value");
+        checkQueryResult("select s_long from " + device + " where time=" + timestamp + ";", TSDataType.INT64, 2);
     }
 
     @Test(priority = 50)
     public void testDelete() throws IoTDBConnectionException, StatementExecutionException {
-        session.deleteData(device+".*", 1669109404000L);
+        session.deleteData(device + ".*", 1669109404000L);
         assert 1 == getRecordCount(device, false) : "确认结果:删除后还剩一条数据";
     }
+
     @Test(priority = 60)
     public void testInsertAfterDelete() throws IoTDBConnectionException, StatementExecutionException {
         long timestamp = 1669109406000L;
@@ -177,15 +181,15 @@ public class TestNonAlignedTS extends BaseTestSuite_TreeModel {
         values.add("insert after delete");
         session.insertRecord(device, timestamp, measurements, dataTypes, values);
         assert 2 == getRecordCount(device, verbose) : "确认结果:删除后插入成功";
-        checkQueryResult("select s_long from "+device +" where time="+timestamp+";", timestamp);
-        checkQueryResult("select s_double from "+device +" where time="+timestamp+";", 876.44);
+        checkQueryResult("select s_long from " + device + " where time=" + timestamp + ";", TSDataType.INT64, timestamp);
+        checkQueryResult("select s_double from " + device + " where time=" + timestamp + ";", TSDataType.DOUBLE, 876.44);
     }
 
     @Test(priority = 70)
     public void testDropTimeseries() throws IoTDBConnectionException, StatementExecutionException {
-        assert true == session.checkTimeseriesExists(device+".s_boolean") :"TS boolean exists";
-        session.deleteTimeseries(device+".*");
-        assert false == session.checkTimeseriesExists(device+".s_boolean") :"TS boolean 已删除";
+        assert true == session.checkTimeseriesExists(device + ".s_boolean") : "TS boolean exists";
+        session.deleteTimeseries(device + ".*");
+        assert false == session.checkTimeseriesExists(device + ".s_boolean") : "TS boolean 已删除";
     }
 
 }

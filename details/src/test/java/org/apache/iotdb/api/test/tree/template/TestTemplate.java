@@ -30,13 +30,13 @@ import java.util.*;
  */
 public class TestTemplate extends BaseTestSuite_TreeModel {
     private final String templatePrefix = "template";
-    private String tName = templatePrefix + "0";
-    private String databasePrefix = "root.template";
-    private String database = "root.parent";
+    private final String tName = templatePrefix + "0";
+    private final String databasePrefix = "root.template";
+    private final String database = "root.parent";
     //    private final String[] databases = new String[]{"root.template.aligned", "root.template.nonAligned"};
-    private int expectCount = 17;
-    private Map<String, Object[]> structureInfo = new LinkedHashMap<>(6);
-    private List<IMeasurementSchema> schemaList = new ArrayList<>(7);// tablet
+//    private int expectCount = 17;
+    private final Map<String, Object[]> structureInfo = new LinkedHashMap<>(6);
+    private final List<IMeasurementSchema> schemaList = new ArrayList<>(7);// tablet
     private List<List<Object>> structures;
     private List<List<Object>> errStructures;
 
@@ -49,10 +49,10 @@ public class TestTemplate extends BaseTestSuite_TreeModel {
         structureInfo.put("s_float", new Object[]{TSDataType.FLOAT, TSEncoding.GORILLA, CompressionType.LZ4});
         structureInfo.put("s_double", new Object[]{TSDataType.DOUBLE, TSEncoding.GORILLA, CompressionType.LZ4});
         structureInfo.put("s_text", new Object[]{TSDataType.TEXT, TSEncoding.DICTIONARY, CompressionType.LZ4});
-//        structureInfo.put("s_string", new Object[]{TSDataType.STRING, TSEncoding.PLAIN, CompressionType.LZ4});
-//        structureInfo.put("s_timestamp", new Object[]{TSDataType.TIMESTAMP, TSEncoding.TS_2DIFF, CompressionType.LZ4});
-//        structureInfo.put("s_blob", new Object[]{TSDataType.BLOB, TSEncoding.PLAIN, CompressionType.LZ4});
-//        structureInfo.put("s_data", new Object[]{TSDataType.DATE, TSEncoding.PLAIN, CompressionType.LZ4});
+        structureInfo.put("s_string", new Object[]{TSDataType.STRING, TSEncoding.PLAIN, CompressionType.LZ4});
+        structureInfo.put("s_timestamp", new Object[]{TSDataType.TIMESTAMP, TSEncoding.TS_2DIFF, CompressionType.LZ4});
+        structureInfo.put("s_blob", new Object[]{TSDataType.BLOB, TSEncoding.PLAIN, CompressionType.LZ4});
+        structureInfo.put("s_data", new Object[]{TSDataType.DATE, TSEncoding.PLAIN, CompressionType.LZ4});
         structureInfo.forEach((key, value) -> {
             schemaList.add(new MeasurementSchema(key, (TSDataType) value[0], (TSEncoding) value[1], (CompressionType) value[2]));
         });
@@ -133,7 +133,7 @@ public class TestTemplate extends BaseTestSuite_TreeModel {
     public void testCreateSingle_struct(TSDataType tsDataType, TSEncoding encoding, CompressionType compressionType, String comment, String index) throws StatementExecutionException, IoTDBConnectionException, IOException {
         final String tName = templatePrefix + index;
         String path = database + ".d" + index;
-        assert false == checkTemplateExists(tName) : "没有template:" + tName;
+        assert !checkTemplateExists(tName) : "没有template:" + tName;
         String name = "ts_" + index;
         Template template = new Template(tName, isAligned);
         template.addToTemplate(new MeasurementNode(name, tsDataType, encoding, compressionType));
@@ -154,6 +154,9 @@ public class TestTemplate extends BaseTestSuite_TreeModel {
 //        session.dropSchemaTemplate(tName);
     }
 
+    /**
+     * 创建错误结构的模板
+     */
     @Test(priority = 6, dataProvider = "getErrorStructures", expectedExceptions = StatementExecutionException.class)
     public void testCreateSingle_errorStruct(TSDataType tsDataType, TSEncoding encoding, CompressionType compressionType, String comment, String index) throws StatementExecutionException, IoTDBConnectionException, IOException {
         final String tName = templatePrefix + "Err_" + index;
@@ -164,6 +167,9 @@ public class TestTemplate extends BaseTestSuite_TreeModel {
         session.close();
     }
 
+    /**
+     * 测试添加重复节点
+     */
     @Test(priority = 10, expectedExceptions = StatementExecutionException.class)
     public void testAddDuplicateNodes() throws StatementExecutionException, IoTDBConnectionException, IOException {
         String templateName = "duplicateNodesTemplate";
@@ -176,11 +182,17 @@ public class TestTemplate extends BaseTestSuite_TreeModel {
         session.createSchemaTemplate(template);
     }
 
+    /**
+     * 创建对齐模板
+     */
     @Test(priority = 17)
     public void createTemplate_aligned() throws IoTDBConnectionException, StatementExecutionException, IOException {
         createTemplate(tName, "", isAligned, null);
     }
 
+    /**
+     * 测试挂载
+     */
     @Test(priority = 21)
     public void testSet_database() throws IoTDBConnectionException, StatementExecutionException {
         session.createDatabase(databasePrefix);
@@ -193,11 +205,17 @@ public class TestTemplate extends BaseTestSuite_TreeModel {
         });
     }
 
+    /**
+     * 测试挂载子路径
+     */
     @Test(priority = 22, expectedExceptions = StatementExecutionException.class)
     public void testSet_childPath() throws IoTDBConnectionException, StatementExecutionException {
         session.setSchemaTemplate(tName, databasePrefix + ".childPath");
     }
 
+    /**
+     * 测试挂载父路径
+     */
     @Test(priority = 23, expectedExceptions = StatementExecutionException.class)
     public void testSet_parentPath() throws IoTDBConnectionException, StatementExecutionException {
         if (!checkStroageGroupExists(database)) {
@@ -209,6 +227,9 @@ public class TestTemplate extends BaseTestSuite_TreeModel {
         session.setSchemaTemplate(tName, database);
     }
 
+    /**
+     * 测试一个路径挂载两个模板
+     */
     @Test(priority = 24, expectedExceptions = StatementExecutionException.class)
     public void testSet_2template() throws IoTDBConnectionException, IOException, StatementExecutionException {
         // 同一个database挂载2个template
@@ -216,6 +237,9 @@ public class TestTemplate extends BaseTestSuite_TreeModel {
         getSetPathsCount(tName, verbose);
     }
 
+    /**
+     * 创建不同名称的模板
+     */
     @Test(enabled = false, priority = 31, dataProvider = "getNormalNames")
     public void testCreateTemplate_nameNormal(String name, String comment, String index) throws IoTDBConnectionException, IOException, StatementExecutionException {
         String database = databasePrefix + index;
@@ -237,12 +261,18 @@ public class TestTemplate extends BaseTestSuite_TreeModel {
         // IOTDB-5469
     }
 
+    /**
+     * 创建错误名称的模板
+     */
     // IOTDB-5233  TIMECHODB-137
     @Test(enabled = false, priority = 32, dataProvider = "getErrorNames", expectedExceptions = StatementExecutionException.class)
     public void testCreateTemplate_nameError(String templateName, String comment, String index) throws IoTDBConnectionException, IOException, StatementExecutionException {
         createTemplate(templateName, "", isAligned, PrepareConnection.getSession());
     }
 
+    /**
+     * 创建模板正常结构
+     */
     @Test(priority = 40)
     public void testCreateTemplate_structNormal() throws IoTDBConnectionException, StatementExecutionException, IOException {
         getNormalStructures();
@@ -271,6 +301,9 @@ public class TestTemplate extends BaseTestSuite_TreeModel {
         insertTabletMulti(paths.get(0), schemaList, 10, isAligned);
     }
 
+    /**
+     * 测试创建错误结构模板
+     */
     @Test(priority = 42)
     public void testCreateTemplate_structError() throws StatementExecutionException, IoTDBConnectionException {
         String templateName = templatePrefix + "_err";
@@ -287,6 +320,9 @@ public class TestTemplate extends BaseTestSuite_TreeModel {
         }
     }
 
+    /**
+     * 创建模板 _0TS
+     */
     @Test(priority = 50)
     public void testCreateTemplate_0TS() throws IoTDBConnectionException, IOException, StatementExecutionException {
         String database = databasePrefix + "_0TS";
@@ -319,6 +355,9 @@ public class TestTemplate extends BaseTestSuite_TreeModel {
 //        session.deleteDatabase(database);
     }
 
+    /**
+     * 创建模板 _1TS
+     */
     @Test(priority = 51)
     public void testCreateTemplate_1TS() throws StatementExecutionException, IoTDBConnectionException, IOException {
         String templateName = templatePrefix + "_1TS";
@@ -355,6 +394,9 @@ public class TestTemplate extends BaseTestSuite_TreeModel {
 //        assert false == checkTemplateExists(templateName) : "template已经删除:"+templateName;
     }
 
+    /**
+     * 创建模板 _maxTS
+     */
     @Test(enabled = false, priority = 52) // loop=100 112s; loop=1000 hang?
     public void testCreateTemplate_maxTS() throws StatementExecutionException, IoTDBConnectionException, IOException {
         long start = System.currentTimeMillis();
@@ -405,6 +447,9 @@ public class TestTemplate extends BaseTestSuite_TreeModel {
         System.out.println("########### testCreateTemplate_maxTS " + loop + " elapse time(s):" + (end - start) / 1000);
     }
 
+    /**
+     * 测试挂载多个路径
+     */
     @Test(enabled = false, priority = 60) // maxLength=100 44s;
     public void testSet_max() throws IoTDBConnectionException, StatementExecutionException, IOException {
         long start = System.currentTimeMillis();

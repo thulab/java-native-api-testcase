@@ -132,7 +132,7 @@ public class TestBlendScenario extends BaseTestSuite_TreeModel {
 
     private void doUpdate(int index, boolean isAligned) throws IoTDBConnectionException, StatementExecutionException {
         long timestamp = 1669109398772L;
-        checkQueryResult("select s_text from " + devices[index] + " where time=" + timestamp + ";", 0);
+        checkQueryResult("select s_text from " + devices[index] + " where time=" + timestamp + ";", TSDataType.TEXT, 0);
 
         List<Long> times = new ArrayList<>(1);
         List<List<String>> measurementsList = new ArrayList<>(1);
@@ -160,8 +160,8 @@ public class TestBlendScenario extends BaseTestSuite_TreeModel {
 //                session.insertAlignedRecordsOfOneDevice(devices[index], times, measurementsList, datatypeList, valuesList);
 //            });
 //        }
-        checkQueryResult("select s_text from " + devices[index] + " where time=" + timestamp + ";", "update_value");
-        checkQueryResult("select s_long from " + devices[index] + " where time=" + timestamp + ";", timestamp);
+        checkQueryResult("select s_text from " + devices[index] + " where time=" + timestamp + ";", TSDataType.TEXT, "update_value");
+        checkQueryResult("select s_long from " + devices[index] + " where time=" + timestamp + ";", TSDataType.INT64, timestamp);
     }
 
     @Test(priority = 10)

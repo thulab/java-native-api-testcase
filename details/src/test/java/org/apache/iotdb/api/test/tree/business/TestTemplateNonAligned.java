@@ -155,13 +155,13 @@ public class TestTemplateNonAligned extends BaseTestSuite_TreeModel {
 
     @Test(priority = 30)
     public void testQuery() throws IoTDBConnectionException, StatementExecutionException {
-        checkQueryResult("select s_double from " + device + " where time=2022-11-22T17:29:58.754+08:00;", 1899.21);
+        checkQueryResult("select s_double from " + device + " where time=2022-11-22T17:29:58.754+08:00;", TSDataType.DOUBLE, 1899.21);
     }
 
     @Test(priority = 40)
     public void testUpdate() throws IoTDBConnectionException, StatementExecutionException {
         long timestamp = 1669109398772L;
-        checkQueryResult("select s_text from " + device + " where time=" + timestamp + ";", 0);
+        checkQueryResult("select s_text from " + device + " where time=" + timestamp + ";", TSDataType.TEXT, 0);
 
         List<Long> times = new ArrayList<>(1);
         List<List<String>> measurementsList = new ArrayList<>(1);
@@ -179,8 +179,8 @@ public class TestTemplateNonAligned extends BaseTestSuite_TreeModel {
         values.add("update_value");
         valuesList.add(values);
         session.insertRecordsOfOneDevice(device, times, measurementsList, datatypeList, valuesList);
-        checkQueryResult("select s_text from " + device + " where time=" + timestamp + ";", "update_value");
-        checkQueryResult("select s_long from " + device + " where time=" + timestamp + ";", 2);
+        checkQueryResult("select s_text from " + device + " where time=" + timestamp + ";", TSDataType.TEXT, "update_value");
+        checkQueryResult("select s_long from " + device + " where time=" + timestamp + ";", TSDataType.INT64, 2);
     }
 
     @Test(priority = 50)
@@ -201,7 +201,7 @@ public class TestTemplateNonAligned extends BaseTestSuite_TreeModel {
         values.add("insert after delete");
         session.insertRecord(device, timestamp, measurements, dataTypes, values);
         assert 2 == getRecordCount(device, false) : "确认结果:删除后插入成功";
-        checkQueryResult("select s_double from " + device + " where time=" + timestamp + ";", 876.44);
+        checkQueryResult("select s_double from " + device + " where time=" + timestamp + ";", TSDataType.DOUBLE, 876.44);
     }
 
     @Test(priority = 70)

@@ -27,6 +27,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringJoiner;
 
+import static org.apache.tsfile.encrypt.EncryptUtils.hexStringToByteArray;
+
 // TODO：里面的 SQL 语句很多用的是老版本的，之后若数据库不支持了需要全面更新
 public class BaseTestSuite_TreeModel {
     public Logger logger = Logger.getLogger(BaseTestSuite_TreeModel.class);
@@ -156,22 +158,48 @@ public class BaseTestSuite_TreeModel {
         return getCount("select count(*) from " + device, verbose);
     }
 
-    public void checkQueryResult(String sql, Object expectValue) throws IoTDBConnectionException, StatementExecutionException {
+    public void checkQueryResult(String sql, TSDataType tsDataType, Object expectValue) throws IoTDBConnectionException, StatementExecutionException {
         logger.debug("sql=" + sql);
         try (SessionDataSet dataSet = session.executeQueryStatement(sql)) {
-            if (expectValue instanceof Number) {
-                Double expect = Double.valueOf(expectValue.toString());
-                while (dataSet.hasNext()) {
-                    RowRecord records = dataSet.next();
-                    Double actualValue = Double.valueOf(records.getFields().get(0).toString());
-                    assert actualValue.equals(expect) : "确认结果" + dataSet.getColumnTypes().get(0) + "值: expect " + expectValue + ", actual " + records.getFields().get(0).toString();
-                }
-            } else {
-                while (dataSet.hasNext()) {
-                    RowRecord records = dataSet.next();
-                    String actualValue = records.getFields().get(0).toString();
-                    assert actualValue.equals(expectValue.toString()) : "确认结果" + dataSet.getColumnTypes().get(0) + "值: expect " + expectValue + ", actual " + actualValue;
-                }
+            switch (tsDataType) {
+                case INT32:
+                case INT64:
+                case FLOAT:
+                case DOUBLE:
+                case TIMESTAMP:
+                    Double expect = Double.valueOf(expectValue.toString());
+                    while (dataSet.hasNext()) {
+                        RowRecord records = dataSet.next();
+                        Double actualValue = Double.valueOf(records.getFields().get(0).toString());
+                        assert actualValue.equals(expect) : "确认结果" + dataSet.getColumnTypes().get(1) + "值: expect " + expectValue + ", actual " + records.getFields().get(0).toString();
+                    }
+                    break;
+                case BOOLEAN:
+                case TEXT:
+                case STRING:
+                    while (dataSet.hasNext()) {
+                        RowRecord records = dataSet.next();
+                        String actualValue = records.getFields().get(0).toString();
+                        assert actualValue.equals(expectValue.toString()) : "确认结果" + dataSet.getColumnTypes().get(1) + "值: expect " + expectValue + ", actual " + actualValue;
+                    }
+                    break;
+                case BLOB:
+                    while (dataSet.hasNext()) {
+                        RowRecord records = dataSet.next();
+                        String actualValue = records.getFields().get(0).toString();
+                        actualValue = actualValue.substring(2);
+                        byte[] bytes = hexStringToByteArray(actualValue);
+                        actualValue = new String(bytes);
+                        assert actualValue.equals(expectValue.toString()) : "确认结果" + dataSet.getColumnTypes().get(1) + "值: expect " + expectValue + ", actual " + actualValue;
+                    }
+                    break;
+                case DATE:
+                    while (dataSet.hasNext()) {
+                        RowRecord records = dataSet.next();
+                        String actualValue = records.getFields().get(0).toString();
+                        assert actualValue.equals(expectValue.toString().replace("-", "")) : "确认结果" + dataSet.getColumnTypes().get(1) + "值: expect " + expectValue + ", actual " + actualValue;
+                    }
+                    break;
             }
         }
     }
@@ -276,7 +304,6 @@ public class BaseTestSuite_TreeModel {
     }
 
     public void insertRecordMulti(String device, List<String> tsNames, List<TSDataType> tsDataTypeList, long timestamp, boolean isAligned, List<String> aliasList) throws IoTDBConnectionException, StatementExecutionException {
-//        System.out.println("######## insertRecordMulti device = "+device);
         List<Object> values = new ArrayList<>(tsDataTypeList.size());
         for (int i = 0; i < tsDataTypeList.size(); i++) {
             TSDataType tsDataType = tsDataTypeList.get(i);
@@ -299,6 +326,18 @@ public class BaseTestSuite_TreeModel {
                 case TEXT:
                     values.add(GenerateValues.getCombinedCode());
                     break;
+                case STRING:
+                    values.add(GenerateValues.getStringValue());
+                    break;
+                case TIMESTAMP:
+                    values.add(GenerateValues.getTimeStamp(8));
+                    break;
+                case BLOB:
+                    values.add(GenerateValues.getBloB());
+                    break;
+                case DATE:
+                    values.add(GenerateValues.getDateValue());
+                    break;
             }
         }
 //        System.out.println("-----------");
@@ -312,9 +351,9 @@ public class BaseTestSuite_TreeModel {
         }
         for (int i = 0; i < tsNames.size(); i++) {
             checkQueryResult("select " + tsNames.get(i) + " from "
-                    + device + " where time=" + timestamp + ";", values.get(i));
+                    + device + " where time=" + timestamp + ";", tsDataTypeList.get(i), values.get(i));
             if (aliasList != null) {
-                checkQueryResult("select " + aliasList.get(i) + " from " + device + " where time=" + timestamp + ";", values.get(i));
+                checkQueryResult("select " + aliasList.get(i) + " from " + device + " where time=" + timestamp + ";", tsDataTypeList.get(i), values.get(i));
             }
         }
     }
@@ -369,7 +408,7 @@ public class BaseTestSuite_TreeModel {
             session.insertTablet(tablet);
         }
         checkQueryResult("select count(" + schemaList.get(0).getMeasurementName() + ") from "
-                + device + ";", insertCount);
+                + device + ";",schemaList.get(0).getType(), insertCount);
         if (insertCount == 0) {
             session.close();
         }

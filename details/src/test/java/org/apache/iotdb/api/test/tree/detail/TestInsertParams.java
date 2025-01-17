@@ -24,8 +24,8 @@ import java.util.List;
  */
 public class TestInsertParams extends BaseTestSuite_TreeModel {
     private final String database = "root.params";
-    private final String device = database+".d1";
-    private final String deviceAligned = database+".d_aligned";
+    private final String device = database + ".d1";
+    private final String deviceAligned = database + ".d_aligned";
     private final String tsName = "s_float";
 
     private List<String> paths = new ArrayList<>(1);
@@ -55,14 +55,16 @@ public class TestInsertParams extends BaseTestSuite_TreeModel {
         compressionTypes.add(CompressionType.GZIP);
         session.createAlignedTimeseries(deviceAligned, measurements, dataTypes, encodings, compressionTypes, null);
     }
-//    @AfterClass
+
+    //    @AfterClass
 //    public void afterClass() throws IoTDBConnectionException, StatementExecutionException {
 //        session.deleteDatabase(database);
 //    }
-    private void checkResult(long timestamp, Object expect) throws IoTDBConnectionException, StatementExecutionException {
-        checkQueryResult("select "+tsName+" from "+device +" where time ="+timestamp, expect);
+    private void checkResult(long timestamp, TSDataType dataType, Object expect) throws IoTDBConnectionException, StatementExecutionException {
+        checkQueryResult("select " + tsName + " from " + device + " where time =" + timestamp, dataType, expect);
     }
-//    @Test(priority = 10)
+
+    //    @Test(priority = 10)
 //    public void testInsertTablet_null() throws IoTDBConnectionException, StatementExecutionException {
 //        session.insertTablet(null);
 //    }
@@ -77,6 +79,7 @@ public class TestInsertParams extends BaseTestSuite_TreeModel {
         Tablet tablet = new Tablet(device, null);
         session.insertTablet(tablet);
     }
+
     @Test(priority = 13, expectedExceptions = NullPointerException.class) //TIMECHODB-145
     public void testInsertTablet_schemaListNullIn() throws IoTDBConnectionException, StatementExecutionException {
         List<IMeasurementSchema> schemas = new ArrayList<>(1);
@@ -84,6 +87,7 @@ public class TestInsertParams extends BaseTestSuite_TreeModel {
         Tablet tablet = new Tablet(device, schemas);
         session.insertTablet(tablet);
     }
+
     // TIMECHODB-530
 //    @Test(priority = 13, expectedExceptions = NullPointerException.class)
     @Test(priority = 13, expectedExceptions = IllegalArgumentException.class)
@@ -102,7 +106,7 @@ public class TestInsertParams extends BaseTestSuite_TreeModel {
             tablet.addTimestamp(rowIndex, timestamp);
 //            tablet.addTimestamp(rowIndex, row);
             for (int i = 0; i < schemas.size(); i++) {
-                switch(schemas.get(i).getType()) {
+                switch (schemas.get(i).getType()) {
                     case BOOLEAN:
                         tablet.addValue(schemas.get(i).getMeasurementName(), rowIndex, GenerateValues.getBoolean());
                         break;
@@ -113,10 +117,10 @@ public class TestInsertParams extends BaseTestSuite_TreeModel {
                         tablet.addValue(schemas.get(i).getMeasurementName(), rowIndex, GenerateValues.getLong(10));
                         break;
                     case FLOAT:
-                        tablet.addValue(schemas.get(i).getMeasurementName(), rowIndex, GenerateValues.getFloat(2,100,200));
+                        tablet.addValue(schemas.get(i).getMeasurementName(), rowIndex, GenerateValues.getFloat(2, 100, 200));
                         break;
                     case DOUBLE:
-                        tablet.addValue(schemas.get(i).getMeasurementName(), rowIndex, GenerateValues.getDouble(2,500,1000));
+                        tablet.addValue(schemas.get(i).getMeasurementName(), rowIndex, GenerateValues.getDouble(2, 500, 1000));
                         break;
                     case TEXT:
                         tablet.addValue(schemas.get(i).getMeasurementName(), rowIndex, GenerateValues.getChinese());
@@ -133,6 +137,7 @@ public class TestInsertParams extends BaseTestSuite_TreeModel {
         Tablet tablet = new Tablet(device, schemaList, 1);
         session.insertTablet(tablet);
     }
+
     @Test(priority = 15, expectedExceptions = IllegalArgumentException.class)
     public void testInsertTablet_typeError() throws IoTDBConnectionException, StatementExecutionException {
         Tablet tablet = new Tablet(device, schemaList, 1);
@@ -142,6 +147,7 @@ public class TestInsertParams extends BaseTestSuite_TreeModel {
         tablet.addValue(schemaList.get(0).getMeasurementName(), rowIndex, 1.0);
         session.insertTablet(tablet);
     }
+
     @Test(priority = 16, expectedExceptions = IllegalArgumentException.class)
     public void testInsertTablet_typeError2() throws IoTDBConnectionException, StatementExecutionException {
         Tablet tablet = new Tablet(device, schemaList, 1);
@@ -151,6 +157,7 @@ public class TestInsertParams extends BaseTestSuite_TreeModel {
         tablet.addValue(schemaList.get(0).getMeasurementName(), rowIndex, "1.0");
         session.insertTablet(tablet);
     }
+
     @Test(priority = 17)
     public void testInsertTablet_rowIndex0() throws IoTDBConnectionException, StatementExecutionException {
         Tablet tablet = new Tablet(device, schemaList, 1);
@@ -159,8 +166,9 @@ public class TestInsertParams extends BaseTestSuite_TreeModel {
         tablet.addTimestamp(rowIndex, row);
         tablet.addValue(schemaList.get(0).getMeasurementName(), rowIndex, 3.5f);
         session.insertTablet(tablet);
-        checkResult(0L, 3.5f);
+        checkResult(0L, schemaList.get(0).getType(), 3.5f);
     }
+
     @Test(priority = 18)
     public void testInsertTablet_rowIndex2() throws IoTDBConnectionException, StatementExecutionException {
         Tablet tablet = new Tablet(device, schemaList, 1);
@@ -168,8 +176,9 @@ public class TestInsertParams extends BaseTestSuite_TreeModel {
         tablet.addTimestamp(rowIndex, rowIndex);
         tablet.addValue(schemaList.get(0).getMeasurementName(), rowIndex, 8.8f);
         session.insertTablet(tablet);
-        checkResult(rowIndex,8.8f);
+        checkResult(rowIndex, schemaList.get(0).getType(), 8.8f);
     }
+
     @Test(priority = 19, expectedExceptions = ArrayIndexOutOfBoundsException.class)
     public void testInsertTablet_rowIndexNegative() throws IoTDBConnectionException, StatementExecutionException {
         Tablet tablet = new Tablet(device, schemaList, 1);
@@ -179,6 +188,7 @@ public class TestInsertParams extends BaseTestSuite_TreeModel {
         tablet.addValue(schemaList.get(0).getMeasurementName(), rowIndex, 18.8f);
         session.insertTablet(tablet);
     }
+
     @Test(priority = 20, expectedExceptions = IndexOutOfBoundsException.class)
     public void testInsertTablet_schemaOutOfIndex() throws IoTDBConnectionException, StatementExecutionException {
         Tablet tablet = new Tablet(device, schemaList, 1);
@@ -188,7 +198,8 @@ public class TestInsertParams extends BaseTestSuite_TreeModel {
         tablet.addValue(schemaList.get(2).getMeasurementName(), rowIndex, 18.8f);
         session.insertTablet(tablet);
     }
-//    @Test(priority = 21)
+
+    //    @Test(priority = 21)
 //    public void testInsertTablet_schemaNullIn() throws IoTDBConnectionException, StatementExecutionException {
 //        List<MeasurementSchema> schemas = new ArrayList<>(1);
 //        schemas.add(null);
@@ -251,8 +262,9 @@ public class TestInsertParams extends BaseTestSuite_TreeModel {
         tablet.addTimestamp(rowIndex, -1);
         tablet.addValue(schemaList.get(0).getMeasurementName(), rowIndex, -11.8f);
         session.insertTablet(tablet);
-        checkResult(-1, -11.8f);
+        checkResult(-1, schemaList.get(0).getType(), -11.8f);
     }
+
     @Test(priority = 27)
     public void testInsertTablet_timestampFuture() throws IoTDBConnectionException, StatementExecutionException {
         Tablet tablet = new Tablet(device, schemaList, 1);
@@ -262,24 +274,26 @@ public class TestInsertParams extends BaseTestSuite_TreeModel {
         tablet.addTimestamp(rowIndex, 4068921600000L);
         tablet.addValue(schemaList.get(0).getMeasurementName(), rowIndex, -1.8f);
         session.insertTablet(tablet);
-        checkResult(4068921600000L,-1.8f);
+        checkResult(4068921600000L, schemaList.get(0).getType(), -1.8f);
     }
 
-//    @Test(priority = 30, expectedExceptions = StatementExecutionException.class)
+    //    @Test(priority = 30, expectedExceptions = StatementExecutionException.class)
 //    public void testInsertRecord_nullDevice() throws IoTDBConnectionException, StatementExecutionException {
 //        session.insertRecord(null, 100L, measurements, dataTypes, values.get(0));
 //    }
     @Test(priority = 31)
     public void testInsertRecord_timestampNegative() throws IoTDBConnectionException, StatementExecutionException {
         session.insertRecord(device, -1, measurements, dataTypes, values);
-        checkResult(-1, values.get(0));
+        checkResult(-1, schemaList.get(0).getType(), values.get(0));
     }
+
     @Test(priority = 32)
     public void testInsertRecord_timestampFuture() throws IoTDBConnectionException, StatementExecutionException {
         session.insertRecord(device, 4068921600000L, measurements, dataTypes, values.get(0));
-        checkResult(4068921600000L, values.get(0));
+        checkResult(4068921600000L, schemaList.get(0).getType(), values.get(0));
     }
-//    // TIMECHODB-149
+
+    //    // TIMECHODB-149
 //    @Test(priority = 33, expectedExceptions = StatementExecutionException.class)
 //    public void testInsertRecord_tsNameNull() throws IoTDBConnectionException, StatementExecutionException {
 //        session.insertRecord(device, 100L, null, dataTypes, values.get(0));
@@ -295,7 +309,8 @@ public class TestInsertParams extends BaseTestSuite_TreeModel {
     public void testInsertRecord_tsNameEmpty() throws IoTDBConnectionException, StatementExecutionException {
         session.insertRecord(device, 100L, new ArrayList<>(0), dataTypes, values.get(0));
     }
-//    @Test(priority = 36)
+
+    //    @Test(priority = 36)
 //    public void testInsertRecord_datatypeNull() throws IoTDBConnectionException, StatementExecutionException {
 //        session.insertRecord(device, 100L, measurements, null, values.get(0));
 //    }
@@ -309,33 +324,39 @@ public class TestInsertParams extends BaseTestSuite_TreeModel {
     public void testInsertRecord_datatypeEmpty() throws IoTDBConnectionException, StatementExecutionException {
         session.insertRecord(device, 100L, measurements, new ArrayList<>(1), values.get(0));
     }
+
     @Test(priority = 39) // 执行成功，但是可能没有效果
     public void testInsertRecord_valuesNull() throws IoTDBConnectionException, StatementExecutionException {
         session.insertRecord(device, 100L, measurements, dataTypes, (Object) null);
     }
+
     @Test(priority = 40, expectedExceptions = StatementExecutionException.class)
     public void testInsertRecord_valuesEmpty() throws IoTDBConnectionException, StatementExecutionException {
         session.insertRecord(device, 100L, measurements, dataTypes, new ArrayList<>(0));
     }
+
     @Test(priority = 41)
     public void testInsertRecord_valuesNullIn() throws IoTDBConnectionException, StatementExecutionException {
         List<Object> v = new ArrayList<>(1);
         v.add(null);
         session.insertRecord(device, 100L, measurements, dataTypes, v);
     }
+
     @Test(priority = 42, expectedExceptions = ClassCastException.class)
     public void testInsertRecord_valuesErrorType() throws IoTDBConnectionException, StatementExecutionException {
         List<Object> v = new ArrayList<>(1);
         v.add("1a1b");
         session.insertRecord(device, 100L, measurements, dataTypes, v);
     }
+
     @Test(priority = 43, expectedExceptions = StatementExecutionException.class)
     public void testInsertRecord_sizeTSNameOver() throws IoTDBConnectionException, StatementExecutionException {
         List<String> tsNames = new ArrayList<>(2);
         tsNames.add(tsName);
-        tsNames.add(tsName+"2");
+        tsNames.add(tsName + "2");
         session.insertRecord(device, 100L, tsNames, dataTypes, values.get(0));
     }
+
     @Test(priority = 44, expectedExceptions = StatementExecutionException.class)
     public void testInsertRecord_sizeTSNameDup() throws IoTDBConnectionException, StatementExecutionException {
         List<String> tsNames = new ArrayList<>(2);
@@ -343,6 +364,7 @@ public class TestInsertParams extends BaseTestSuite_TreeModel {
         tsNames.add(tsName);
         session.insertRecord(device, 100L, tsNames, dataTypes, values.get(0));
     }
+
     @Test(priority = 45)
     public void testInsertRecord_sizedatatypeDup() throws IoTDBConnectionException, StatementExecutionException {
         List<TSDataType> dataTypesTmp = new ArrayList<>(2);
@@ -350,6 +372,7 @@ public class TestInsertParams extends BaseTestSuite_TreeModel {
         dataTypesTmp.add(TSDataType.FLOAT);
         session.insertRecord(device, 100L, measurements, dataTypesTmp, values.get(0));
     }
+
     @Test(priority = 46, expectedExceptions = IndexOutOfBoundsException.class)
     public void testInsertRecord_sizeValuesDup() throws IoTDBConnectionException, StatementExecutionException {
         List<Object> v = new ArrayList<>(2);
@@ -365,7 +388,7 @@ public class TestInsertParams extends BaseTestSuite_TreeModel {
         schemas.add(new MeasurementSchema("s_0", TSDataType.BOOLEAN));
         schemas.add(new MeasurementSchema("s_1", TSDataType.INT32));
         schemas.add(new MeasurementSchema("s_1", TSDataType.INT32));
-        Tablet tablet = new Tablet(database+".d_11", schemas, insertCount);
+        Tablet tablet = new Tablet(database + ".d_11", schemas, insertCount);
         int rowIndex = 0;
         long timestamp = baseTime;
         for (int row = 0; row < insertCount; row++) {
@@ -374,7 +397,7 @@ public class TestInsertParams extends BaseTestSuite_TreeModel {
             tablet.addTimestamp(rowIndex, timestamp);
 //            tablet.addTimestamp(rowIndex, row);
             for (int i = 0; i < schemas.size(); i++) {
-                switch(schemas.get(i).getType()) {
+                switch (schemas.get(i).getType()) {
                     case BOOLEAN:
                         tablet.addValue(schemas.get(i).getMeasurementName(), rowIndex, GenerateValues.getBoolean());
                         break;
@@ -402,8 +425,9 @@ public class TestInsertParams extends BaseTestSuite_TreeModel {
         values.add(true);
         values.add(32);
         values.add(64);
-        PrepareConnection.getSession().insertRecord(device,1635232143960L, paths, schemas, values);
+        PrepareConnection.getSession().insertRecord(device, 1635232143960L, paths, schemas, values);
     }
+
     @Test(priority = 52, expectedExceptions = StatementExecutionException.class)
     public void testInsertRecords_sameTS() throws IoTDBConnectionException, StatementExecutionException {
         List<String> devices = new ArrayList<>(1);
@@ -428,7 +452,7 @@ public class TestInsertParams extends BaseTestSuite_TreeModel {
         value.add(32);
         value.add(64);
         values.add(value);
-        PrepareConnection.getSession().insertRecords(devices,timestamps, measurements, schemas, values);
+        PrepareConnection.getSession().insertRecords(devices, timestamps, measurements, schemas, values);
     }
 
 }

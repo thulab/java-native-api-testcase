@@ -142,7 +142,7 @@ public class TestTemplateAlignedAddTS extends BaseTestSuite_TreeModel {
 
     private void doUpdate(int index, boolean isAligned) throws IoTDBConnectionException, StatementExecutionException {
         long timestamp = 1669109398772L;
-        checkQueryResult("select s_text from " + devices[index] + " where time=" + timestamp + ";", 0);
+        checkQueryResult("select s_text from " + devices[index] + " where time=" + timestamp + ";", TSDataType.TEXT, 0);
 
         List<Long> times = new ArrayList<>(1);
         List<List<String>> measurementsList = new ArrayList<>(1);
@@ -170,8 +170,8 @@ public class TestTemplateAlignedAddTS extends BaseTestSuite_TreeModel {
 //                session.insertAlignedRecordsOfOneDevice(devices[index], times, measurementsList, datatypeList, valuesList);
 //            });
 //        }
-        checkQueryResult("select s_text from " + devices[index] + " where time=" + timestamp + ";", "update_value");
-        checkQueryResult("select s_long from " + devices[index] + " where time=" + timestamp + ";", timestamp);
+        checkQueryResult("select s_text from " + devices[index] + " where time=" + timestamp + ";", TSDataType.TEXT, "update_value");
+        checkQueryResult("select s_long from " + devices[index] + " where time=" + timestamp + ";", TSDataType.INT64, timestamp);
     }
 
     private void doUpdateAfterAddTS(int index, boolean isAligned) throws IoTDBConnectionException, StatementExecutionException {
@@ -209,10 +209,10 @@ public class TestTemplateAlignedAddTS extends BaseTestSuite_TreeModel {
         getCount("select count(*) from " + devices[index] + " where time=" + timestamp1 + ";", verbose);
         getCount("select count(*) from " + devices[index] + " where time=" + timestamp2 + ";", verbose);
         logger.debug("###### 后  ######");
-        checkQueryResult("select s_float from " + devices[index] + " where time=" + timestamp1 + ";", 13.33);
-        checkQueryResult("select appendFloat from " + devices[index] + " where time=" + timestamp1 + ";", 34567.0);
-        checkQueryResult("select s_long from " + devices[index] + " where time=" + timestamp2 + ";", timestamp2);
-        checkQueryResult("select appendFloat from " + devices[index] + " where time=" + timestamp2 + ";", 69134.0);
+        checkQueryResult("select s_float from " + devices[index] + " where time=" + timestamp1 + ";", TSDataType.FLOAT, 13.33);
+        checkQueryResult("select appendFloat from " + devices[index] + " where time=" + timestamp1 + ";", TSDataType.FLOAT, 34567.0);
+        checkQueryResult("select s_long from " + devices[index] + " where time=" + timestamp2 + ";", TSDataType.INT64, timestamp2);
+        checkQueryResult("select appendFloat from " + devices[index] + " where time=" + timestamp2 + ";", TSDataType.FLOAT, 69134.0);
     }
 
     private void doUpdateAfterAddTS2(int index, boolean isAligned) throws IoTDBConnectionException, StatementExecutionException {
@@ -250,10 +250,10 @@ public class TestTemplateAlignedAddTS extends BaseTestSuite_TreeModel {
         getCount("select count(*) from " + devices[index] + " where time=" + timestamp1 + ";", verbose);
         getCount("select count(*) from " + devices[index] + " where time=" + timestamp2 + ";", verbose);
         logger.debug("###### 后  ######");
-        checkQueryResult("select s_float from " + devices[index] + " where time=" + timestamp1 + ";", 13.33);
-        checkQueryResult("select appendFloat from " + devices[index] + " where time=" + timestamp1 + ";", 34567.0);
-        checkQueryResult("select s_long from " + devices[index] + " where time=" + timestamp2 + ";", timestamp2);
-        checkQueryResult("select appendFloat from " + devices[index] + " where time=" + timestamp2 + ";", 69134.0);
+        checkQueryResult("select s_float from " + devices[index] + " where time=" + timestamp1 + ";", TSDataType.FLOAT, 13.33);
+        checkQueryResult("select appendFloat from " + devices[index] + " where time=" + timestamp1 + ";", TSDataType.FLOAT, 34567.0);
+        checkQueryResult("select s_long from " + devices[index] + " where time=" + timestamp2 + ";", TSDataType.INT64, timestamp2);
+        checkQueryResult("select appendFloat from " + devices[index] + " where time=" + timestamp2 + ";", TSDataType.FLOAT, 69134.0);
     }
 
     private void doUpdateAfterAddTS_origin(int index, boolean isAligned) throws IoTDBConnectionException, StatementExecutionException {
@@ -285,10 +285,10 @@ public class TestTemplateAlignedAddTS extends BaseTestSuite_TreeModel {
         getCount("select count(*) from " + devices[index] + " where time=" + times[0] + ";", verbose);
         getCount("select count(*) from " + devices[index] + " where time=" + times[1] + ";", verbose);
         logger.debug("###### 后  ######");
-        checkQueryResult("select s_float from " + devices[index] + " where time=" + times[0] + ";", 130.33);
-        checkQueryResult("select s_text from " + devices[index] + " where time=" + times[0] + ";", "doUpdateAfterAddTS_origin:0");
-        checkQueryResult("select s_long from " + devices[index] + " where time=" + times[1] + ";", times[1]);
-        checkQueryResult("select s_text from " + devices[index] + " where time=" + times[1] + ";", "doUpdateAfterAddTS_origin:1");
+        checkQueryResult("select s_float from " + devices[index] + " where time=" + times[0] + ";", TSDataType.FLOAT, 130.33);
+        checkQueryResult("select s_text from " + devices[index] + " where time=" + times[0] + ";", TSDataType.TEXT, "doUpdateAfterAddTS_origin:0");
+        checkQueryResult("select s_long from " + devices[index] + " where time=" + times[1] + ";", TSDataType.INT64, times[1]);
+        checkQueryResult("select s_text from " + devices[index] + " where time=" + times[1] + ";", TSDataType.TEXT, "doUpdateAfterAddTS_origin:1");
     }
 
     @Test(priority = 10)

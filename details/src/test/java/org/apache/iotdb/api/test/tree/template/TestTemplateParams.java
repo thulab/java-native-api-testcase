@@ -18,6 +18,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Title：测试模板各种参数
+ * Describe：测试模板参数
+ * Author：肖林捷
+ * LastDate：2025/1/14
+ */
 public class TestTemplateParams extends BaseTestSuite_TreeModel {
     private String tName = "t1";
     private String database = "root.template";

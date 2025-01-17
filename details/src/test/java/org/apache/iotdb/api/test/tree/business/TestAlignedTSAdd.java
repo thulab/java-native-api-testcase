@@ -131,14 +131,14 @@ public class TestAlignedTSAdd extends BaseTestSuite_TreeModel {
 
     @Test(priority = 30)
     public void testQuery() throws IoTDBConnectionException, StatementExecutionException {
-        checkQueryResult("select s_double from " + device + " where time=2022-11-22T17:29:58.754+08:00;", 1899.21);
+        checkQueryResult("select s_double from " + device + " where time=2022-11-22T17:29:58.754+08:00;", TSDataType.DOUBLE, 1899.21);
     }
 
 
     @Test(priority = 40)
     public void testUpdate() throws IoTDBConnectionException, StatementExecutionException {
         long timestamp = 1669109398772L;
-        checkQueryResult("select s_text from " + device + " where time=" + timestamp + ";", 0);
+        checkQueryResult("select s_text from " + device + " where time=" + timestamp + ";", TSDataType.TEXT, 0);
 
         List<Long> times = new ArrayList<>(1);
         List<List<String>> measurementsList = new ArrayList<>(1);
@@ -156,8 +156,8 @@ public class TestAlignedTSAdd extends BaseTestSuite_TreeModel {
         values.add("update_value");
         valuesList.add(values);
         session.insertAlignedRecordsOfOneDevice(device, times, measurementsList, datatypeList, valuesList);
-        checkQueryResult("select s_text from " + device + " where time=" + timestamp + ";", "update_value");
-        checkQueryResult("select s_long from " + device + " where time=" + timestamp + ";", 2);
+        checkQueryResult("select s_text from " + device + " where time=" + timestamp + ";", TSDataType.TEXT, "update_value");
+        checkQueryResult("select s_long from " + device + " where time=" + timestamp + ";", TSDataType.INT64, 2);
     }
 
     @Test(priority = 41)
@@ -209,10 +209,10 @@ public class TestAlignedTSAdd extends BaseTestSuite_TreeModel {
             valueList.add(values);
         }
         session.insertAlignedStringRecordsOfOneDevice(device, times, measurementList, valueList);
-        checkQueryResult("select s_float from " + device + " where time=" + timestamp1 + ";", 13.33);
-        checkQueryResult("select appendFloat from " + device + " where time=" + timestamp1 + ";", 34567.0);
-        checkQueryResult("select s_long from " + device + " where time=" + timestamp2 + ";", timestamp2);
-        checkQueryResult("select appendFloat from " + device + " where time=" + timestamp2 + ";", 69134.0);
+        checkQueryResult("select s_float from " + device + " where time=" + timestamp1 + ";", TSDataType.FLOAT, 13.33);
+        checkQueryResult("select appendFloat from " + device + " where time=" + timestamp1 + ";", TSDataType.FLOAT, 34567.0);
+        checkQueryResult("select s_long from " + device + " where time=" + timestamp2 + ";", TSDataType.INT64, timestamp2);
+        checkQueryResult("select appendFloat from " + device + " where time=" + timestamp2 + ";", TSDataType.FLOAT, 69134.0);
     }
 
     @Test(priority = 50)
@@ -234,8 +234,8 @@ public class TestAlignedTSAdd extends BaseTestSuite_TreeModel {
         values.add(26.5f);
         session.insertAlignedRecord(device, timestamp, measurements, dataTypes, values);
         assert 3 == getRecordCount(device, verbose) : "确认结果:删除后插入成功";
-        checkQueryResult("select s_long from " + device + " where time=" + timestamp + ";", timestamp);
-        checkQueryResult("select appendFloat from " + device + " where time=" + timestamp + ";", 26.5);
+        checkQueryResult("select s_long from " + device + " where time=" + timestamp + ";", TSDataType.INT64, timestamp);
+        checkQueryResult("select appendFloat from " + device + " where time=" + timestamp + ";", TSDataType.FLOAT, 26.5);
     }
 
     @Test(priority = 70)
