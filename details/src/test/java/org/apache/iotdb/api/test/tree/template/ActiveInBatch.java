@@ -77,7 +77,7 @@ public class ActiveInBatch extends BaseTestSuite_TreeModel {
     }
 
     /**
-     * 测试正常操作批量激活模板
+     * 测试激活模板
      */
     @Test(priority = 1, dataProvider = "getNormalNames")
     public void testNormalOne(String name, String comment, String index) throws StatementExecutionException, IoTDBConnectionException, IOException {
@@ -108,14 +108,14 @@ public class ActiveInBatch extends BaseTestSuite_TreeModel {
         session.setSchemaTemplate(templateName, database);
         // 查看模板是否挂载成功
         assert checkTemplateContainPath(templateName, database) : templateName + " 挂载模版失败";
+        // 根据模板创建时间序列（相当于激活模板）
+        session.createTimeseriesUsingSchemaTemplate(paths);
         // TODO：激活模板时间长，所以延长时间，不然判断会不存在
         try {
             Thread.sleep(1000);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-        // 根据模板创建时间序列（相当于激活模板）
-        session.createTimeseriesUsingSchemaTemplate(paths);
         // 判断设备模板的路径（即模板在该路径上已激活，序列已创建）是否存在
         assert paths.size() == getActivePathsCount(templateName, verbose) : "激活失败: expect " + paths.size() + " actual " + getActivePathsCount(templateName, verbose);
         assert checkUsingTemplate(paths.get(0), verbose) : paths.get(0) + "使用了模版";
@@ -123,10 +123,6 @@ public class ActiveInBatch extends BaseTestSuite_TreeModel {
         insertRecordSingle(database + "." + name + "." + name, tsDataType, isAligned, null);
         // 删除数据库（相当于解除并卸载设备模板）
         session.deleteStorageGroup(database);
-        // 解除模板（已废弃该方法）
-//        session.deactivateTemplateOn(database, templateName);
-        // 卸载模板（由于之前已经卸载故不需要卸载）
-//        session.unsetSchemaTemplate(database, templateName);
         // TODO：卸载模板时间长，所以延长时间，不然判断会不存在
         try {
             Thread.sleep(1000);
