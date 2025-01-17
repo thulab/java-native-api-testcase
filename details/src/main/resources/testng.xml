@@ -118,7 +118,7 @@
 
 
 
-
+<!--测试场景特殊，需要手动开启测试-->
 <!--    <test name="TriggerNameTest" preserve-order="true">-->
 <!--        <classes>-->
 <!--            <class name="org.apache.iotdb.api.test.tree.other.TriggerNameTest"></class>-->

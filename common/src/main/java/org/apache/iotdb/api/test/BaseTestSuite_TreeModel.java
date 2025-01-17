@@ -408,7 +408,7 @@ public class BaseTestSuite_TreeModel {
             session.insertTablet(tablet);
         }
         checkQueryResult("select count(" + schemaList.get(0).getMeasurementName() + ") from "
-                + device + ";",schemaList.get(0).getType(), insertCount);
+                + device + ";", TSDataType.INT32, insertCount);
         if (insertCount == 0) {
             session.close();
         }

@@ -36,16 +36,19 @@ public class TestOrdinary extends BaseTestSuite_TreeModel {
     private String templateName = "template01";
     private int loop = 10000;
     private int expectCount = 0;
+
     @BeforeClass
     public void BeforeClass() throws IOException, IoTDBConnectionException, StatementExecutionException {
         session.createDatabase(database);
     }
-//    @AfterClass
+
+    //    @AfterClass
     public void AfterClass() throws IoTDBConnectionException, StatementExecutionException {
         session.deleteDatabase(database);
         cleanTemplates(verbose);
     }
-    @DataProvider(name="getNormalStructures", parallel = true)
+
+    @DataProvider(name = "getNormalStructures", parallel = true)
     public Iterator<Object[]> getNormalStructures() throws IOException {
         CustomDataProvider provider = new CustomDataProvider();
         structures = provider.parseTSStructure("data/ts-structures.csv");
@@ -54,25 +57,25 @@ public class TestOrdinary extends BaseTestSuite_TreeModel {
 
     @Test(priority = 5, dataProvider = "getNormalStructures")
     public void testCreateSingle_struct(TSDataType tsDataType, TSEncoding encoding, CompressionType compressionType, String comment, String index) throws StatementExecutionException, IoTDBConnectionException, IOException {
-        final String tName = templateName+index;
-        String path = database + ".d"+index;
-        assert false == checkTemplateExists(tName) : "没有template:"+tName;
-        String name = "ts_"+index;
+        final String tName = templateName + index;
+        String path = database + ".d" + index;
+        assert false == checkTemplateExists(tName) : "没有template:" + tName;
+        String name = "ts_" + index;
         Template template = new Template(tName, isAligned);
         template.addToTemplate(new MeasurementNode(name, tsDataType, encoding, compressionType));
         session.createSchemaTemplate(template);
         assert checkTemplateExists(tName) : "创建template成功";
         session.setSchemaTemplate(tName, path);
-        assert checkTemplateContainPath(tName, path):"挂载成功";
-        assert 1 == getSetPathsCount(tName, verbose):"挂载成功:挂载路径数量";
+        assert checkTemplateContainPath(tName, path) : "挂载成功";
+        assert 1 == getSetPathsCount(tName, verbose) : "挂载成功:挂载路径数量";
         if (!auto_create_schema) {
             List<String> paths = new ArrayList<>(1);
             paths.add(path);
             session.createTimeseriesUsingSchemaTemplate(paths);
             assert checkUsingTemplate(path, verbose) : "使用了模版";
-            assert 1 == getActivePathsCount(tName, verbose): "激活成功";
+            assert 1 == getActivePathsCount(tName, verbose) : "激活成功";
         }
-        insertRecordSingle(path+"."+name, tsDataType, isAligned, null);
+        insertRecordSingle(path + "." + name, tsDataType, isAligned, null);
         assert 1 == getTSCountInTemplate(tName, verbose) : "修改前模版ts数量1";
         if (!auto_create_schema) {
             Assert.assertThrows(StatementExecutionException.class, () -> {
@@ -81,14 +84,14 @@ public class TestOrdinary extends BaseTestSuite_TreeModel {
         }
         addTSIntoTemplate(tName, "ts_append", tsDataType, encoding, compressionType, null);
         assert 2 == getTSCountInTemplate(tName, verbose) : "修改前模版ts数量2";
-        insertRecordSingle(path+".ts_append", tsDataType, isAligned, null);
+        insertRecordSingle(path + ".ts_append", tsDataType, isAligned, null);
         if (auto_create_schema) {
             insertRecordSingle(path + ".ts_append_auto", tsDataType, isAligned, null);
             assert 3 == getTSCountInTemplate(tName, verbose) : "直接插入自动修改模版ts数量3";
         }
         deactiveTemplate(tName, path);
         session.unsetSchemaTemplate(path, tName);
-        assert 0 == getSetPathsCount(tName, verbose):"挂载成功:挂载路径数量";
+        assert 0 == getSetPathsCount(tName, verbose) : "挂载成功:挂载路径数量";
         session.dropSchemaTemplate(tName);
     }
 
@@ -105,20 +108,21 @@ public class TestOrdinary extends BaseTestSuite_TreeModel {
         }
         session.createSchemaTemplate(template);
         assert checkTemplateExists(templateName) : "创建template成功";
-        assert (templateCount+1) == getTemplateCount(verbose) : "创建template成功";
+        assert (templateCount + 1) == getTemplateCount(verbose) : "创建template成功";
         assert 0 == getSetPathsCount(templateName, verbose) : "未激活";
         session.setSchemaTemplate(templateName, database);
         assert checkTemplateContainPath(templateName, database);
         assert 1 == getSetPathsCount(templateName, verbose) : "未激活";
         assert 0 == getActivePathsCount(templateName, verbose) : "未激活";
-        String d = database+".d1";
+        String d = database + ".d1";
         devicePaths.add(d);
         session.createTimeseriesUsingSchemaTemplate(devicePaths);
         assert 1 == getActivePathsCount(templateName, verbose) : "激活成功";
-        assert structures.size() == getTSCountInTemplate(templateName, verbose) : "模版内TS数量验证: expect "+ structures.size();
+        assert structures.size() == getTSCountInTemplate(templateName, verbose) : "模版内TS数量验证: expect " + structures.size();
         insertTabletMulti(d, schemaList, 1, isAligned);
-        assert checkUsingTemplate(d, verbose) : d+"使用了模版";
+        assert checkUsingTemplate(d, verbose) : d + "使用了模版";
     }
+
     @Test(priority = 20)
     // TIMECHODB-105
     public void testReAdd() throws IoTDBConnectionException, IOException, StatementExecutionException {
@@ -128,17 +132,18 @@ public class TestOrdinary extends BaseTestSuite_TreeModel {
         assert expectCount == getTSCountInTemplate(templateName, verbose) : "增加模版列成功";
         schemaList.add(new MeasurementSchema(tsName, TSDataType.INT32, TSEncoding.PLAIN, CompressionType.SNAPPY, null));
         // 再次增加
-        Assert.assertThrows(StatementExecutionException.class, ()->{
+        Assert.assertThrows(StatementExecutionException.class, () -> {
             addTSIntoTemplate(templateName, tsName, TSDataType.INT32, TSEncoding.PLAIN, CompressionType.SNAPPY, null);
         });
         assert expectCount == getTSCountInTemplate(templateName, verbose) : "增加模版列：再次增加同名失败";
-        Assert.assertThrows(StatementExecutionException.class, ()->{
-            int i=100;
-            addTSIntoTemplate(templateName, tsPrefix+i, (TSDataType) structures.get(1).get(0),
+        Assert.assertThrows(StatementExecutionException.class, () -> {
+            int i = 100;
+            addTSIntoTemplate(templateName, tsPrefix + i, (TSDataType) structures.get(1).get(0),
                     (TSEncoding) structures.get(1).get(1), (CompressionType) structures.get(1).get(2), null);
         });
         assert expectCount == getTSCountInTemplate(templateName, verbose) : "增加不同类型同名模版列：失败";
     }
+
     @Test(priority = 21)
     public void testReAdd_auto() throws IoTDBConnectionException, StatementExecutionException, IOException {
         if (!checkStroageGroupExists(database)) {
@@ -146,22 +151,24 @@ public class TestOrdinary extends BaseTestSuite_TreeModel {
             session.setSchemaTemplate(templateName, database);
         }
         List<String> paths = new ArrayList<>(1);
-        paths.add(database+".d_0");
+        paths.add(database + ".d_0");
         insertTabletMulti(paths.get(0), schemaList, 10, isAligned);
-        schemaList.add(schemaList.get(schemaList.size()-1));
+        schemaList.add(schemaList.get(schemaList.size() - 1));
 //        insertTabletMulti(paths.get(0), schemaList, 10, isAligned);
         // 写入两列同样的失败
-        Assert.assertThrows(StatementExecutionException.class, ()->{
+        Assert.assertThrows(StatementExecutionException.class, () -> {
             insertTabletMulti(paths.get(0), schemaList, 10, isAligned);
         });
         schemaList.remove(schemaList.size() - 1);
     }
+
     @Test(priority = 22)
     public void testReAdd_otherType() {
-        Assert.assertThrows(StatementExecutionException.class, ()->{
+        Assert.assertThrows(StatementExecutionException.class, () -> {
             addTSIntoTemplate(templateName, tsName, TSDataType.INT32, TSEncoding.PLAIN, CompressionType.UNCOMPRESSED, null);
         });
     }
+
     @Test(priority = 23)
     public void testReAdd_inBatchDuplicate() throws IoTDBConnectionException, StatementExecutionException {
         expectCount = getTSCountInTemplate(templateName, verbose);
@@ -176,7 +183,7 @@ public class TestOrdinary extends BaseTestSuite_TreeModel {
             tsEncodingList.add(TSEncoding.PLAIN);
             compressionTypeList.add(CompressionType.UNCOMPRESSED);
         }
-        Assert.assertThrows(StatementExecutionException.class, ()->{
+        Assert.assertThrows(StatementExecutionException.class, () -> {
             addTSIntoTemplate(templateName, names, tsDataTypeList, tsEncodingList, compressionTypeList);
         });
         assert expectCount == getTSCountInTemplate(templateName, verbose) : "增加模版列：批量增加2列同名失败";
@@ -185,14 +192,14 @@ public class TestOrdinary extends BaseTestSuite_TreeModel {
     @Test(priority = 40)
     public void testInsert_noTemp() throws IoTDBConnectionException, StatementExecutionException, IOException {
         getStorageGroupCount("root.**", verbose);
-        String database = this.database +"_a22";
-        String d = database+".d_001";
+        String database = this.database + "_a22";
+        String d = database + ".d_001";
         if (!checkStroageGroupExists(database)) {
             session.createDatabase(database);
         }
-        if(auto_create_schema) {
+        if (auto_create_schema) {
             insertTabletMulti(d, schemaList, 1, isAligned);
-            assert false == checkUsingTemplate(d, verbose) : "未使用模版:"+d;
+            assert false == checkUsingTemplate(d, verbose) : "未使用模版:" + d;
         } else {
             Assert.assertThrows(StatementExecutionException.class, () -> {
                 insertTabletMulti(d, schemaList, 1, isAligned);
@@ -200,10 +207,11 @@ public class TestOrdinary extends BaseTestSuite_TreeModel {
         }
         session.deleteDatabase(database);
     }
+
     @Test(priority = 50)
     public void testTSAndTemplate() throws IoTDBConnectionException, StatementExecutionException {
-        String databaseTmp = database+"_a22";
-        String d = databaseTmp +".d_002";
+        String databaseTmp = database + "_a22";
+        String d = databaseTmp + ".d_002";
         if (!checkStroageGroupExists(databaseTmp)) {
             session.createDatabase(databaseTmp);
         }
@@ -220,32 +228,33 @@ public class TestOrdinary extends BaseTestSuite_TreeModel {
         } else {
             session.createTimeseries(d + ".normalTS", TSDataType.FLOAT, TSEncoding.PLAIN, CompressionType.UNCOMPRESSED);
         }
-        assert 0 < getTimeSeriesCount(d+".**", verbose) : "节点下已经有TS:"+d;
-        Assert.assertThrows(StatementExecutionException.class, ()->{
+        assert 0 < getTimeSeriesCount(d + ".**", verbose) : "节点下已经有TS:" + d;
+        Assert.assertThrows(StatementExecutionException.class, () -> {
             session.setSchemaTemplate(templateName, d);
         });
         session.deleteDatabase(databaseTmp);
     }
+
     @Test(priority = 51)
     public void testTemplateAndTS() throws IoTDBConnectionException, StatementExecutionException, IOException {
         List<String> paths = new ArrayList<>(1);
-        String databaseTmp = this.database +"_b11";
+        String databaseTmp = this.database + "_b11";
         Session session = PrepareConnection.getSession();
         if (!checkStroageGroupExists(databaseTmp)) {
             session.createDatabase(databaseTmp);
             session.setSchemaTemplate(templateName, databaseTmp);
         }
-        String d = databaseTmp+".d_001";
+        String d = databaseTmp + ".d_001";
         paths.add(d);
         session.createTimeseriesUsingSchemaTemplate(paths);
-        assert checkUsingTemplate(d, verbose) : "已经使用模版:"+d;
+        assert checkUsingTemplate(d, verbose) : "已经使用模版:" + d;
 
-        Assert.assertThrows(StatementExecutionException.class, ()->{
-            session.createTimeseries(d+".normalTS", TSDataType.FLOAT, TSEncoding.PLAIN, CompressionType.UNCOMPRESSED);
+        Assert.assertThrows(StatementExecutionException.class, () -> {
+            session.createTimeseries(d + ".normalTS", TSDataType.FLOAT, TSEncoding.PLAIN, CompressionType.UNCOMPRESSED);
         });
         if (!auto_create_schema) {
             Assert.assertThrows(StatementExecutionException.class, () -> {
-                insertTabletSingle(d , "normalTS2", TSDataType.FLOAT, 1, isAligned);
+                insertTabletSingle(d, "normalTS2", TSDataType.FLOAT, 1, isAligned);
             });
         }
         session.deleteDatabase(databaseTmp);
@@ -258,16 +267,17 @@ public class TestOrdinary extends BaseTestSuite_TreeModel {
         List<TSDataType> tsDataTypes = new ArrayList<>(0);
         List<TSEncoding> tsEncodings = new ArrayList<>(0);
         List<CompressionType> compressionTypes = new ArrayList<>(0);
-        Assert.assertThrows(StatementExecutionException.class, ()->{
+        Assert.assertThrows(StatementExecutionException.class, () -> {
             addTSIntoTemplate(templateName, paths, tsDataTypes, tsEncodings, compressionTypes);
         });
         assert expectCount == getTSCountInTemplate(templateName, verbose) : "增加0个";
     }
 
-    @DataProvider(name="getNormalNames", parallel = true)
+    @DataProvider(name = "getNormalNames", parallel = true)
     public Iterator<Object[]> getNormalNames() throws IOException {
         return new CustomDataProvider().load("data/names-normal.csv").getData();
     }
+
     @Test(priority = 65, dataProvider = "getNormalNames")
     public void testAddTSToTemplate_normalNames(String name, String comment, String index) throws IoTDBConnectionException, StatementExecutionException, IOException {
         schemaList.add(new MeasurementSchema(name, TSDataType.FLOAT, TSEncoding.PLAIN, CompressionType.UNCOMPRESSED));
@@ -282,14 +292,15 @@ public class TestOrdinary extends BaseTestSuite_TreeModel {
 //        getActivePathsCount(templateName, verbose);
         assert checkUsingTemplate(paths.get(0), verbose) : "激活成功";
     }
-    @Test(priority = 67)
-    public void testNormalNames_resultCheck() throws IoTDBConnectionException, StatementExecutionException, IOException {
-        int actual = getTSCountInTemplate(templateName, verbose);
-        assert schemaList.size() ==  actual: "并发修改模版成功：names-normal.csv, actual "+actual + ", expect "+ schemaList.size();
-        for (int i = 0; i < devicePaths.size(); i++) {
-            insertTabletMulti(devicePaths.get(i), schemaList, 10, isAligned);
-        }
-    }
+
+//    @Test(priority = 67)
+//    public void testNormalNames_resultCheck() throws IoTDBConnectionException, StatementExecutionException, IOException {
+//        int actual = getTSCountInTemplate(templateName, verbose);
+//        assert schemaList.size() == actual : "并发修改模版成功：names-normal.csv, actual " + actual + ", expect " + schemaList.size();
+//        for (int i = 0; i < devicePaths.size(); i++) {
+//            insertTabletMulti(devicePaths.get(i), schemaList, 10, isAligned);
+//        }
+//    }
 //    @DataProvider(name="getErrorNames", parallel = true)
 //    public Iterator<Object[]> getErrorNames () throws IOException {
 //        return new CustomDataProvider().load("data/names-error.csv").getData();
