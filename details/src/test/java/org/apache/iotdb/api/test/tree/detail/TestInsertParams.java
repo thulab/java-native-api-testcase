@@ -102,9 +102,7 @@ public class TestInsertParams extends BaseTestSuite_TreeModel {
         long timestamp = baseTime;
         for (int row = 0; row < insertCount; row++) {
             timestamp += 3600000; //+1小时
-//            System.out.println("row="+row+" rowIndex="+rowIndex);
             tablet.addTimestamp(rowIndex, timestamp);
-//            tablet.addTimestamp(rowIndex, row);
             for (int i = 0; i < schemas.size(); i++) {
                 switch (schemas.get(i).getType()) {
                     case BOOLEAN:
@@ -393,9 +391,7 @@ public class TestInsertParams extends BaseTestSuite_TreeModel {
         long timestamp = baseTime;
         for (int row = 0; row < insertCount; row++) {
             timestamp += 3600000; //+1小时
-//            System.out.println("row="+row+" rowIndex="+rowIndex);
             tablet.addTimestamp(rowIndex, timestamp);
-//            tablet.addTimestamp(rowIndex, row);
             for (int i = 0; i < schemas.size(); i++) {
                 switch (schemas.get(i).getType()) {
                     case BOOLEAN:

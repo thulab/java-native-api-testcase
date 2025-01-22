@@ -21,19 +21,22 @@ import java.util.Map;
 public class TestTimeSeriesMulti extends TimeSeriesBaseTestSuite {
     @DataProvider(name = "createSingleTimeSeriesNormal", parallel = true)
     private Iterator<Object[]> getSingleTimeSeriesNormal() throws IOException {
-        return new CustomDataProvider().load("data/timeseries-single.csv").getData();
+        return new CustomDataProvider().load("data/tree/timeseries-single.csv").getData();
     }
+
     @DataProvider(name = "createSingleTimeSeriesError", parallel = true)
     private Iterator<Object[]> getSingleTimeSeriesError() throws IOException {
-        return new CustomDataProvider().load("data/timeseries-single-error.csv").getData();
+        return new CustomDataProvider().load("data/tree/timeseries-single-error.csv").getData();
     }
+
     @DataProvider(name = "createTimeSeriesMulti", parallel = true)
     private Iterator<Object[]> getTimeSeriesMulti() throws IOException {
-        return new CustomDataProvider().load("data/timeseries-multi.csv").getData();
+        return new CustomDataProvider().load("data/tree/timeseries-multi.csv").getData();
     }
+
     @DataProvider(name = "createTimeSeriesMultiError", parallel = true)
     private Iterator<Object[]> getTimeSeriesMultiError() throws IOException {
-        return new CustomDataProvider().load("data/timeseries-multi-error.csv").getData();
+        return new CustomDataProvider().load("data/tree/timeseries-multi-error.csv").getData();
     }
 
 
@@ -43,30 +46,43 @@ public class TestTimeSeriesMulti extends TimeSeriesBaseTestSuite {
         List<TSDataType> tsDataTypes = new ArrayList<>(1);
         List<TSEncoding> tsEncodings = new ArrayList<>(1);
         List<CompressionType> compressionTypes = new ArrayList<>(1);
-        List<Map<String,String>> tagList = new ArrayList<>(1);
-        List<Map<String,String>> attrList = new ArrayList<>(1);
+        List<Map<String, String>> tagList = new ArrayList<>(1);
+        List<Map<String, String>> attrList = new ArrayList<>(1);
         List<String> aliasList = new ArrayList<>(1);
-        List<Object> result  = translateString2Type(datatypeStr, encodingStr, compressStr);
+        List<Object> result = translateString2Type(datatypeStr, encodingStr, compressStr);
 
-        paths.add(device+"."+tsName);
+        paths.add(device + "." + tsName);
         tsDataTypes.add((TSDataType) result.get(0));
         tsEncodings.add((TSEncoding) result.get(1));
         compressionTypes.add((CompressionType) result.get(2));
-        if (tags != null) {tagList.add(tags);} else {tagList = null;}
-        if (attrs != null) {attrList.add(attrs);} else {attrList = null;}
-        if (alias != null) {aliasList.add(alias);} else {aliasList = null;}
+        if (tags != null) {
+            tagList.add(tags);
+        } else {
+            tagList = null;
+        }
+        if (attrs != null) {
+            attrList.add(attrs);
+        } else {
+            attrList = null;
+        }
+        if (alias != null) {
+            aliasList.add(alias);
+        } else {
+            aliasList = null;
+        }
         if (verbose)
-        logger.debug(paths+" datatype:"+tsDataTypes +" encoding:"+tsEncodings+ " compress:"+compressionTypes +" tags:"+ tagList+" attrs:"+ attrList+" alias:"+ aliasList);
+            logger.debug(paths + " datatype:" + tsDataTypes + " encoding:" + tsEncodings + " compress:" + compressionTypes + " tags:" + tagList + " attrs:" + attrList + " alias:" + aliasList);
         session.createMultiTimeseries(
                 paths, tsDataTypes, tsEncodings, compressionTypes,
                 null, tagList, attrList, aliasList);
-        assert 1 == getTimeSeriesCount(device+"."+tsName, verbose) : "创建成功";
-        insertRecordSingle(device+"."+tsName, (TSDataType) result.get(0), false, alias);
+        assert 1 == getTimeSeriesCount(device + "." + tsName, verbose) : "创建成功";
+        insertRecordSingle(device + "." + tsName, (TSDataType) result.get(0), false, alias);
         session.deleteTimeseries(paths);
-        assert 0 == getTimeSeriesCount(device+"."+tsName, verbose) : "清理成功";
+        assert 0 == getTimeSeriesCount(device + "." + tsName, verbose) : "清理成功";
     }
+
     @Test(dataProvider = "createTimeSeriesMulti", priority = 20)
-    public void testCreateTimeSeriesMulti_normal(List<String> paths, List<String> tsDataTypes, List<String> tsEncodings, List<String> compressionTypes, List<Map<String,String>> props, List<Map<String,String>> tags, List<Map<String,String>> attrs, List<String> alias) throws IoTDBConnectionException, StatementExecutionException {
+    public void testCreateTimeSeriesMulti_normal(List<String> paths, List<String> tsDataTypes, List<String> tsEncodings, List<String> compressionTypes, List<Map<String, String>> props, List<Map<String, String>> tags, List<Map<String, String>> attrs, List<String> alias) throws IoTDBConnectionException, StatementExecutionException {
         List<TSDataType> tsDataTypeLists = new ArrayList<>(paths.size());
         List<TSEncoding> tsEncodingLists = new ArrayList<>(paths.size());
         List<CompressionType> compressionTypeLists = new ArrayList<>(paths.size());
@@ -88,24 +104,24 @@ public class TestTimeSeriesMulti extends TimeSeriesBaseTestSuite {
         List<TSDataType> tsDataTypes = new ArrayList<>();
         List<TSEncoding> tsEncodings = new ArrayList<>();
         List<CompressionType> compressionTypes = new ArrayList<>();
-        List<Map<String,String>> tags = new ArrayList<>();
-        List<Map<String,String>> attrs = new ArrayList<>();
+        List<Map<String, String>> tags = new ArrayList<>();
+        List<Map<String, String>> attrs = new ArrayList<>();
         List<String> alias = new ArrayList<>();
         List<Object> result;
 
-        for (Iterator<Object[]> it = getSingleTimeSeriesNormal(); it.hasNext();) {
+        for (Iterator<Object[]> it = getSingleTimeSeriesNormal(); it.hasNext(); ) {
             Object[] line = it.next();
-            paths.add(line[0]+"."+line[1]);
-            result = translateString2Type((String)line[2], (String)line[3], (String)line[4]);
+            paths.add(line[0] + "." + line[1]);
+            result = translateString2Type((String) line[2], (String) line[3], (String) line[4]);
             tsDataTypes.add((TSDataType) result.get(0));
             tsEncodings.add((TSEncoding) result.get(1));
             compressionTypes.add((CompressionType) result.get(2));
-            tags.add((Map<String,String>)line[6]);
-            attrs.add((Map<String,String>)line[7]);
-            alias.add(line[8] == null ?null:line[8].toString());
+            tags.add((Map<String, String>) line[6]);
+            attrs.add((Map<String, String>) line[7]);
+            alias.add(line[8] == null ? null : line[8].toString());
 //            logger.debug(line[0] +" ," +line[1]+" datatype:"+tsDataTypes +" encoding:"+tsEncodings+ " compress:"+compressionTypes +" tags:"+ tags+" attrs:"+ attrs+" alias:"+ alias);
         }
-        if(verbose) {
+        if (verbose) {
             logger.debug("paths=" + paths.size());
             logger.debug("tsDataTypes=" + tsDataTypes.size());
             logger.debug("tsEncodings=" + tsEncodings.size());
@@ -116,7 +132,7 @@ public class TestTimeSeriesMulti extends TimeSeriesBaseTestSuite {
         }
         session.createMultiTimeseries(
                 paths, tsDataTypes, tsEncodings, compressionTypes, null, tags, attrs, alias);
-        assert paths.size() == getTimeSeriesCount("", verbose)  : "createMultiTimeseries normal";
+        assert paths.size() == getTimeSeriesCount("", verbose) : "createMultiTimeseries normal";
         session.deleteTimeseries(paths);
         assert 0 == getTimeSeriesCount("", verbose) : "清理成功";
     }
@@ -130,14 +146,14 @@ public class TestTimeSeriesMulti extends TimeSeriesBaseTestSuite {
         List<CompressionType> compressionTypes = null;
         List<String> alias = null;
         String device = "";
-        for (Iterator<Object[]> it = getSingleTimeSeriesNormal(); it.hasNext();) {
+        for (Iterator<Object[]> it = getSingleTimeSeriesNormal(); it.hasNext(); ) {
             Object[] line = it.next();
             deletePaths.add(line[0] + "." + line[1]);
             if (!device.equals(line[0])) {
                 if (!device.isEmpty()) {
                     session.createAlignedTimeseries(device, paths, tsDataTypes, tsEncodings, compressionTypes, alias);
-                    assert paths.size() == getTimeSeriesCount(device+".**", verbose):"创建 aligned序列成功";
-                    insertRecordMulti(device,paths,tsDataTypes, 10, true, alias);
+                    assert paths.size() == getTimeSeriesCount(device + ".**", verbose) : "创建 aligned序列成功";
+                    insertRecordMulti(device, paths, tsDataTypes, 10, true, alias);
                 }
                 paths = new ArrayList<>();
                 tsDataTypes = new ArrayList<>();
@@ -147,11 +163,11 @@ public class TestTimeSeriesMulti extends TimeSeriesBaseTestSuite {
                 device = line[0].toString();
             }
             paths.add(line[1].toString());
-            List<Object> result = translateString2Type((String)line[2], (String)line[3], (String)line[4]);
+            List<Object> result = translateString2Type((String) line[2], (String) line[3], (String) line[4]);
             tsDataTypes.add((TSDataType) result.get(0));
             tsEncodings.add((TSEncoding) result.get(1));
             compressionTypes.add((CompressionType) result.get(2));
-            alias.add(line[8] == null ?null:line[8].toString());
+            alias.add(line[8] == null ? null : line[8].toString());
         }
         session.deleteTimeseries(deletePaths);
 //        assert 0 == getTimeSeriesCount("", verbose) : "清理成功";
@@ -164,7 +180,7 @@ public class TestTimeSeriesMulti extends TimeSeriesBaseTestSuite {
         List<TSEncoding> tsEncodings = new ArrayList<>();
         List<CompressionType> compressionTypes = new ArrayList<>();
         List<Map<String, String>> attrList = new ArrayList<>();
-        List<Map<String,String>> tagList = new ArrayList<>();
+        List<Map<String, String>> tagList = new ArrayList<>();
         List<String> aliasList = new ArrayList<>();
 
         paths.add(path);
@@ -184,8 +200,9 @@ public class TestTimeSeriesMulti extends TimeSeriesBaseTestSuite {
         }
 
     }
+
     @Test(priority = 26, dataProvider = "createTimeSeriesMultiError", expectedExceptions = StatementExecutionException.class)
-    public void testCreateTimeSeriesMulti_error(List<String> paths, List<String> tsDataTypeLists, List<String> tsEncodingLists, List<String> compressionTypeLists, List<Map<String,String>> props, List<Map<String,String>> tags, List<Map<String,String>> attrs, List<String> alias) throws IoTDBConnectionException, StatementExecutionException, IOException {
+    public void testCreateTimeSeriesMulti_error(List<String> paths, List<String> tsDataTypeLists, List<String> tsEncodingLists, List<String> compressionTypeLists, List<Map<String, String>> props, List<Map<String, String>> tags, List<Map<String, String>> attrs, List<String> alias) throws IoTDBConnectionException, StatementExecutionException, IOException {
         List<TSDataType> tsDataTypes = new ArrayList<>();
         List<TSEncoding> tsEncodings = new ArrayList<>();
         List<CompressionType> compressionTypes = new ArrayList<>();
@@ -195,7 +212,7 @@ public class TestTimeSeriesMulti extends TimeSeriesBaseTestSuite {
             tsEncodings.add((TSEncoding) result.get(1));
             compressionTypes.add((CompressionType) result.get(2));
         }
-        try(Session s = PrepareConnection.getSession()) {
+        try (Session s = PrepareConnection.getSession()) {
             s.createMultiTimeseries(
                     paths, tsDataTypes, tsEncodings, compressionTypes, null, tags, attrs, alias);
         }

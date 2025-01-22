@@ -63,7 +63,7 @@ public class TestAlignedTSAdd extends BaseTestSuite_TreeModel {
     }
 
     public Iterator<Object[]> getSingleNormal() throws IOException {
-        return new CustomDataProvider().load("data/business-insert-records.csv").getData();
+        return new CustomDataProvider().load("data/tree/business-insert-records.csv").getData();
     }
 
     @Test(priority = 10)

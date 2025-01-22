@@ -26,15 +26,15 @@ public class PipeNameTest extends BaseTestSuite_TreeModel {
     }
     @DataProvider(name = "normalNames", parallel = true)
     private Iterator<Object[]> getNormalNames() throws IOException {
-        return new CustomDataProvider().load("data/names-normal.csv").getData();
+        return new CustomDataProvider().load("data/tree/names-normal.csv").getData();
     }
     @DataProvider(name = "sameNames", parallel = true)
     private Iterator<Object[]> getSameNames() throws IOException {
-        return new CustomDataProvider().load("data/same-name-concurrent.csv").getData();
+        return new CustomDataProvider().load("data/tree/same-name-concurrent.csv").getData();
     }
     @DataProvider(name = "errorNames", parallel = true)
     private Iterator<Object[]> getErrorNames() throws IOException {
-        return new CustomDataProvider().load("data/names-error.csv").getData();
+        return new CustomDataProvider().load("data/tree/names-error.csv").getData();
     }
 
     private void check_pipe_status(String name, String status) throws IoTDBConnectionException, StatementExecutionException {

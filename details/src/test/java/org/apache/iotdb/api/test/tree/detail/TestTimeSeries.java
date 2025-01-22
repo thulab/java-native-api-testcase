@@ -29,7 +29,7 @@ public class TestTimeSeries extends TimeSeriesBaseTestSuite {
 
     @BeforeClass(enabled = true)
     public void beforeClass() throws IoTDBConnectionException, StatementExecutionException, IOException {
-        normalTSs = new CustomDataProvider().getDeviceAndTs("data/timeseries-single.csv");
+        normalTSs = new CustomDataProvider().getDeviceAndTs("data/tree/timeseries-single.csv");
     }
 
     /**
@@ -88,7 +88,7 @@ public class TestTimeSeries extends TimeSeriesBaseTestSuite {
     }
     @DataProvider(name = "createSingleTimeSeriesNormal", parallel = true)
     private Iterator<Object[]> getSingleTimeSeriesNormal() throws IOException {
-        return new CustomDataProvider().load("data/timeseries-single.csv").getData();
+        return new CustomDataProvider().load("data/tree/timeseries-single.csv").getData();
     }
     @Test(priority = 9)
     public void testSingle() throws IoTDBConnectionException, StatementExecutionException {
@@ -119,7 +119,7 @@ public class TestTimeSeries extends TimeSeriesBaseTestSuite {
     }
     @DataProvider(name = "createSingleTimeSeriesError", parallel = true)
     private Iterator<Object[]> getSingleTimeSeriesError() throws IOException {
-        return new CustomDataProvider().load("data/timeseries-single-error.csv").getData();
+        return new CustomDataProvider().load("data/tree/timeseries-single-error.csv").getData();
     }
     @Test(priority = 21, dataProvider = "createSingleTimeSeriesError", expectedExceptions = StatementExecutionException.class)
     public void testDeleteSingleTimeSeries_error(String path, String datatypeStr, String encodingStr, String compressStr, Map<String, String> props, Map<String, String> tags, Map<String, String> attrs, String alias, String msg) throws IoTDBConnectionException, StatementExecutionException, IOException {
@@ -179,7 +179,7 @@ public class TestTimeSeries extends TimeSeriesBaseTestSuite {
     }
     @DataProvider(name = "deleteNormalWildcard")
     private Iterator<Object[]> deleteNormal_wildcard() throws IOException {
-        return new CustomDataProvider().load("data/timeseries-delete.csv").getData();
+        return new CustomDataProvider().load("data/tree/timeseries-delete.csv").getData();
     }
    @Test(priority = 41, dataProvider = "deleteNormalWildcard")
     public void testDeleteMultiTS(String path, String msg) throws IoTDBConnectionException, StatementExecutionException {
@@ -231,7 +231,7 @@ public class TestTimeSeries extends TimeSeriesBaseTestSuite {
 
     @DataProvider(name = "deleteTimeSeriesError", parallel = true)
     private Iterator<Object[]> getDeleteTimeSeriesError() throws IOException {
-        return new CustomDataProvider().load("data/timeseries-delete-error.csv").getData();
+        return new CustomDataProvider().load("data/tree/timeseries-delete-error.csv").getData();
     }
     @Test(priority = 60, dataProvider = "deleteTimeSeriesError", expectedExceptions = StatementExecutionException.class)
     public void testDeleteError(String path, String msg) throws IoTDBConnectionException, StatementExecutionException, IOException {
@@ -245,7 +245,7 @@ public class TestTimeSeries extends TimeSeriesBaseTestSuite {
 
     @DataProvider(name = "deleteTimeSeriesMultiError")
     private Iterator<Object[]> getDeleteTimeSeriesMultiError() throws IOException {
-        return new CustomDataProvider().load("data/timeseries-deleteG-error.csv").getData();
+        return new CustomDataProvider().load("data/tree/timeseries-deleteG-error.csv").getData();
     }
 
     @Test(priority = 80, dataProvider = "deleteTimeSeriesMultiError", expectedExceptions = StatementExecutionException.class)

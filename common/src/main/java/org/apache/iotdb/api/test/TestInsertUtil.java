@@ -58,7 +58,7 @@ public class TestInsertUtil extends BaseTestSuite_TreeModel {
      */
     @DataProvider(name = "insertSingleNormal")
     public Iterator<Object[]> getSingleNormal() throws IOException {
-        return new CustomDataProvider().load("data/insert-fail.csv").getData();
+        return new CustomDataProvider().load("data/tree/insert-fail.csv").getData();
     }
 
     /**

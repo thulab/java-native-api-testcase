@@ -52,9 +52,9 @@ public class ActiveInBatch extends BaseTestSuite_TreeModel {
         // 获取最大数据库名长度
         maxDatabaseLength = Integer.parseInt(ReadConfig.getInstance().getValue("max_database_length"));
         // 获取模板数据结构
-        structures = new CustomDataProvider().parseTSStructure("data/ts-structures.csv");
+        structures = new CustomDataProvider().parseTSStructure("data/tree/ts-structures.csv");
         // 获取错误的模板数据结构
-        errStructures = new CustomDataProvider().parseTSStructure("data/ts-structures-error.csv");
+        errStructures = new CustomDataProvider().parseTSStructure("data/tree/ts-structures-error.csv");
         if (verbose) {
             logger.info("######## ActiveInBatch #######");
         }
@@ -65,7 +65,7 @@ public class ActiveInBatch extends BaseTestSuite_TreeModel {
      */
     @DataProvider(name = "getErrorNames", parallel = true)
     public Iterator<Object[]> getErrorNames() throws IOException {
-        return new CustomDataProvider().load("data/names-error.csv").getData();
+        return new CustomDataProvider().load("data/tree/names-error.csv").getData();
     }
 
     /**
@@ -73,7 +73,7 @@ public class ActiveInBatch extends BaseTestSuite_TreeModel {
      */
     @DataProvider(name = "getNormalNames", parallel = true)
     public Iterator<Object[]> getNormalNames() throws IOException {
-        return new CustomDataProvider().load("data/names-normal.csv").getData();
+        return new CustomDataProvider().load("data/tree/names-normal.csv").getData();
     }
 
     /**
@@ -353,7 +353,7 @@ public class ActiveInBatch extends BaseTestSuite_TreeModel {
     @Test(priority = 111)
     public void testValidPath() throws IOException, IoTDBConnectionException, StatementExecutionException {
         paths.clear();
-        List<String> names = new CustomDataProvider().getFirstColumns("data/names-normal.csv");
+        List<String> names = new CustomDataProvider().getFirstColumns("data/tree/names-normal.csv");
         for (int i = 0; i < names.size(); i++) {
             paths.add(databases[1] + "." + names.get(i));
         }

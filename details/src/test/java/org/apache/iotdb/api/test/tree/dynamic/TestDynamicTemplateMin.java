@@ -41,7 +41,7 @@ public class TestDynamicTemplateMin extends BaseTestSuite_TreeModel {
     public void BeforeClass() throws IOException, IoTDBConnectionException, StatementExecutionException {
         cleanDatabases(verbose);
         cleanTemplates(verbose);
-        structures = new CustomDataProvider().parseTSStructure("data/ts-structures.csv");
+        structures = new CustomDataProvider().parseTSStructure("data/tree/ts-structures.csv");
         structureInfo.put("s_boolean", new Object[]{TSDataType.BOOLEAN, TSEncoding.PLAIN, CompressionType.UNCOMPRESSED});
         structureInfo.put("s_int", new Object[]{TSDataType.INT32, TSEncoding.PLAIN, CompressionType.UNCOMPRESSED});
         structureInfo.put("s_long", new Object[]{TSDataType.INT64, TSEncoding.PLAIN, CompressionType.UNCOMPRESSED});

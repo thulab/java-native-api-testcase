@@ -51,7 +51,7 @@ public class TestOrdinary extends BaseTestSuite_TreeModel {
     @DataProvider(name = "getNormalStructures", parallel = true)
     public Iterator<Object[]> getNormalStructures() throws IOException {
         CustomDataProvider provider = new CustomDataProvider();
-        structures = provider.parseTSStructure("data/ts-structures.csv");
+        structures = provider.parseTSStructure("data/tree/ts-structures.csv");
         return provider.getData();
     }
 
@@ -275,7 +275,7 @@ public class TestOrdinary extends BaseTestSuite_TreeModel {
 
     @DataProvider(name = "getNormalNames", parallel = true)
     public Iterator<Object[]> getNormalNames() throws IOException {
-        return new CustomDataProvider().load("data/names-normal.csv").getData();
+        return new CustomDataProvider().load("data/tree/names-normal.csv").getData();
     }
 
     @Test(priority = 65, dataProvider = "getNormalNames")

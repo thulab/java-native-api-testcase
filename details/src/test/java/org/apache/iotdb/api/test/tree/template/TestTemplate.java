@@ -64,12 +64,12 @@ public class TestTemplate extends BaseTestSuite_TreeModel {
 
     @DataProvider(name = "getErrorNames", parallel = true)
     public Iterator<Object[]> getErrorNames() throws IOException {
-        return new CustomDataProvider().load("data/names-error.csv").getData();
+        return new CustomDataProvider().load("data/tree/names-error.csv").getData();
     }
 
     @DataProvider(name = "getNormalNames", parallel = true)
     public Iterator<Object[]> getNormalNames() throws IOException {
-        return new CustomDataProvider().load("data/names-normal.csv").getData();
+        return new CustomDataProvider().load("data/tree/names-normal.csv").getData();
     }
 
     /**
@@ -112,7 +112,7 @@ public class TestTemplate extends BaseTestSuite_TreeModel {
     @DataProvider(name = "getNormalStructures", parallel = true)
     public Iterator<Object[]> getNormalStructures() throws IOException {
         CustomDataProvider provider = new CustomDataProvider();
-        structures = provider.parseTSStructure("data/ts-structures.csv");
+        structures = provider.parseTSStructure("data/tree/ts-structures.csv");
         return provider.getData();
     }
 
@@ -122,7 +122,7 @@ public class TestTemplate extends BaseTestSuite_TreeModel {
     @DataProvider(name = "getErrorStructures", parallel = true)
     public Iterator<Object[]> getErrorStructures() throws IOException {
         CustomDataProvider provider = new CustomDataProvider();
-        errStructures = provider.parseTSStructure("data/ts-structures-error.csv");
+        errStructures = provider.parseTSStructure("data/tree/ts-structures-error.csv");
         return provider.getData();
     }
 
@@ -444,7 +444,7 @@ public class TestTemplate extends BaseTestSuite_TreeModel {
         session.deleteDatabase(database);
         assert !checkStroageGroupExists(database) : "database已经删除：" + database;
         long end = System.currentTimeMillis();
-        System.out.println("########### testCreateTemplate_maxTS " + loop + " elapse time(s):" + (end - start) / 1000);
+//        System.out.println("########### testCreateTemplate_maxTS " + loop + " elapse time(s):" + (end - start) / 1000);
     }
 
     /**
@@ -479,7 +479,7 @@ public class TestTemplate extends BaseTestSuite_TreeModel {
         session.deleteDatabase(database);
         session.dropSchemaTemplate(templateName);
         long end = System.currentTimeMillis();
-        System.out.println("########### testSet_max " + maxLength + " elapse time(s):" + (end - start) / 1000);
+//        System.out.println("########### testSet_max " + maxLength + " elapse time(s):" + (end - start) / 1000);
     }
 
 }

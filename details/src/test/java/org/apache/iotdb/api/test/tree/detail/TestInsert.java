@@ -110,17 +110,17 @@ public class TestInsert extends BaseTestSuite_TreeModel {
 
     @DataProvider(name = "insertSingleNormal")
     public Iterator<Object[]> getSingleNormal() throws IOException {
-        return new CustomDataProvider().load("data/insert-records.csv").getData();
+        return new CustomDataProvider().load("data/tree/insert-records.csv").getData();
     }
 
     @DataProvider(name = "insertSingleError")
     public Iterator<Object[]> getSingleError() throws IOException {
-        return new CustomDataProvider().load("data/insert-records-error.csv").getData();
+        return new CustomDataProvider().load("data/tree/insert-records-error.csv").getData();
     }
 
     // @DataProvider(name="insertMultiRecords")
     public Iterator<Object[]> getMultiRecords() throws IOException {
-        return new CustomDataProvider().load("data/insert-records-multi.csv").getData();
+        return new CustomDataProvider().load("data/tree/insert-records-multi.csv").getData();
     }
 
     /**

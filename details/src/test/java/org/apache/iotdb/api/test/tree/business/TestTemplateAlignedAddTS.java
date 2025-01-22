@@ -65,7 +65,7 @@ public class TestTemplateAlignedAddTS extends BaseTestSuite_TreeModel {
     }
 
     public Iterator<Object[]> getSingleNormal() throws IOException {
-        return new CustomDataProvider().load("data/business-insert-records.csv").getData();
+        return new CustomDataProvider().load("data/tree/business-insert-records.csv").getData();
     }
 
     private void createTemplate(int index, boolean isAligned) throws IoTDBConnectionException, StatementExecutionException, IOException {

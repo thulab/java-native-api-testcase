@@ -33,9 +33,9 @@ public class newTest extends BaseTestSuite_TreeModel {
 
     @BeforeClass(enabled = true)
     public void beforeClass() throws IoTDBConnectionException, StatementExecutionException, IOException {
-        normalNames = new CustomDataProvider().loadString("data/names-normal.csv",',');
-        normalNames_keyword = new CustomDataProvider().loadString("data/keyword-normal.csv",',');
-        structures = new CustomDataProvider().parseTSStructure("data/ts-structures.csv");
+        normalNames = new CustomDataProvider().loadString("data/tree/names-normal.csv",',');
+        normalNames_keyword = new CustomDataProvider().loadString("data/tree/keyword-normal.csv",',');
+        structures = new CustomDataProvider().parseTSStructure("data/tree/ts-structures.csv");
 //        List<Map<String, String>> props = new CustomDataProvider().loadProps("data/props-normal.csv");
 //        List<Map<String, String>> attributes = new CustomDataProvider().loadProps("data/props-normal.csv");
 //        List<Map<String, String>> tags = new CustomDataProvider().loadProps("data/tag-normal.csv");
@@ -43,7 +43,7 @@ public class newTest extends BaseTestSuite_TreeModel {
     }
     @DataProvider(name="storageGroupNormal", parallel = true)
     public Iterator<Object[]> getStorageGroupNormal() throws IOException {
-        return new CustomDataProvider().load("data/storage-group.csv").getData();
+        return new CustomDataProvider().load("data/tree/storage-group.csv").getData();
     }
 
     @Test(enabled = true, priority = 10, dataProvider = "storageGroupNormal")
