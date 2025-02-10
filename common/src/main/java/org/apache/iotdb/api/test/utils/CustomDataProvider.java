@@ -8,7 +8,9 @@ import org.apache.tsfile.file.metadata.enums.TSEncoding;
 import org.jetbrains.annotations.NotNull;
 import org.testng.log4testng.Logger;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -26,46 +28,76 @@ public class CustomDataProvider {
      * 读取并解析CSV文件（树模型）
      */
     public Iterable<CSVRecord> readCSV_tree(String filepath, char delimiter) throws IOException {
-        // 在Windows中使用
-//        String path = Objects.requireNonNull(CustomDataProvider.class.getClassLoader().getResource(filepath)).getPath();
-//        if (path.charAt(0) == '/') {
-//            path = path.substring(1);
-//        }
-//        logger.info("read csv:" + path);
-//        this.reader = Files.newBufferedReader(Paths.get(path));
-        // 在Linux中使用
-        logger.info("read csv:" + CustomDataProvider.class.getClassLoader().getResource(filepath).getPath());
-        this.reader = Files.newBufferedReader(Paths.get(CustomDataProvider.class.getClassLoader().getResource(filepath).getPath()));
+// 判断测试类型是否为代码覆盖率测试
+        if (ReadConfig.getInstance().getValue("is_coverage").equals("true")) {
+            // 是，则从类路径中加载文件
+            this.reader = new BufferedReader(new InputStreamReader(Objects.requireNonNull(CustomDataProvider.class.getClassLoader().getResourceAsStream(filepath))));
+            // 设置CSV文件的格式
+            CSVFormat csvformat = CSVFormat.DEFAULT.withDelimiter(delimiter).withEscape('\\').withQuote('"').withIgnoreEmptyLines(true);
+            // 解析CSV文件，返回包含CSV记录的Iterable对象
+            Iterable<CSVRecord> records = csvformat.parse(reader);
+            // 去除header
+            records.iterator().next();
+            return records;
+        } else {
+            // 否，则从相对路径加载文件
+            // 在Windows中使用
+//            String path = Objects.requireNonNull(CustomDataProvider.class.getClassLoader().getResource(filepath)).getPath();
+//            if (path.charAt(0) == '/') {
+//                path = path.substring(1);
+//            }
+//            logger.info("read csv:" + path);
+//            this.reader = Files.newBufferedReader(Paths.get(path));
+            // 在Linux中使用
+            logger.info("read csv:" + CustomDataProvider.class.getClassLoader().getResource(filepath).getPath());
+            this.reader = Files.newBufferedReader(Paths.get(CustomDataProvider.class.getClassLoader().getResource(filepath).getPath()));
 
-        CSVFormat csvformat = CSVFormat.DEFAULT.withDelimiter(delimiter).withEscape('\\').withQuote('"').withIgnoreEmptyLines(true);
-        Iterable<CSVRecord> records = csvformat.parse(reader);
-        // 去除header
-        records.iterator().next();
-        return records;
+            // 设置CSV文件的格式
+            CSVFormat csvformat = CSVFormat.DEFAULT.withDelimiter(delimiter).withEscape('\\').withQuote('"').withIgnoreEmptyLines(true);
+            // 解析CSV文件，返回包含CSV记录的Iterable对象
+            Iterable<CSVRecord> records = csvformat.parse(reader);
+            // 去除header
+            records.iterator().next();
+            return records;
+        }
     }
 
     /**
      * 读取并解析CSV文件（表模型的）
      */
     public Iterable<CSVRecord> readCSV_table(String filepath) throws IOException {
-        // 在Windows中使用
-//        String path = Objects.requireNonNull(CustomDataProvider.class.getClassLoader().getResource(filepath)).getPath();
-//        if (path.charAt(0) == '/') {
-//            path = path.substring(1);
-//        }
-//        logger.info("read csv:" + path);
-//        this.reader = Files.newBufferedReader(Paths.get(path));
-        // 在Linux中使用
-        logger.info("read csv:" + CustomDataProvider.class.getClassLoader().getResource(filepath).getPath());
-        this.reader = Files.newBufferedReader(Paths.get(CustomDataProvider.class.getClassLoader().getResource(filepath).getPath()));
+        // 判断测试类型是否为代码覆盖率测试
+        if (ReadConfig.getInstance().getValue("is_coverage").equals("true")) {
+            // 是，则从类路径中加载文件
+            this.reader = new BufferedReader(new InputStreamReader(Objects.requireNonNull(CustomDataProvider.class.getClassLoader().getResourceAsStream(filepath))));
+            // 设置CSV文件的格式
+            CSVFormat csvformat = CSVFormat.MYSQL;
+            // 解析CSV文件，返回包含CSV记录的Iterable对象
+            Iterable<CSVRecord> records = csvformat.parse(reader);
+            // 去除header
+            records.iterator().next();
+            return records;
+        } else {
+            // 否，则从相对路径加载文件
+            // 在Windows中使用
+//            String path = Objects.requireNonNull(CustomDataProvider.class.getClassLoader().getResource(filepath)).getPath();
+//            if (path.charAt(0) == '/') {
+//                path = path.substring(1);
+//            }
+//            logger.info("read csv:" + path);
+//            this.reader = Files.newBufferedReader(Paths.get(path));
+            // 在Linux中使用
+            logger.info("read csv:" + CustomDataProvider.class.getClassLoader().getResource(filepath).getPath());
+            this.reader = Files.newBufferedReader(Paths.get(CustomDataProvider.class.getClassLoader().getResource(filepath).getPath()));
 
-        // 设置CSV文件的格式
-        CSVFormat csvformat = CSVFormat.MYSQL;
-        // 解析CSV文件，返回包含CSV记录的Iterable对象
-        Iterable<CSVRecord> records = csvformat.parse(reader);
-        // 去除header
-        records.iterator().next();
-        return records;
+            // 设置CSV文件的格式
+            CSVFormat csvformat = CSVFormat.MYSQL;
+            // 解析CSV文件，返回包含CSV记录的Iterable对象
+            Iterable<CSVRecord> records = csvformat.parse(reader);
+            // 去除header
+            records.iterator().next();
+            return records;
+        }
     }
 
     /**
