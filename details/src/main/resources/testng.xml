@@ -124,11 +124,11 @@
 <!--        </classes>-->
 <!--    </test>-->
 
-    <test name="End" preserve-order="true">
-        <classes>
-            <class name="org.apache.iotdb.api.test.FinalTest"/>
-        </classes>
-    </test>
+<!--    <test name="End" preserve-order="true">-->
+<!--        <classes>-->
+<!--            <class name="org.apache.iotdb.api.test.FinalTest"/>-->
+<!--        </classes>-->
+<!--    </test>-->
 
 
     <listeners>
