@@ -116,7 +116,7 @@ public class TestInsertError extends BaseTestSuite_TableModel {
                 // 获取每行的SQL语句
                 Object[] line = it.next();
                 // 添加时间戳
-                tablet.addTimestamp(rowIndex, Long.valueOf((String) line[0]));
+                tablet.addTimestamp(rowIndex, Long.parseLong((String) line[0]));
                 // 获取每行每列的数据
                 try {
                     for (int i = 0; i < tablet.getRowSize(); i++) {
