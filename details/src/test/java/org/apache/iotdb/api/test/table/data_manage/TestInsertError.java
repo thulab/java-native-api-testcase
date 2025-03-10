@@ -64,7 +64,7 @@ public class TestInsertError extends BaseTestSuite_TableModel {
      * 测试插入数据类型不一致情况
      */
     @Test(priority = 10)
-    public void insert(){
+    public void insertError1(){
         // 列名
         List<String> measurementList = new ArrayList<>();
         measurementList.add("device_id");
@@ -159,6 +159,41 @@ public class TestInsertError extends BaseTestSuite_TableModel {
             session.insert(tablet);
         } catch (IoTDBConnectionException | IOException | StatementExecutionException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * 测试写入不包含FIELD
+     */
+    @Test(priority = 20)
+    public void insertError2() {
+        // 列名
+        List<String> measurementList = new ArrayList<>();
+        measurementList.add("device_id");
+        measurementList.add("attribute");
+        // 值类型
+        List<TSDataType> dataTypeList = new ArrayList<>();
+        dataTypeList.add(TSDataType.STRING);
+        dataTypeList.add(TSDataType.STRING);
+        // 列类型
+        List<Tablet.ColumnCategory> columnCategoryList = new ArrayList<>();
+        columnCategoryList.add(Tablet.ColumnCategory.TAG);
+        columnCategoryList.add(Tablet.ColumnCategory.ATTRIBUTE);
+        // 构造tablet对象
+        Tablet tablet = new Tablet("insert_error2", measurementList, dataTypeList, columnCategoryList, 10);
+        long timestamp = System.currentTimeMillis();
+        for (int i = 0; i < 10; i++) {
+            // 添加时间戳
+            tablet.addTimestamp(i, timestamp++);
+            // 添加值
+            tablet.addValue("device_id", i, "device_id" + i);
+            tablet.addValue("attribute", i, "attribute" + i);
+        }
+        // 插入数据并判断报错是否符合预期：org.apache.iotdb.rpc.StatementExecutionException: 507: No Field column present, please check the request
+        try {
+            session.insert(tablet);
+        } catch (StatementExecutionException | IoTDBConnectionException e) {
+            assert "org.apache.iotdb.rpc.StatementExecutionException: 507: No Field column present, please check the request".equals(e.toString()) : "其他错误：" + e;
         }
     }
 
