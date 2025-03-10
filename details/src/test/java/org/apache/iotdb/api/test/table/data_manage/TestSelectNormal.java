@@ -43,7 +43,6 @@ public class TestSelectNormal extends BaseTestSuite_TableModel {
         session.executeNonQueryStatement("insert into TestSelect.table1 (time, device_id, ATTRIBUTE, string, text,  DOUBLE, FLOAT, INT64, blob, BOOLEAN, int32) values(3, '4', '3', '!@#$%^&*()_+`~！@#￥%……&*（）——+{}|', '!@#$%^&*()_+`~！@#￥%……&*（）——+{}|',  22222.7776931348623157, 11111.7776931348623157, 9223372036854775807, x'696F746462', TRUE, 2147483647)");
         session.executeNonQueryStatement("insert into table1 (time, device_id, ATTRIBUTE, string, text,  DOUBLE, FLOAT, INT64, blob, BOOLEAN, int32) values(4, '5', '4', '没问题的', '没问题的',  -22222.7976931348623157, -11111.7976931348623157, -9223372036854775807, x'696F746462', True, -2147483647)");
         session.executeNonQueryStatement("insert into TestSelect.table1 (time, device_id, ATTRIBUTE, string, text,  DOUBLE, FLOAT, INT64, blob, BOOLEAN, int32) values(6, '6', '0', '', '',  0, 0, 0, x'', FALSE, 0)");
-//        session.executeNonQueryStatement("insert into TestSelect.table1 (time, device_id, ATTRIBUTE) values(7, '7', '0')");  //
     }
 
     /**
