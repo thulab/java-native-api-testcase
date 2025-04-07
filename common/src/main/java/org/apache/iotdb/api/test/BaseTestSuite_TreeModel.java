@@ -12,6 +12,7 @@ import org.apache.tsfile.read.common.RowRecord;
 import org.apache.tsfile.enums.TSDataType;
 import org.apache.tsfile.file.metadata.enums.CompressionType;
 import org.apache.tsfile.file.metadata.enums.TSEncoding;
+import org.apache.tsfile.utils.Binary;
 import org.apache.tsfile.write.record.Tablet;
 import org.apache.tsfile.write.schema.IMeasurementSchema;
 import org.apache.tsfile.write.schema.MeasurementSchema;
@@ -21,8 +22,10 @@ import org.testng.annotations.BeforeClass;
 import org.testng.log4testng.Logger;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringJoiner;
@@ -397,6 +400,18 @@ public class BaseTestSuite_TreeModel {
                         break;
                     case TEXT:
                         tablet.addValue(schemaList.get(i).getMeasurementName(), rowIndex, GenerateValues.getChinese());
+                        break;
+                    case STRING:
+                        tablet.addValue(schemaList.get(i).getMeasurementName(), rowIndex, GenerateValues.getChinese());
+                        break;
+                    case DATE:
+                        tablet.addValue(schemaList.get(i).getMeasurementName(), rowIndex, LocalDate.of(1970, 1, 1));
+                        break;
+                    case TIMESTAMP:
+                        tablet.addValue(schemaList.get(i).getMeasurementName(), rowIndex, GenerateValues.getLong(10));
+                        break;
+                    case BLOB:
+                        tablet.addValue(schemaList.get(i).getMeasurementName(), rowIndex, new Binary(GenerateValues.getChinese(), Charset.defaultCharset()));
                         break;
                 }
             }

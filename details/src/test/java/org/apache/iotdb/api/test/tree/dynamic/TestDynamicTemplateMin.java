@@ -48,6 +48,10 @@ public class TestDynamicTemplateMin extends BaseTestSuite_TreeModel {
         structureInfo.put("s_float", new Object[]{TSDataType.FLOAT, TSEncoding.PLAIN, CompressionType.UNCOMPRESSED});
         structureInfo.put("s_double", new Object[]{TSDataType.DOUBLE, TSEncoding.PLAIN, CompressionType.UNCOMPRESSED});
         structureInfo.put("s_text", new Object[]{TSDataType.TEXT, TSEncoding.PLAIN, CompressionType.UNCOMPRESSED});
+        structureInfo.put("s_string", new Object[]{TSDataType.STRING, TSEncoding.PLAIN, CompressionType.UNCOMPRESSED});
+        structureInfo.put("s_blob", new Object[]{TSDataType.BLOB, TSEncoding.PLAIN, CompressionType.UNCOMPRESSED});
+        structureInfo.put("s_date", new Object[]{TSDataType.DATE, TSEncoding.PLAIN, CompressionType.UNCOMPRESSED});
+        structureInfo.put("s_timestamp", new Object[]{TSDataType.TIMESTAMP, TSEncoding.PLAIN, CompressionType.UNCOMPRESSED});
 
         structureInfo.forEach((key, value) -> {
             schemaList_org.add(new MeasurementSchema(key, (TSDataType) value[0], (TSEncoding) value[1], (CompressionType) value[2]));
@@ -332,7 +336,7 @@ public class TestDynamicTemplateMin extends BaseTestSuite_TreeModel {
         int tsCount = getTimeSeriesCount(database + ".**", verbose);
         session.executeNonQueryStatement("delete timeseries " + device + ".**");
         assert getTimeSeriesCount(device + ".**", verbose) == 0 : "删除成功";
-        assert tsCount - 6 == getTimeSeriesCount(database + ".**", verbose) : "删除成功,其他不影响";
+        assert tsCount - 10 == getTimeSeriesCount(database + ".**", verbose) : "删除成功,其他不影响";
         insertTabletMulti(devicePaths.get(1), schemaList_org, 20, isAligned);
         devicePaths.remove(0);
 
@@ -413,7 +417,7 @@ public class TestDynamicTemplateMin extends BaseTestSuite_TreeModel {
     }
 
     @Test(priority = 20)
-    public void testStructure_add6() throws IoTDBConnectionException, IOException, StatementExecutionException {
+    public void testStructure_addAllType() throws IoTDBConnectionException, IOException, StatementExecutionException {
         List<List<Object>> structs = new ArrayList<>(structureInfo.size());
         structureInfo.forEach((key, value) -> {
             List<Object> each = new ArrayList<>(3);
@@ -422,7 +426,7 @@ public class TestDynamicTemplateMin extends BaseTestSuite_TreeModel {
             each.add(value[2]);
             structs.add(each);
         });
-        business(structs.get(0), structs.get(1), structs.get(2), structs.get(3), structs.get(4), structs.get(5));
+        business(structs.get(0), structs.get(1), structs.get(2), structs.get(3), structs.get(4), structs.get(5), structs.get(6), structs.get(7), structs.get(8), structs.get(9));
     }
 
 }

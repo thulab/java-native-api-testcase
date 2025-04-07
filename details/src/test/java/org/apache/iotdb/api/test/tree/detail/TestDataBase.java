@@ -202,4 +202,17 @@ public class TestDataBase extends BaseTestSuite_TreeModel {
         assert checkStroageGroupExists("root.testMax*") == true : maxValue + " storage groups deleted";
     }
 
+    /**
+     * TIMECHODB-1228：【树模型】delete database root.** 等删除多个数据库语句，
+     * 当删除的数据库过多时会导致CN出现Error Database name org.apache.iotdb.db.exception.metadata.DatabaseNotseetException:
+     * Database is not set for current seriespath: [root.db42]
+     */
+    @Test(priority = 110)
+    public void test1() throws IoTDBConnectionException, StatementExecutionException {
+        for (int j = 0; j < 100; j++) {
+            session.createDatabase("root.test_db" + j);
+        }
+        session.executeNonQueryStatement("delete database root.**");
+    }
+
 }
