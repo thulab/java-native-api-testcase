@@ -62,16 +62,16 @@
             <class name="org.apache.iotdb.api.test.tree.detail.TestTimeSeriesMulti"/>
         </classes>
     </test>
-<!--    <test name="TestOrdinary" preserve-order="true">-->
-<!--        <classes>-->
-<!--            <class name="org.apache.iotdb.api.test.tree.dynamic.TestOrdinary"/>-->
-<!--        </classes>-->
-<!--    </test>-->
-<!--    <test name="TestDynamicTemplateMin" preserve-order="true">-->
-<!--        <classes>-->
-<!--            <class name="org.apache.iotdb.api.test.tree.dynamic.TestDynamicTemplateMin"/>-->
-<!--        </classes>-->
-<!--    </test>-->
+    <test name="TestOrdinary" preserve-order="true">
+        <classes>
+            <class name="org.apache.iotdb.api.test.tree.dynamic.TestOrdinary"/>
+        </classes>
+    </test>
+    <test name="TestDynamicTemplateMin" preserve-order="true">
+        <classes>
+            <class name="org.apache.iotdb.api.test.tree.dynamic.TestDynamicTemplateMin"/>
+        </classes>
+    </test>
     <test name="TestDynamicTemplateMulti" preserve-order="true">
         <classes>
             <class name="org.apache.iotdb.api.test.tree.dynamic.TestDynamicTemplateMulti"/>
@@ -92,11 +92,11 @@
             <class name="org.apache.iotdb.api.test.tree.detail.TestInsertParams"/>
         </classes>
     </test>
-<!--    <test name="template-ActiveInBatch" preserve-order="true">-->
-<!--        <classes>-->
-<!--            <class name="org.apache.iotdb.api.test.tree.template.ActiveInBatch"/>-->
-<!--        </classes>-->
-<!--    </test>-->
+    <test name="template-ActiveInBatch" preserve-order="true">
+        <classes>
+            <class name="org.apache.iotdb.api.test.tree.template.ActiveInBatch"/>
+        </classes>
+    </test>
     <test name="TestTemplate" preserve-order="true">
         <classes>
             <class name="org.apache.iotdb.api.test.tree.template.TestTemplate"/>
@@ -108,6 +108,11 @@
         </classes>
     </test>
 
+<!--    <test name="SQL" preserve-order="true">-->
+<!--        <classes>-->
+<!--            <class name="org.apache.iotdb.api.test.sql.TestSQL"/>-->
+<!--        </classes>-->
+<!--    </test>-->
 
 
 

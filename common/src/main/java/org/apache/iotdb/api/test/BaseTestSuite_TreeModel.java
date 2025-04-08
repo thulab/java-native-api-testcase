@@ -222,7 +222,8 @@ public class BaseTestSuite_TreeModel {
 
     // 用于查看挂载了某个设备模板的路径
     public boolean checkTemplateContainPath(String templateName, String path) throws IoTDBConnectionException, StatementExecutionException {
-        try (SessionDataSet dataSet = PrepareConnection.getSession().executeQueryStatement("show paths set schema template " + templateName)) {
+//        try (SessionDataSet dataSet = PrepareConnection.getSession().executeQueryStatement("show paths set schema template " + templateName)) { // TODO：会导致TestDynamicTemplateMin连接不上服务端
+        try (SessionDataSet dataSet = session.executeQueryStatement("show paths set schema template " + templateName)) {
             while (dataSet.hasNext()) {
                 String result = dataSet.next().getFields().get(0).toString();
                 if (result.equals(path)) {
@@ -235,7 +236,8 @@ public class BaseTestSuite_TreeModel {
 
     // 查看某个设备模板下的物理量
     public boolean checkUsingTemplate(String device, boolean verbose) throws IoTDBConnectionException, StatementExecutionException {
-        try (SessionDataSet dataSet = PrepareConnection.getSession().executeQueryStatement("show child nodes " + device)) {
+//        try (SessionDataSet dataSet = PrepareConnection.getSession().executeQueryStatement("show child nodes " + device)) { // TODO：会导致TestDynamicTemplateMin连接不上服务端
+        try (SessionDataSet dataSet = session.executeQueryStatement("show child nodes " + device)) {
             boolean result = dataSet.hasNext();
             if (verbose) {
                 while (dataSet.hasNext()) {
@@ -495,7 +497,7 @@ public class BaseTestSuite_TreeModel {
         // deactivate schema template t1 from root.sg1.d1
         String sql = "deactivate schema template " + templateName + " from " + path;
         logger.debug(sql);
-        Session session = PrepareConnection.getSession();
+        Session session = PrepareConnection.getSession();  // TODO：会导致TestOrdinary连接不上服务端
         session.executeNonQueryStatement(sql);
         session.close();
     }
@@ -565,7 +567,7 @@ public class BaseTestSuite_TreeModel {
 
     public void cleanTemplateNodes(String templateName, String prefix) throws IoTDBConnectionException, StatementExecutionException {
         String sql = "show paths using schema template " + templateName;
-        Session session = PrepareConnection.getSession();
+//        Session session = PrepareConnection.getSession(); // TODO：多次创建session容易导致超出rpc最大数量
         SessionDataSet records = session.executeQueryStatement(sql);
         SessionDataSet.DataIterator recordsIter = records.iterator();
         while (recordsIter.next()) {
