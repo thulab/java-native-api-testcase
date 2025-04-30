@@ -4,6 +4,7 @@ import org.apache.iotdb.api.test.BaseTestSuite_TableModel;
 import org.apache.iotdb.api.test.utils.CustomDataProvider;
 import org.apache.iotdb.rpc.IoTDBConnectionException;
 import org.apache.iotdb.rpc.StatementExecutionException;
+import org.apache.tsfile.enums.ColumnCategory;
 import org.apache.tsfile.enums.TSDataType;
 import org.apache.tsfile.write.record.Tablet;
 import org.testng.annotations.AfterClass;
@@ -94,19 +95,19 @@ public class TestInsertError extends BaseTestSuite_TableModel {
         dataTypeList.add(TSDataType.TIMESTAMP);
         dataTypeList.add(TSDataType.DATE);
         // 列类型
-        List<Tablet.ColumnCategory> columnCategoryList = new ArrayList<>();
-        columnCategoryList.add(Tablet.ColumnCategory.TAG);
-        columnCategoryList.add(Tablet.ColumnCategory.ATTRIBUTE);
-        columnCategoryList.add(Tablet.ColumnCategory.FIELD);
-        columnCategoryList.add(Tablet.ColumnCategory.FIELD);
-        columnCategoryList.add(Tablet.ColumnCategory.FIELD);
-        columnCategoryList.add(Tablet.ColumnCategory.FIELD);
-        columnCategoryList.add(Tablet.ColumnCategory.FIELD);
-        columnCategoryList.add(Tablet.ColumnCategory.FIELD);
-        columnCategoryList.add(Tablet.ColumnCategory.FIELD);
-        columnCategoryList.add(Tablet.ColumnCategory.FIELD);
-        columnCategoryList.add(Tablet.ColumnCategory.FIELD);
-        columnCategoryList.add(Tablet.ColumnCategory.FIELD);
+        List<ColumnCategory> columnCategoryList = new ArrayList<>();
+        columnCategoryList.add(ColumnCategory.TAG);
+        columnCategoryList.add(ColumnCategory.ATTRIBUTE);
+        columnCategoryList.add(ColumnCategory.FIELD);
+        columnCategoryList.add(ColumnCategory.FIELD);
+        columnCategoryList.add(ColumnCategory.FIELD);
+        columnCategoryList.add(ColumnCategory.FIELD);
+        columnCategoryList.add(ColumnCategory.FIELD);
+        columnCategoryList.add(ColumnCategory.FIELD);
+        columnCategoryList.add(ColumnCategory.FIELD);
+        columnCategoryList.add(ColumnCategory.FIELD);
+        columnCategoryList.add(ColumnCategory.FIELD);
+        columnCategoryList.add(ColumnCategory.FIELD);
         // 构造tablet对象
         Tablet tablet = new Tablet("insert_error", measurementList, dataTypeList, columnCategoryList, 10);
         try {
@@ -176,9 +177,9 @@ public class TestInsertError extends BaseTestSuite_TableModel {
         dataTypeList.add(TSDataType.STRING);
         dataTypeList.add(TSDataType.STRING);
         // 列类型
-        List<Tablet.ColumnCategory> columnCategoryList = new ArrayList<>();
-        columnCategoryList.add(Tablet.ColumnCategory.TAG);
-        columnCategoryList.add(Tablet.ColumnCategory.ATTRIBUTE);
+        List<ColumnCategory> columnCategoryList = new ArrayList<>();
+        columnCategoryList.add(ColumnCategory.TAG);
+        columnCategoryList.add(ColumnCategory.ATTRIBUTE);
         // 构造tablet对象
         Tablet tablet = new Tablet("insert_error2", measurementList, dataTypeList, columnCategoryList, 10);
         long timestamp = System.currentTimeMillis();
