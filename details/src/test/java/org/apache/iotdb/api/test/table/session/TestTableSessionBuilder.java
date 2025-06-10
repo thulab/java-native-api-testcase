@@ -246,7 +246,7 @@ public class TestTableSessionBuilder  {
     /**
      * 测试 queryTimeoutInMs 方法
      */
-    @Test(priority = 30)
+    @Test(priority = 40)
     public void testQueryTimeoutInMs() {
         if (config.getValue("is_cluster").equals("false")) {
             // 设置查询超时为9223372036854775807

@@ -1,41 +1,42 @@
-selectSQL：提供各种 select sql语句，用于测试
+# selectSQL：提供各种 select sql语句，用于测试
 # 查询所有
-select * from table1
-select * from TestSelect.table1
+select * from t1
+select * from t2
+#select * from TestSelect.table1
 # 指定列查询(单个、多个、顺序、乱序)
-select string from table1
-select string from TestSelect.table1
-select string,device_id from table1
-select string,device_id from TestSelect.table1
-select time, device_id, ATTRIBUTE, string, text,  DOUBLE, FLOAT, INT64, blob, BOOLEAN, int32 from table1
-select time, device_id, ATTRIBUTE, string, text,  DOUBLE, FLOAT, INT64, blob, BOOLEAN, int32 from TestSelect.table1
-select ATTRIBUTE, string, time, device_id, text, DOUBLE, BOOLEAN, int32, FLOAT, INT64, blob from table1
-select ATTRIBUTE, string, time, device_id, text, DOUBLE, BOOLEAN, int32, FLOAT, INT64, blob from TestSelect.table1
+#select string from table1
+#select string from TestSelect.table1
+#select string,device_id from table1
+#select string,device_id from TestSelect.table1
+#select time, device_id, ATTRIBUTE, string, text,  DOUBLE, FLOAT, INT64, blob, BOOLEAN, int32 from table1
+#select time, device_id, ATTRIBUTE, string, text,  DOUBLE, FLOAT, INT64, blob, BOOLEAN, int32 from TestSelect.table1
+#select ATTRIBUTE, string, time, device_id, text, DOUBLE, BOOLEAN, int32, FLOAT, INT64, blob from table1
+#select ATTRIBUTE, string, time, device_id, text, DOUBLE, BOOLEAN, int32, FLOAT, INT64, blob from TestSelect.table1
 # where（单个条件、多个条件、不同运算符和函数）
-select string,device_id from table1 where time = 1
-select string,device_id from TestSelect.table1 where time = 1
-select time, device_id, ATTRIBUTE, string, text,  DOUBLE, FLOAT, INT64, blob, BOOLEAN, int32 from table1 where time >= 1 and time < 2
-select time, device_id, ATTRIBUTE, string, text,  DOUBLE, FLOAT, INT64, blob, BOOLEAN, int32 from TestSelect.table1 where time >= 1 and time < 2
-select DOUBLE, FLOAT, INT64, blob, BOOLEAN, int32, time, device_id, ATTRIBUTE, string, text from table1 where device_id != '1' and time > 1 and time <= 3
-select DOUBLE, FLOAT, INT64, blob, BOOLEAN, int32, time, device_id, ATTRIBUTE, string, text from table1 where device_id = '1' and time <= 3
-select DOUBLE, FLOAT, INT64, blob, BOOLEAN, int32, time, device_id, ATTRIBUTE, string, text from table1 where INT64 is null
-select time, device_id, ATTRIBUTE, string, text,  DOUBLE, FLOAT, INT64, blob, BOOLEAN, int32 from table1 where int32 is not null
-select time, device_id, ATTRIBUTE, string, text,  DOUBLE, FLOAT, INT64, blob, BOOLEAN, int32 from table1 where text like '没'
-select time, round(DOUBLE) from table1
-select time, round(DOUBLE,1) from table1
-select time, round(DOUBLE,-1) from table1
-select round(FLOAT,4) as round from table1
-select round(FLOAT) as round from table1
-select time,text from table1
+#select string,device_id from table1 where time = 1
+#select string,device_id from TestSelect.table1 where time = 1
+#select time, device_id, ATTRIBUTE, string, text,  DOUBLE, FLOAT, INT64, blob, BOOLEAN, int32 from table1 where time >= 1 and time < 2
+#select time, device_id, ATTRIBUTE, string, text,  DOUBLE, FLOAT, INT64, blob, BOOLEAN, int32 from TestSelect.table1 where time >= 1 and time < 2
+#select DOUBLE, FLOAT, INT64, blob, BOOLEAN, int32, time, device_id, ATTRIBUTE, string, text from table1 where device_id != '1' and time > 1 and time <= 3
+#select DOUBLE, FLOAT, INT64, blob, BOOLEAN, int32, time, device_id, ATTRIBUTE, string, text from table1 where device_id = '1' and time <= 3
+#select DOUBLE, FLOAT, INT64, blob, BOOLEAN, int32, time, device_id, ATTRIBUTE, string, text from table1 where INT64 is null
+#select time, device_id, ATTRIBUTE, string, text,  DOUBLE, FLOAT, INT64, blob, BOOLEAN, int32 from table1 where int32 is not null
+#select time, device_id, ATTRIBUTE, string, text,  DOUBLE, FLOAT, INT64, blob, BOOLEAN, int32 from table1 where text like '没'
+#select time, round(DOUBLE) from table1
+#select time, round(DOUBLE,1) from table1
+#select time, round(DOUBLE,-1) from table1
+#select round(FLOAT,4) as round from table1
+#select round(FLOAT) as round from table1
+#select time,text from table1
 #select time,SUBSTRING(text FROM 1 for 2)  as SUBSTRING from table1
 #select time,SUBSTRING(text FROM 1)  as SUBSTRING from table1
 # order by
-select * from table1 order by device_id
-select * from TestSelect.table1 order by device_id
-select DOUBLE, FLOAT, INT64, blob, BOOLEAN, int32, time, device_id, ATTRIBUTE, string, text from table1 order by time
+#select * from table1 order by device_id
+#select * from TestSelect.table1 order by device_id
+#select DOUBLE, FLOAT, INT64, blob, BOOLEAN, int32, time, device_id, ATTRIBUTE, string, text from table1 order by time
 # limit/slimit
-select * from table1 limit 10
-select * from TestSelect.table1 limit 10
-select time, device_id, ATTRIBUTE, string, text,  DOUBLE, FLOAT, INT64, blob, BOOLEAN, int32 from table1 limit 1
+#select * from table1 limit 10
+#select * from TestSelect.table1 limit 10
+#select time, device_id, ATTRIBUTE, string, text,  DOUBLE, FLOAT, INT64, blob, BOOLEAN, int32 from table1 limit 1
 # GROUP BY
 # 组合使用

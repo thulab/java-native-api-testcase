@@ -5,6 +5,7 @@ This project is developed by java, maven and TestNG.
 ## required environment
 jdk: >= 1.8
 maven: >= 3.8.1
+mvn clean install -DskipTests
 
 ## configuration
 1. The iotdb connection(default is localhost):
