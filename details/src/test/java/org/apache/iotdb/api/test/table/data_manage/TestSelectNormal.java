@@ -115,7 +115,7 @@ public class TestSelectNormal extends BaseTestSuite_TableModel {
         // 构造tablet对象
         Tablet tablet = new Tablet("t1", measurementList, dataTypeList, columnCategoryList, 100);
         int time = 0;
-        // 插入有效值
+        // 插入有效值（部分为空）
         for (int row = 0; row < 10; row++) {
             tablet.addTimestamp(row, time++);
             if (row % 2 == 0) {
@@ -134,6 +134,16 @@ public class TestSelectNormal extends BaseTestSuite_TableModel {
             }
         }
         session.insert(tablet);
+        session.executeNonQueryStatement("flush");
+    }
+
+    /**
+     * 清空测试环境
+     */
+    @AfterClass
+    public void beforeTest() throws IoTDBConnectionException, StatementExecutionException {
+        // 创建数据库
+        session.executeNonQueryStatement("drop database TestSelect");
     }
 
     /**
@@ -154,14 +164,19 @@ public class TestSelectNormal extends BaseTestSuite_TableModel {
         List<String> columnTypeList = Arrays.asList("STRING", "STRING", "BOOLEAN", "INT32", "INT64", "FLOAT", "DOUBLE", "TEXT", "STRING", "BLOB", "DATE", "TIMESTAMP");
         SessionDataSet.DataIterator dataIterator = dataSet.new DataIterator();
         for (int i = 0; i < columnNameList.size(); i++) {
-//            assert columnNameList[i]
+            assert columnNameList.get(i).equals(dataIterator.getColumnNameList().get(i));
+        }
+        for (int i = 0; i < columnTypeList.size(); i++) {
+            assert columnTypeList.get(i).equals(dataIterator.getColumnTypeList().get(i));
         }
         assert dataIterator.getColumnNameList().size() == 12;
         assert dataIterator.getColumnTypeList().size() == 12;
         while (dataIterator.next()) {
-            assert dataIterator.getString("tag1").equals(dataIterator.getString(1));
-            assert dataIterator.getString("attr1").equals(dataIterator.getString(2));
-            assert dataIterator.getBoolean("s1") == dataIterator.getBoolean(3);
+            if (!(dataIterator.getString("tag1") == null)) {
+                assert dataIterator.getString("tag1").equals(dataIterator.getString(1));
+                assert dataIterator.getString("attr1").equals(dataIterator.getString(2));
+                assert dataIterator.getBoolean("s1") == dataIterator.getBoolean(3);
+            }
             dataIterator.getInt("s2");
             dataIterator.getLong("s3");
             dataIterator.getFloat("s4");
@@ -260,7 +275,7 @@ public class TestSelectNormal extends BaseTestSuite_TableModel {
             try {
                 dataIterator.getString("None");
             }catch (Exception e) {
-                System.out.println(e.getMessage());
+                assert e.getMessage().equals("Unknown column name: None");
             }
         }
     }
@@ -272,8 +287,8 @@ public class TestSelectNormal extends BaseTestSuite_TableModel {
     public void test2() throws IoTDBConnectionException, StatementExecutionException, IOException {
         // 查询数据
         SessionDataSet dataSet = session.executeQueryStatement("select * from t1");
-        System.out.println(dataSet.getColumnNames());
-        System.out.println(dataSet.getColumnTypes());
+//        System.out.println(dataSet.getColumnNames());
+//        System.out.println(dataSet.getColumnTypes());
     }
 
     /**
@@ -298,12 +313,5 @@ public class TestSelectNormal extends BaseTestSuite_TableModel {
         }
     }
 
-    /**
-     * 清空测试环境
-     */
-    @AfterClass
-    public void beforeTest() throws IoTDBConnectionException, StatementExecutionException {
-        // 创建数据库
-        session.executeNonQueryStatement("drop database TestSelect");
-    }
+
 }
