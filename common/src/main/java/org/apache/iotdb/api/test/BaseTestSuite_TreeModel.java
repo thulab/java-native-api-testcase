@@ -583,7 +583,7 @@ public class BaseTestSuite_TreeModel {
                 session.unsetSchemaTemplate(recordsIter.getString(1), templateName);
             }
         }
-        session.close();
+//        session.close();
     }
 
 }
