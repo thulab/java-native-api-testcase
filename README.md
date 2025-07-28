@@ -19,7 +19,7 @@ common/src/resources/config.properties
 3. Configure running test cases: 
 
 ```shell
-details/src/resources/testng.xml
+details/src/resources/testng.xml 
 ```
 
 （Note: Running in Linux and Windows environments requires modifying the corresponding configuration in org/Apache/iotdb/API/test/utls/Customs Data Provider. java）
