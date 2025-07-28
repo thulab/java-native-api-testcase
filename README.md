@@ -8,6 +8,7 @@ maven: >= 3.8.1
 mvn clean install -DskipTests
 
 ## configuration
+
 1. The iotdb connection(default is localhost):
 ```shell
 common/src/resources/config.properties
