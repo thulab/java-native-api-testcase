@@ -32,6 +32,7 @@ mvn clean package -DskipTests
 # run tests and generate html report
 mvn surefire-report:report
 ```
+
 Running time is approximately 20 minutes
 
 ## report
