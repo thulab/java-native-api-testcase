@@ -32,6 +32,7 @@ mvn surefire-report:report
 Running time is approximately 20 minutes
 
 ## report
+
 After running, here is the reports:
 ```shell
 details/target/site/surefire-report.html
