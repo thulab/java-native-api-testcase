@@ -8,10 +8,9 @@ import org.apache.tsfile.file.metadata.enums.TSEncoding;
 import org.jetbrains.annotations.NotNull;
 import org.testng.log4testng.Logger;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
+import java.io.*;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
@@ -42,9 +41,11 @@ public class CustomDataProvider {
         } else {
             // 否，则从相对路径加载文件
             // 在Windows中使用
-//            String path = Objects.requireNonNull(CustomDataProvider.class.getClassLoader().getResource(filepath)).getPath();
-//            if (path.charAt(0) == '/') {
-//                path = path.substring(1);
+//            String path = null;
+//            try {
+//                path = new File(Objects.requireNonNull(CustomDataProvider.class.getClassLoader().getResource(filepath)).toURI()).getAbsolutePath();
+//            } catch (URISyntaxException e) {
+//                throw new RuntimeException(e);
 //            }
 //            logger.info("read csv:" + path);
 //            this.reader = Files.newBufferedReader(Paths.get(path));
@@ -80,9 +81,11 @@ public class CustomDataProvider {
         } else {
             // 否，则从相对路径加载文件
             // 在Windows中使用
-//            String path = Objects.requireNonNull(CustomDataProvider.class.getClassLoader().getResource(filepath)).getPath();
-//            if (path.charAt(0) == '/') {
-//                path = path.substring(1);
+//            String path = null;
+//            try {
+//                path = new File(Objects.requireNonNull(CustomDataProvider.class.getClassLoader().getResource(filepath)).toURI()).getAbsolutePath();
+//            } catch (URISyntaxException e) {
+//                throw new RuntimeException(e);
 //            }
 //            logger.info("read csv:" + path);
 //            this.reader = Files.newBufferedReader(Paths.get(path));
@@ -258,7 +261,7 @@ public class CustomDataProvider {
     }
 
     /**
-     * 固定解析 ts-structures.csv
+     * 固定解析 ts-structures-plain.csv
      * 第一列 TSDataType
      * 第二列 TSEncoding
      * 第三列 CompressionType

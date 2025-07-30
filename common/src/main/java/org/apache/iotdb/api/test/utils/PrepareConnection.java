@@ -39,13 +39,13 @@ public class PrepareConnection {
             session = new TableSessionBuilder()
                     .nodeUrls(Arrays.asList(host_nodes_str.split(",")))
                     .username(config.getValue("user"))
-                    .password(config.getValue("password"))
+//                    .password(config.getValue("password")) TODO：需要确定最终默认密码之后测试
                     .build();
         } else {
             session = new TableSessionBuilder()
                     .nodeUrls(Collections.singletonList(config.getValue("url")))
                     .username(config.getValue("user"))
-                    .password(config.getValue("password"))
+//                    .password(config.getValue("password")) TODO：需要确定最终默认密码之后测试
                     .build();
         }
         return session;
@@ -62,14 +62,14 @@ public class PrepareConnection {
             session = new Session.Builder()
                     .nodeUrls(Arrays.asList(host_nodes_str.split(",")))
                     .username(config.getValue("user"))
-                    .password(config.getValue("password"))
+//                    .password(config.getValue("password")) TODO：需要确定最终默认密码之后测试
                     .build();
         } else {
             session = new Session.Builder()
                     .host(config.getValue("host"))
                     .port(Integer.parseInt(config.getValue("port")))
                     .username(config.getValue("user"))
-                    .password(config.getValue("password"))
+//                    .password(config.getValue("password")) TODO：需要确定最终默认密码之后测试
                     .build();
         }
         session.open(false);
@@ -88,14 +88,14 @@ public class PrepareConnection {
             sessionPool = new SessionPool.Builder()
                     .nodeUrls(Arrays.asList(host_nodes_str.split(",")))
                     .user(config.getValue("user"))
-                    .password(config.getValue("password"))
+//                    .password(config.getValue("password")) TODO：需要确定最终默认密码之后测试
                     .build();
         } else {
             sessionPool = new SessionPool.Builder()
                     .host(config.getValue("host"))
                     .port(Integer.parseInt(config.getValue("port")))
                     .user(config.getValue("user"))
-                    .password(config.getValue("password"))
+//                    .password(config.getValue("password")) TODO：需要确定最终默认密码之后测试
                     .build();
         }
         return sessionPool;
@@ -112,13 +112,13 @@ public class PrepareConnection {
             sessionPool = new TableSessionPoolBuilder()
                     .nodeUrls(Arrays.asList(host_nodes_str.split(",")))
                     .user(config.getValue("user"))
-                    .password(config.getValue("password"))
+//                    .password(config.getValue("password")) TODO：需要确定最终默认密码之后测试
                     .build();
         } else {
             sessionPool = new TableSessionPoolBuilder()
                     .nodeUrls(Collections.singletonList(config.getValue("url")))
                     .user(config.getValue("user"))
-                    .password(config.getValue("password"))
+//                    .password(config.getValue("password")) TODO：需要确定最终默认密码之后测试
                     .build();
         }
         return sessionPool;
