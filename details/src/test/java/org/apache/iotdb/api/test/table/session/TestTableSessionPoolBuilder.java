@@ -806,7 +806,7 @@ public class TestTableSessionPoolBuilder {
     }
 
     /**
-     * 测试 enableCompression 方法
+     * 测试 enableIoTDBRpcCompression 方法
      * TODO：此测试点需要单独测试，需要在配置文件中启动配置 dn_rpc_thrift_compression_enable=true
      */
     //@Test(priority = 140)
@@ -814,7 +814,7 @@ public class TestTableSessionPoolBuilder {
         // 启用连接的rpc压缩
         try (ITableSessionPool sessionPool =
                      new TableSessionPoolBuilder()
-                             .enableCompression(true)
+                             .enableIoTDBRpcCompression(true)
                              .build()) {
             // 从sessionPool中获取一个session
             ITableSession session = sessionPool.getSession();
