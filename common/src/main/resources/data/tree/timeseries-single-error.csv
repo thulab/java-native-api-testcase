@@ -77,7 +77,7 @@ root.error.1.2,Boolean,PLAIN,UNCOMPRESSED,m:empty,m:empty,m:empty,纯数值,path
 #root.`ab\……`,Int,PLAIN,UNCOMPRESSED,m:empty,m:empty,m:empty,特殊字符32,特殊字符:……
 #root.`ab\ `,Int,PLAIN,UNCOMPRESSED,m:empty,m:empty,m:empty,特殊字符33,特殊字符:空格
 #root.`ab\\t`,Int,PLAIN,UNCOMPRESSED,m:empty,m:empty,m:empty,特殊字符34,特殊字符:tab
-root.error.d1.alias1,long,PLAIN,UNCOMPRESSED,m:empty,m:empty,m:empty,,Alias:空串
+#root.error.d1.alias1,long,PLAIN,UNCOMPRESSED,m:empty,m:empty,m:empty,,Alias:空串
 root.error.d1.alias2,long,PLAIN,UNCOMPRESSED,m:empty,m:empty,m:empty,a.b,Alias:Contains dot
 root.error.d1.alias3,long,PLAIN,UNCOMPRESSED,m:empty,m:empty,m:empty,空 格,Alias:有空格
 root.error.d1.alias4,long,PLAIN,UNCOMPRESSED,m:empty,m:empty,m:empty,A-b,Alias:-
