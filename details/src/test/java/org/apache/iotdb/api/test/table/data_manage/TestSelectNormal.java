@@ -2,9 +2,12 @@ package org.apache.iotdb.api.test.table.data_manage;
 
 import org.apache.iotdb.api.test.BaseTestSuite_TableModel;
 import org.apache.iotdb.api.test.utils.CustomDataProvider;
+import org.apache.iotdb.isession.ITableSession;
 import org.apache.iotdb.isession.SessionDataSet;
 import org.apache.iotdb.rpc.IoTDBConnectionException;
 import org.apache.iotdb.rpc.StatementExecutionException;
+import org.apache.iotdb.session.TableSession;
+import org.apache.iotdb.session.TableSessionBuilder;
 import org.apache.tsfile.enums.ColumnCategory;
 import org.apache.tsfile.enums.TSDataType;
 import org.apache.tsfile.utils.Binary;
@@ -17,6 +20,7 @@ import org.testng.annotations.Test;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -155,7 +159,7 @@ public class TestSelectNormal extends BaseTestSuite_TableModel {
     }
 
     /**
-     * 测试使用DataIterator获取查询数据
+     * 测试使用DataIterator获取查询数据 TODO：待完善
      */
     @Test(priority = 10) // 测试执行的优先级为10
     public void test1() throws IoTDBConnectionException, StatementExecutionException, IOException {
@@ -281,7 +285,7 @@ public class TestSelectNormal extends BaseTestSuite_TableModel {
     }
 
     /**
-     * 测试使用Field获取查询数据
+     * 测试使用Field获取查询数据 TODO：待完善
      */
 //    @Test(priority = 20) // 测试执行的优先级为10
     public void test2() throws IoTDBConnectionException, StatementExecutionException, IOException {
@@ -313,5 +317,56 @@ public class TestSelectNormal extends BaseTestSuite_TableModel {
         }
     }
 
+    /**
+     * 测试 Extract 时间函数在不同时区下的变化
+     */
+    @Test(priority = 110)
+    public void test4() {
+        // 在 UTC+8 时区下插入数据并查询
+        try (ITableSession session_utc8 = new TableSessionBuilder().zoneId(ZoneId.of("UTC+8")).build()) {
+            session_utc8.executeNonQueryStatement("drop database if exists test_extract");
+            session_utc8.executeNonQueryStatement("create database test_extract");
+            session_utc8.executeNonQueryStatement("use test_extract");
+            session_utc8.executeNonQueryStatement("create table table1(t1 STRING TAG,s1 TIMESTAMP FIELD, s2 INT64 FIELD)");
+            // 插入时间 2025-01-01 08:00:00.000 (UTC+8时区)
+            session_utc8.executeNonQueryStatement("INSERT INTO table1(time,t1,s1,s2) values(2025-01-01 08:00:00.000, 't1', 2025-01-01 08:00:00.000, 1)");
+
+            SessionDataSet dataSet = session_utc8.executeQueryStatement("select extract(hour from s1) from table1");
+            while (dataSet.hasNext()) {
+                long value = dataSet.next().getField(0).getLongV();
+                assert value == 8 : "在UTC+8时区下应该提取到小时数为8，实际为: " + value;
+            }
+            dataSet.closeOperationHandle();
+        } catch (IoTDBConnectionException | StatementExecutionException e) {
+            throw new RuntimeException(e);
+        }
+
+        // 在 UTC+0 时区下查询相同数据
+        try (ITableSession session_utc0 = new TableSessionBuilder().zoneId(ZoneId.of("UTC+0")).build()) {
+            session_utc0.executeNonQueryStatement("use test_extract");
+            SessionDataSet dataSet = session_utc0.executeQueryStatement("select extract(hour from s1) from table1");
+            while (dataSet.hasNext()) {
+                long value = dataSet.next().getField(0).getLongV();
+                assert value == 0 : "在UTC+0时区下应该提取到小时数为0，实际为: " + value;
+            }
+            dataSet.closeOperationHandle();
+        } catch (IoTDBConnectionException | StatementExecutionException e) {
+            throw new RuntimeException(e);
+        }
+
+        // 在 UTC-8 时区下查询相同数据
+        try (ITableSession session_utc0 = new TableSessionBuilder().zoneId(ZoneId.of("UTC-8")).build()) {
+            session_utc0.executeNonQueryStatement("use test_extract");
+            SessionDataSet dataSet = session_utc0.executeQueryStatement("select extract(hour from s1) from table1");
+            while (dataSet.hasNext()) {
+                long value = dataSet.next().getField(0).getLongV();
+                assert value == 16 : "在UTC+0时区下应该提取到小时数为16，实际为: " + value;
+            }
+            dataSet.closeOperationHandle();
+            session_utc0.executeNonQueryStatement("drop database if exists test_extract");
+        } catch (IoTDBConnectionException | StatementExecutionException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
 }
