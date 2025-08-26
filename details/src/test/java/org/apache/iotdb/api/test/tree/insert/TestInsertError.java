@@ -4,6 +4,7 @@ package org.apache.iotdb.api.test.tree.insert;
 import org.apache.iotdb.api.test.TestInsertUtil;
 import org.apache.iotdb.rpc.IoTDBConnectionException;
 import org.apache.iotdb.rpc.StatementExecutionException;
+import org.apache.iotdb.session.Session;
 import org.apache.tsfile.enums.TSDataType;
 import org.apache.tsfile.file.metadata.enums.CompressionType;
 import org.apache.tsfile.file.metadata.enums.TSEncoding;
@@ -14,6 +15,7 @@ import org.testng.annotations.Test;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -26,7 +28,7 @@ import java.util.*;
 public class TestInsertError extends TestInsertUtil {
 
     /**
-     * 测试 insertTablet 的错误情况：类型不一致
+     * 测试 insertTablet 的错误情况：元数据和值的类型不一致
      */
     @Test(priority = 10) // 测试执行的优先级为10
     public void testInsertTabletError1() throws IoTDBConnectionException, StatementExecutionException {
@@ -90,13 +92,14 @@ public class TestInsertError extends TestInsertUtil {
             }
             // 插入数据
             session.insertTablet(tablet);
+            assert false : "Expecting an error exception, but running normally";
         } catch (Exception e) {
             assert "java.lang.IllegalArgumentException".equals(e.getClass().getName()) : "InsertTabletError1 测试失败-其他错误:" + e;
         }
     }
 
     /**
-     * 测试 insertAlignedTablet 的错误情况：类型不一致
+     * 测试 insertAlignedTablet 的错误情况：元数据和值的类型不一致
      */
     @Test(priority = 11) // 测试执行的优先级为10
     public void testInsertAlignedTabletError1() throws IoTDBConnectionException, StatementExecutionException {
@@ -488,7 +491,7 @@ public class TestInsertError extends TestInsertUtil {
 
 
     /**
-     * 测试 insertTablets 的错误情况：类型不一致
+     * 测试 insertTablets 的错误情况：元数据和值的类型不一致
      */
     @Test(priority = 16) // 测试执行的优先级为10
     public void testInsertTabletsError1() throws IOException, IoTDBConnectionException, StatementExecutionException {
@@ -559,7 +562,7 @@ public class TestInsertError extends TestInsertUtil {
     }
 
     /**
-     * 测试 insertAlignedTablets 的错误情况：类型不一致
+     * 测试 insertAlignedTablets 的错误情况：元数据和值的类型不一致
      */
     @Test(priority = 17) // 测试执行的优先级为10
     public void testInsertAlignedTabletsError1() throws IOException, IoTDBConnectionException, StatementExecutionException {
@@ -959,7 +962,7 @@ public class TestInsertError extends TestInsertUtil {
     }
 
     /**
-     * 测试 insertRecord 的错误情况:类型不一致
+     * 测试 insertRecord 的错误情况:元数据和值的类型不一致
      */
     @Test(priority = 22) // 测试执行的优先级为10
     public void testInsertRecordError1() throws IOException, IoTDBConnectionException, StatementExecutionException {
@@ -1086,7 +1089,7 @@ public class TestInsertError extends TestInsertUtil {
     }
 
     /**
-     * 测试 InsertRecords 的错误情况:类型不一致
+     * 测试 InsertRecords 的错误情况:元数据和值的类型不一致
      */
     @Test(priority = 24) // 测试执行的优先级为10
     public void testInsertRecordsError1() throws IOException, IoTDBConnectionException, StatementExecutionException {
@@ -1219,7 +1222,7 @@ public class TestInsertError extends TestInsertUtil {
     }
 
     /**
-     * 测试 InsertRecordsOfOneDevice 的错误情况:类型不一致
+     * 测试 InsertRecordsOfOneDevice 的错误情况:元数据和值的类型不一致
      */
     @Test(priority = 26) // 测试执行的优先级为10
     public void testInsertRecordsOfOneDeviceError1() throws IOException, IoTDBConnectionException, StatementExecutionException {
@@ -1356,7 +1359,7 @@ public class TestInsertError extends TestInsertUtil {
     }
 
     /**
-     * 测试 insertAlignedRecord 的错误情况:类型不一致
+     * 测试 insertAlignedRecord 的错误情况:元数据和值的类型不一致
      */
     @Test(priority = 28) // 测试执行的优先级为10
     public void testInsertAlignedRecordError1() throws IOException, IoTDBConnectionException, StatementExecutionException {
@@ -1483,7 +1486,7 @@ public class TestInsertError extends TestInsertUtil {
     }
 
     /**
-     * 测试 InsertAlignedRecords 的错误情况:类型不一致
+     * 测试 InsertAlignedRecords 的错误情况:元数据和值的类型不一致
      */
     @Test(priority = 30) // 测试执行的优先级为10
     public void testInsertAlignedRecordsError1() throws IOException, IoTDBConnectionException, StatementExecutionException {
@@ -1616,7 +1619,7 @@ public class TestInsertError extends TestInsertUtil {
     }
 
     /**
-     * 测试 InsertAlignedRecords 的错误情况:类型不一致
+     * 测试 InsertAlignedRecords 的错误情况:元数据和值的类型不一致
      */
     @Test(priority = 32) // 测试执行的优先级为10
     public void testInsertAlignedRecordsOfOneDeviceError1() throws IOException, IoTDBConnectionException, StatementExecutionException {
@@ -2595,7 +2598,6 @@ public class TestInsertError extends TestInsertUtil {
         }
         // 测试
         try {
-            // 可能抛出异常的代码
             // 创建多个非对齐时间序列
             session.createMultiTimeseries(paths, dataTypes, encodings, compressionTypes,
                     null, null, null, null);
@@ -2604,13 +2606,3740 @@ public class TestInsertError extends TestInsertUtil {
         }
     }
 
+    /**
+     * 测试 insertTablet 的错误情况：值和数据类型的类型不一致
+     */
+    @Test(priority = 47)
+    public void testInsertRecordError3() {
+        // 数据类型为 boolean 时值为非 boolean 的异常
+        try {
+            session.insertRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN),
+                    Arrays.asList(1, true, true, true, true));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause() ;
+            assert e.getMessage().contains("class java.lang.Integer cannot be cast to class java.lang.Boolean (java.lang.Integer and java.lang.Boolean are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+        try {
+            session.insertRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN),
+                    Arrays.asList(true, 1L, true, true, true));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause() ;
+            assert e.getMessage().contains("class java.lang.Long cannot be cast to class java.lang.Boolean (java.lang.Long and java.lang.Boolean are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+        try {
+            session.insertRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN),
+                    Arrays.asList(true, true, 1.1F, true, true));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause() ;
+            assert e.getMessage().contains("class java.lang.Float cannot be cast to class java.lang.Boolean (java.lang.Float and java.lang.Boolean are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+        try {
+            session.insertRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN),
+                    Arrays.asList(true, true, true, 1.1, true));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause() ;
+            assert e.getMessage().contains("class java.lang.Double cannot be cast to class java.lang.Boolean (java.lang.Double and java.lang.Boolean are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+        try {
+            session.insertRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN),
+                    Arrays.asList(true, true, true, true, "true"));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause() ;
+            assert e.getMessage().contains("class java.lang.String cannot be cast to class java.lang.Boolean (java.lang.String and java.lang.Boolean are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+        try {
+            session.insertRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN),
+                    Arrays.asList(true, true, true, true, new Binary("true", StandardCharsets.UTF_8)));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause() ;
+            assert e.getMessage().contains("class org.apache.tsfile.utils.Binary cannot be cast to class java.lang.Boolean (org.apache.tsfile.utils.Binary is in unnamed module of loader 'app'; java.lang.Boolean is in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+        try {
+            session.insertRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN),
+                    Arrays.asList(true, true, true, true, LocalDate.of(1970, 1, 1)));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause() ;
+            assert e.getMessage().contains("class java.time.LocalDate cannot be cast to class java.lang.Boolean (java.time.LocalDate and java.lang.Boolean are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+        
+        // 数据类型为 int32 时值为非 int32 的异常
+        try {
+            session.insertRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.INT32, TSDataType.INT32, TSDataType.INT32, TSDataType.INT32, TSDataType.INT32),
+                    Arrays.asList(true, 2, 3, 4, 5));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause() ;
+            assert e.getMessage().contains("class java.lang.Boolean cannot be cast to class java.lang.Integer (java.lang.Boolean and java.lang.Integer are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+        try {
+            session.insertRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.INT32, TSDataType.INT32, TSDataType.INT32, TSDataType.INT32, TSDataType.INT32),
+                    Arrays.asList(1, 2L, 3, 4, 5));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause() ;
+            assert e.getMessage().contains("class java.lang.Long cannot be cast to class java.lang.Integer (java.lang.Long and java.lang.Integer are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+        try {
+            session.insertRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.INT32, TSDataType.INT32, TSDataType.INT32, TSDataType.INT32, TSDataType.INT32),
+                    Arrays.asList(1, 2, 1.1F, 4, 5));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause() ;
+            assert e.getMessage().contains("class java.lang.Float cannot be cast to class java.lang.Integer (java.lang.Float and java.lang.Integer are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+        try {
+            session.insertRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.INT32, TSDataType.INT32, TSDataType.INT32, TSDataType.INT32, TSDataType.INT32),
+                    Arrays.asList(1.1, 2, 3, 4, 5));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause() ;
+            assert e.getMessage().contains("class java.lang.Double cannot be cast to class java.lang.Integer (java.lang.Double and java.lang.Integer are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+        try {
+            session.insertRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.INT32, TSDataType.INT32, TSDataType.INT32, TSDataType.INT32, TSDataType.INT32),
+                    Arrays.asList("1", 2, 3, 4, 5));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause() ;
+            assert e.getMessage().contains("class java.lang.String cannot be cast to class java.lang.Integer (java.lang.String and java.lang.Integer are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+        try {
+            session.insertRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.INT32, TSDataType.INT32, TSDataType.INT32, TSDataType.INT32, TSDataType.INT32),
+                    Arrays.asList(new Binary("1", StandardCharsets.UTF_8), 2, 3, 4, 5));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause() ;
+            assert e.getMessage().contains("class org.apache.tsfile.utils.Binary cannot be cast to class java.lang.Integer (org.apache.tsfile.utils.Binary is in unnamed module of loader 'app'; java.lang.Integer is in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+        try {
+            session.insertRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.INT32, TSDataType.INT32, TSDataType.INT32, TSDataType.INT32, TSDataType.INT32),
+                    Arrays.asList(LocalDate.of(1970,1,1), 2, 3, 4, 5));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause() ;
+            assert e.getMessage().contains("class java.time.LocalDate cannot be cast to class java.lang.Integer (java.time.LocalDate and java.lang.Integer are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // 数据类型为 int64 或 timestamp 时值为非 int64 或 timestamp 的异常
+        try {
+            session.insertRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.INT64, TSDataType.INT64, TSDataType.INT64, TSDataType.INT64, TSDataType.INT64),
+                    Arrays.asList(true, 2L, 3L, 4L, 5L));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause() ;
+            assert e.getMessage().contains("class java.lang.Boolean cannot be cast to class java.lang.Long (java.lang.Boolean and java.lang.Long are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+        try {
+            session.insertRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.INT64, TSDataType.INT64, TSDataType.INT64, TSDataType.INT64, TSDataType.INT64),
+                    Arrays.asList(1, 2L, 3L, 4L, 5L));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause() ;
+            assert e.getMessage().contains("class java.lang.Integer cannot be cast to class java.lang.Long (java.lang.Integer and java.lang.Long are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+        try {
+            session.insertRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.INT64, TSDataType.INT64, TSDataType.INT64, TSDataType.INT64, TSDataType.INT64),
+                    Arrays.asList(1.1F, 2L, 3L, 4L, 5L));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause() ;
+            assert e.getMessage().contains("class java.lang.Float cannot be cast to class java.lang.Long (java.lang.Float and java.lang.Long are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+        try {
+            session.insertRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.INT64, TSDataType.INT64, TSDataType.INT64, TSDataType.INT64, TSDataType.INT64),
+                    Arrays.asList(1.1, 2L, 3L, 4L, 5L));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause() ;
+            assert e.getMessage().contains("class java.lang.Double cannot be cast to class java.lang.Long (java.lang.Double and java.lang.Long are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+        try {
+            session.insertRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.INT64, TSDataType.INT64, TSDataType.INT64, TSDataType.INT64, TSDataType.INT64),
+                    Arrays.asList("1", 2L, 3L, 4L, 5L));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause() ;
+            assert e.getMessage().contains("class java.lang.String cannot be cast to class java.lang.Long (java.lang.String and java.lang.Long are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+        try {
+            session.insertRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.INT64, TSDataType.INT64, TSDataType.INT64, TSDataType.INT64, TSDataType.INT64),
+                    Arrays.asList(new Binary("1", StandardCharsets.UTF_8), 2L, 3L, 4L, 5L));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause() ;
+            assert e.getMessage().contains("class org.apache.tsfile.utils.Binary cannot be cast to class java.lang.Long (org.apache.tsfile.utils.Binary is in unnamed module of loader 'app'; java.lang.Long is in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+        try {
+            session.insertRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.INT64, TSDataType.INT64, TSDataType.INT64, TSDataType.INT64, TSDataType.INT64),
+                    Arrays.asList(LocalDate.of(1900, 1, 1), 2L, 3L, 4L, 5L));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause() ;
+            assert e.getMessage().contains("class java.time.LocalDate cannot be cast to class java.lang.Long (java.time.LocalDate and java.lang.Long are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+        try {
+            session.insertRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP),
+                    Arrays.asList(true, 2L, 3L, 4L, 5L));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause() ;
+            assert e.getMessage().contains("class java.lang.Boolean cannot be cast to class java.lang.Long (java.lang.Boolean and java.lang.Long are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+        try {
+            session.insertRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP),
+                    Arrays.asList(1, 2L, 3L, 4L, 5L));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause() ;
+            assert e.getMessage().contains("class java.lang.Integer cannot be cast to class java.lang.Long (java.lang.Integer and java.lang.Long are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+        try {
+            session.insertRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP),
+                    Arrays.asList(1.1F, 2L, 3L, 4L, 5L));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause() ;
+            assert e.getMessage().contains("class java.lang.Float cannot be cast to class java.lang.Long (java.lang.Float and java.lang.Long are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+        try {
+            session.insertRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP),
+                    Arrays.asList(1.1, 2L, 3L, 4L, 5L));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause() ;
+            assert e.getMessage().contains("class java.lang.Double cannot be cast to class java.lang.Long (java.lang.Double and java.lang.Long are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+        try {
+            session.insertRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP),
+                    Arrays.asList("1", 2L, 3L, 4L, 5L));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause() ;
+            assert e.getMessage().contains("class java.lang.String cannot be cast to class java.lang.Long (java.lang.String and java.lang.Long are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+        try {
+            session.insertRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP),
+                    Arrays.asList(new Binary("1", StandardCharsets.UTF_8), 2L, 3L, 4L, 5L));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause() ;
+            assert e.getMessage().contains("class org.apache.tsfile.utils.Binary cannot be cast to class java.lang.Long (org.apache.tsfile.utils.Binary is in unnamed module of loader 'app'; java.lang.Long is in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+        try {
+            session.insertRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP),
+                    Arrays.asList(LocalDate.of(1900, 1, 1), 2L, 3L, 4L, 5L));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause() ;
+            assert e.getMessage().contains("class java.time.LocalDate cannot be cast to class java.lang.Long (java.time.LocalDate and java.lang.Long are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+        
+        // 数据类型为 float 时值为非 float 的异常
+        try {
+            session.insertRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT),
+                    Arrays.asList(true, 2.2F, 3.3F, 4.4F, 5.5F));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Boolean cannot be cast to class java.lang.Float (java.lang.Boolean and java.lang.Float are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+        try {
+            session.insertRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT),
+                    Arrays.asList(1, 2.2F, 3.3F, 4.4F, 5.5F));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Integer cannot be cast to class java.lang.Float (java.lang.Integer and java.lang.Float are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+        try {
+            session.insertRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT),
+                    Arrays.asList(1L, 2.2F, 3.3F, 4.4F, 5.5F));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Long cannot be cast to class java.lang.Float (java.lang.Long and java.lang.Float are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+        try {
+            session.insertRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT),
+                    Arrays.asList(1.1, 2.2F, 3.3F, 4.4F, 5.5F));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Double cannot be cast to class java.lang.Float (java.lang.Double and java.lang.Float are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+        try {
+            session.insertRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT),
+                    Arrays.asList("1.1F", 2.2F, 3.3F, 4.4F, 5.5F));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.String cannot be cast to class java.lang.Float (java.lang.String and java.lang.Float are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+        try {
+            session.insertRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT),
+                    Arrays.asList(new Binary("1.1F",StandardCharsets.UTF_8), 2.2F, 3.3F, 4.4F, 5.5F));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class org.apache.tsfile.utils.Binary cannot be cast to class java.lang.Float (org.apache.tsfile.utils.Binary is in unnamed module of loader 'app'; java.lang.Float is in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+        try {
+            session.insertRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT),
+                    Arrays.asList(LocalDate.of(1970,1,1), 2.2F, 3.3F, 4.4F, 5.5F));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.time.LocalDate cannot be cast to class java.lang.Float (java.time.LocalDate and java.lang.Float are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+        
+        // 数据类型为 double 时值为非 double 的异常
+        try {
+            session.insertRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE),
+                    Arrays.asList(true, 2.2, 3.3, 4.4, 5.5));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Boolean cannot be cast to class java.lang.Double (java.lang.Boolean and java.lang.Double are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+        try {
+            session.insertRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE),
+                    Arrays.asList(1, 2.2, 3.3, 4.4, 5.5));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Integer cannot be cast to class java.lang.Double (java.lang.Integer and java.lang.Double are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+        try {
+            session.insertRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE),
+                    Arrays.asList(1L, 2.2, 3.3, 4.4, 5.5));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Long cannot be cast to class java.lang.Double (java.lang.Long and java.lang.Double are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+        try {
+            session.insertRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE),
+                    Arrays.asList(1.1F, 2.2, 3.3, 4.4, 5.5));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Float cannot be cast to class java.lang.Double (java.lang.Float and java.lang.Double are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+        try {
+            session.insertRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE),
+                    Arrays.asList("1.1F", 2.2, 3.3, 4.4, 5.5));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.String cannot be cast to class java.lang.Double (java.lang.String and java.lang.Double are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+        try {
+            session.insertRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE),
+                    Arrays.asList(new Binary("1.1F",StandardCharsets.UTF_8), 2.2, 3.3, 4.4, 5.5));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class org.apache.tsfile.utils.Binary cannot be cast to class java.lang.Double (org.apache.tsfile.utils.Binary is in unnamed module of loader 'app'; java.lang.Double is in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+        try {
+            session.insertRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE),
+                    Arrays.asList(LocalDate.of(1970,1,1), 2.2, 3.3, 4.4, 5.5));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.time.LocalDate cannot be cast to class java.lang.Double (java.time.LocalDate and java.lang.Double are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+        
+        // 数据类型为 text 或 string 时值为非 text 或 string 的异常
+        try {
+            session.insertRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT),
+                    Arrays.asList(true, "text2", "text3", "text4", "text5"));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Boolean cannot be cast to class java.lang.String (java.lang.Boolean and java.lang.String are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+        try {
+            session.insertRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT),
+                    Arrays.asList(1, "text2", "text3", "text4", "text5"));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Integer cannot be cast to class java.lang.String (java.lang.Integer and java.lang.String are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+        try {
+            session.insertRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT),
+                    Arrays.asList(1L, "text2", "text3", "text4", "text5"));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Long cannot be cast to class java.lang.String (java.lang.Long and java.lang.String are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+        try {
+            session.insertRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT),
+                    Arrays.asList(1.1F, "text2", "text3", "text4", "text5"));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Float cannot be cast to class java.lang.String (java.lang.Float and java.lang.String are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+        try {
+            session.insertRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT),
+                    Arrays.asList(1.1, "text2", "text3", "text4", "text5"));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Double cannot be cast to class java.lang.String (java.lang.Double and java.lang.String are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+        // Blob：String和Text类型支持binary数据
+        try {
+            session.insertRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT),
+                    Arrays.asList(new Binary("text1",StandardCharsets.UTF_8), "text2", "text3", "text4", "text5"));
+        } catch (IoTDBConnectionException | StatementExecutionException e) {
+            throw new RuntimeException(e);
+        }
+        try {
+            session.insertRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT),
+                    Arrays.asList(LocalDate.of(1970,1,1), "text2", "text3", "text4", "text5"));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.time.LocalDate cannot be cast to class java.lang.String (java.time.LocalDate and java.lang.String are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+        try {
+            session.insertRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.STRING, TSDataType.STRING, TSDataType.STRING, TSDataType.STRING, TSDataType.STRING),
+                    Arrays.asList(true, "string2", "string3", "string4", "string5"));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Boolean cannot be cast to class java.lang.String (java.lang.Boolean and java.lang.String are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+        try {
+            session.insertRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.STRING, TSDataType.STRING, TSDataType.STRING, TSDataType.STRING, TSDataType.STRING),
+                    Arrays.asList(1, "string2", "string3", "string4", "string5"));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Integer cannot be cast to class java.lang.String (java.lang.Integer and java.lang.String are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+        try {
+            session.insertRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.STRING, TSDataType.STRING, TSDataType.STRING, TSDataType.STRING, TSDataType.STRING),
+                    Arrays.asList(1L, "string2", "string3", "string4", "string5"));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Long cannot be cast to class java.lang.String (java.lang.Long and java.lang.String are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+        try {
+            session.insertRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.STRING, TSDataType.STRING, TSDataType.STRING, TSDataType.STRING, TSDataType.STRING),
+                    Arrays.asList(1.1F, "string2", "string3", "string4", "string5"));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Float cannot be cast to class java.lang.String (java.lang.Float and java.lang.String are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+        try {
+            session.insertRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.STRING, TSDataType.STRING, TSDataType.STRING, TSDataType.STRING, TSDataType.STRING),
+                    Arrays.asList(1.1, "string2", "string3", "string4", "string5"));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Double cannot be cast to class java.lang.String (java.lang.Double and java.lang.String are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+        // Blob：String和Text类型支持binary数据
+        try {
+            session.insertRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT),
+                    Arrays.asList(new Binary("text1",StandardCharsets.UTF_8), "string2", "string3", "string4", "string5"));
+        } catch (IoTDBConnectionException | StatementExecutionException e) {
+            throw new RuntimeException(e);
+        }
+        try {
+            session.insertRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.STRING, TSDataType.STRING, TSDataType.STRING, TSDataType.STRING, TSDataType.STRING),
+                    Arrays.asList(LocalDate.of(1970,1,1), "string2", "string3", "string4", "string5"));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.time.LocalDate cannot be cast to class java.lang.String (java.time.LocalDate and java.lang.String are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Boolean
+        try {
+            session.insertRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB),
+                    Arrays.asList(true, new Binary("blob2",StandardCharsets.UTF_8), new Binary("blob3",StandardCharsets.UTF_8), new Binary("blob4",StandardCharsets.UTF_8), new Binary("blob5",StandardCharsets.UTF_8)));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Boolean cannot be cast to class org.apache.tsfile.utils.Binary (java.lang.Boolean is in module java.base of loader 'bootstrap'; org.apache.tsfile.utils.Binary is in unnamed module of loader 'app')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Int32
+        try {
+            session.insertRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB),
+                    Arrays.asList(1, new Binary("blob2",StandardCharsets.UTF_8), new Binary("blob3",StandardCharsets.UTF_8), new Binary("blob4",StandardCharsets.UTF_8), new Binary("blob5",StandardCharsets.UTF_8)));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Integer cannot be cast to class org.apache.tsfile.utils.Binary (java.lang.Integer is in module java.base of loader 'bootstrap'; org.apache.tsfile.utils.Binary is in unnamed module of loader 'app')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Int64、timestamp
+        try {
+            session.insertRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB),
+                    Arrays.asList(1L, new Binary("blob2",StandardCharsets.UTF_8), new Binary("blob3",StandardCharsets.UTF_8), new Binary("blob4",StandardCharsets.UTF_8), new Binary("blob5",StandardCharsets.UTF_8)));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Long cannot be cast to class org.apache.tsfile.utils.Binary (java.lang.Long is in module java.base of loader 'bootstrap'; org.apache.tsfile.utils.Binary is in unnamed module of loader 'app')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Float
+        try {
+            session.insertRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB),
+                    Arrays.asList(1.1F, new Binary("blob2",StandardCharsets.UTF_8), new Binary("blob3",StandardCharsets.UTF_8), new Binary("blob4",StandardCharsets.UTF_8), new Binary("blob5",StandardCharsets.UTF_8)));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Float cannot be cast to class org.apache.tsfile.utils.Binary (java.lang.Float is in module java.base of loader 'bootstrap'; org.apache.tsfile.utils.Binary is in unnamed module of loader 'app')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Double
+        try {
+            session.insertRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB),
+                    Arrays.asList(1.1, new Binary("blob2",StandardCharsets.UTF_8), new Binary("blob3",StandardCharsets.UTF_8), new Binary("blob4",StandardCharsets.UTF_8), new Binary("blob5",StandardCharsets.UTF_8)));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Double cannot be cast to class org.apache.tsfile.utils.Binary (java.lang.Double is in module java.base of loader 'bootstrap'; org.apache.tsfile.utils.Binary is in unnamed module of loader 'app')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Text、String
+        try {
+            session.insertRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB),
+                    Arrays.asList("blob1", new Binary("blob2",StandardCharsets.UTF_8), new Binary("blob3",StandardCharsets.UTF_8), new Binary("blob4",StandardCharsets.UTF_8), new Binary("blob5",StandardCharsets.UTF_8)));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.String cannot be cast to class org.apache.tsfile.utils.Binary (java.lang.String is in module java.base of loader 'bootstrap'; org.apache.tsfile.utils.Binary is in unnamed module of loader 'app')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Date
+        try {
+            session.insertRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB),
+                    Arrays.asList(LocalDate.of(1970,1,1), new Binary("blob2",StandardCharsets.UTF_8), new Binary("blob3",StandardCharsets.UTF_8), new Binary("blob4",StandardCharsets.UTF_8), new Binary("blob5",StandardCharsets.UTF_8)));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.time.LocalDate cannot be cast to class org.apache.tsfile.utils.Binary (java.time.LocalDate is in module java.base of loader 'bootstrap'; org.apache.tsfile.utils.Binary is in unnamed module of loader 'app')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Boolean
+        try {
+            session.insertRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.DATE, TSDataType.DATE, TSDataType.DATE, TSDataType.DATE, TSDataType.DATE),
+                    Arrays.asList(true, LocalDate.of(1970,1,1), LocalDate.of(1970,1,1), LocalDate.of(1970,1,1), LocalDate.of(1970,1,1)));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Boolean cannot be cast to class java.time.LocalDate (java.lang.Boolean and java.time.LocalDate are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Int32
+        try {
+            session.insertRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.DATE, TSDataType.DATE, TSDataType.DATE, TSDataType.DATE, TSDataType.DATE),
+                    Arrays.asList(1, LocalDate.of(1970,1,1), LocalDate.of(1970,1,1), LocalDate.of(1970,1,1), LocalDate.of(1970,1,1)));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Integer cannot be cast to class java.time.LocalDate (java.lang.Integer and java.time.LocalDate are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Int64、Timestamp
+        try {
+            session.insertRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.DATE, TSDataType.DATE, TSDataType.DATE, TSDataType.DATE, TSDataType.DATE),
+                    Arrays.asList(1L, LocalDate.of(1970,1,1), LocalDate.of(1970,1,1), LocalDate.of(1970,1,1), LocalDate.of(1970,1,1)));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Long cannot be cast to class java.time.LocalDate (java.lang.Long and java.time.LocalDate are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Float
+        try {
+            session.insertRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.DATE, TSDataType.DATE, TSDataType.DATE, TSDataType.DATE, TSDataType.DATE),
+                    Arrays.asList(1.1F, LocalDate.of(1970,1,1), LocalDate.of(1970,1,1), LocalDate.of(1970,1,1), LocalDate.of(1970,1,1)));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Float cannot be cast to class java.time.LocalDate (java.lang.Float and java.time.LocalDate are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Double
+        try {
+            session.insertRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.DATE, TSDataType.DATE, TSDataType.DATE, TSDataType.DATE, TSDataType.DATE),
+                    Arrays.asList(1.1, LocalDate.of(1970,1,1), LocalDate.of(1970,1,1), LocalDate.of(1970,1,1), LocalDate.of(1970,1,1)));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Double cannot be cast to class java.time.LocalDate (java.lang.Double and java.time.LocalDate are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Text、String
+        try {
+            session.insertRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.DATE, TSDataType.DATE, TSDataType.DATE, TSDataType.DATE, TSDataType.DATE),
+                    Arrays.asList("1970.1.1", LocalDate.of(1970,1,1), LocalDate.of(1970,1,1), LocalDate.of(1970,1,1), LocalDate.of(1970,1,1)));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.String cannot be cast to class java.time.LocalDate (java.lang.String and java.time.LocalDate are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Blob
+        try {
+            session.insertRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.DATE, TSDataType.DATE, TSDataType.DATE, TSDataType.DATE, TSDataType.DATE),
+                    Arrays.asList(new Binary("1970.1.1",StandardCharsets.UTF_8), LocalDate.of(1970,1,1), LocalDate.of(1970,1,1), LocalDate.of(1970,1,1), LocalDate.of(1970,1,1)));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class org.apache.tsfile.utils.Binary cannot be cast to class java.time.LocalDate (org.apache.tsfile.utils.Binary is in unnamed module of loader 'app'; java.time.LocalDate is in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+    }
 
     /**
-     * 在测试类之后执行的删除数据库
+     * 测试 insertAlignedTablet 的错误情况：值和数据类型的类型不一致
      */
-    @AfterClass
-    public void afterClass() throws IoTDBConnectionException, StatementExecutionException {
-        // 删除数据库
-        session.deleteDatabase(super.database);
+    @Test(priority = 48)
+    public void testInsertAlignedRecordError3() {
+        // 数据类型为 boolean 时值为非 boolean 的异常
+        try {
+            session.insertAlignedRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN),
+                    Arrays.asList(1, true, true, true, true));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause() ;
+            assert e.getMessage().contains("class java.lang.Integer cannot be cast to class java.lang.Boolean (java.lang.Integer and java.lang.Boolean are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+        try {
+            session.insertAlignedRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN),
+                    Arrays.asList(true, 1L, true, true, true));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause() ;
+            assert e.getMessage().contains("class java.lang.Long cannot be cast to class java.lang.Boolean (java.lang.Long and java.lang.Boolean are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+        try {
+            session.insertAlignedRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN),
+                    Arrays.asList(true, true, 1.1F, true, true));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause() ;
+            assert e.getMessage().contains("class java.lang.Float cannot be cast to class java.lang.Boolean (java.lang.Float and java.lang.Boolean are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+        try {
+            session.insertAlignedRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN),
+                    Arrays.asList(true, true, true, 1.1, true));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause() ;
+            assert e.getMessage().contains("class java.lang.Double cannot be cast to class java.lang.Boolean (java.lang.Double and java.lang.Boolean are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+        try {
+            session.insertAlignedRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN),
+                    Arrays.asList(true, true, true, true, "true"));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause() ;
+            assert e.getMessage().contains("class java.lang.String cannot be cast to class java.lang.Boolean (java.lang.String and java.lang.Boolean are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+        try {
+            session.insertAlignedRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN),
+                    Arrays.asList(true, true, true, true, new Binary("true", StandardCharsets.UTF_8)));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause() ;
+            assert e.getMessage().contains("class org.apache.tsfile.utils.Binary cannot be cast to class java.lang.Boolean (org.apache.tsfile.utils.Binary is in unnamed module of loader 'app'; java.lang.Boolean is in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+        try {
+            session.insertAlignedRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN),
+                    Arrays.asList(true, true, true, true, LocalDate.of(1970, 1, 1)));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause() ;
+            assert e.getMessage().contains("class java.time.LocalDate cannot be cast to class java.lang.Boolean (java.time.LocalDate and java.lang.Boolean are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // 数据类型为 int32 时值为非 int32 的异常
+        try {
+            session.insertAlignedRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.INT32, TSDataType.INT32, TSDataType.INT32, TSDataType.INT32, TSDataType.INT32),
+                    Arrays.asList(true, 2, 3, 4, 5));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause() ;
+            assert e.getMessage().contains("class java.lang.Boolean cannot be cast to class java.lang.Integer (java.lang.Boolean and java.lang.Integer are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+        try {
+            session.insertAlignedRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.INT32, TSDataType.INT32, TSDataType.INT32, TSDataType.INT32, TSDataType.INT32),
+                    Arrays.asList(1, 2L, 3, 4, 5));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause() ;
+            assert e.getMessage().contains("class java.lang.Long cannot be cast to class java.lang.Integer (java.lang.Long and java.lang.Integer are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+        try {
+            session.insertAlignedRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.INT32, TSDataType.INT32, TSDataType.INT32, TSDataType.INT32, TSDataType.INT32),
+                    Arrays.asList(1, 2, 1.1F, 4, 5));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause() ;
+            assert e.getMessage().contains("class java.lang.Float cannot be cast to class java.lang.Integer (java.lang.Float and java.lang.Integer are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+        try {
+            session.insertAlignedRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.INT32, TSDataType.INT32, TSDataType.INT32, TSDataType.INT32, TSDataType.INT32),
+                    Arrays.asList(1.1, 2, 3, 4, 5));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause() ;
+            assert e.getMessage().contains("class java.lang.Double cannot be cast to class java.lang.Integer (java.lang.Double and java.lang.Integer are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+        try {
+            session.insertAlignedRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.INT32, TSDataType.INT32, TSDataType.INT32, TSDataType.INT32, TSDataType.INT32),
+                    Arrays.asList("1", 2, 3, 4, 5));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause() ;
+            assert e.getMessage().contains("class java.lang.String cannot be cast to class java.lang.Integer (java.lang.String and java.lang.Integer are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+        try {
+            session.insertAlignedRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.INT32, TSDataType.INT32, TSDataType.INT32, TSDataType.INT32, TSDataType.INT32),
+                    Arrays.asList(new Binary("1", StandardCharsets.UTF_8), 2, 3, 4, 5));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause() ;
+            assert e.getMessage().contains("class org.apache.tsfile.utils.Binary cannot be cast to class java.lang.Integer (org.apache.tsfile.utils.Binary is in unnamed module of loader 'app'; java.lang.Integer is in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+        try {
+            session.insertAlignedRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.INT32, TSDataType.INT32, TSDataType.INT32, TSDataType.INT32, TSDataType.INT32),
+                    Arrays.asList(LocalDate.of(1970,1,1), 2, 3, 4, 5));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause() ;
+            assert e.getMessage().contains("class java.time.LocalDate cannot be cast to class java.lang.Integer (java.time.LocalDate and java.lang.Integer are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // 数据类型为 int64 或 timestamp 时值为非 int64 或 timestamp 的异常
+        try {
+            session.insertAlignedRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.INT64, TSDataType.INT64, TSDataType.INT64, TSDataType.INT64, TSDataType.INT64),
+                    Arrays.asList(true, 2L, 3L, 4L, 5L));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause() ;
+            assert e.getMessage().contains("class java.lang.Boolean cannot be cast to class java.lang.Long (java.lang.Boolean and java.lang.Long are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+        try {
+            session.insertAlignedRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.INT64, TSDataType.INT64, TSDataType.INT64, TSDataType.INT64, TSDataType.INT64),
+                    Arrays.asList(1, 2L, 3L, 4L, 5L));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause() ;
+            assert e.getMessage().contains("class java.lang.Integer cannot be cast to class java.lang.Long (java.lang.Integer and java.lang.Long are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+        try {
+            session.insertAlignedRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.INT64, TSDataType.INT64, TSDataType.INT64, TSDataType.INT64, TSDataType.INT64),
+                    Arrays.asList(1.1F, 2L, 3L, 4L, 5L));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause() ;
+            assert e.getMessage().contains("class java.lang.Float cannot be cast to class java.lang.Long (java.lang.Float and java.lang.Long are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+        try {
+            session.insertAlignedRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.INT64, TSDataType.INT64, TSDataType.INT64, TSDataType.INT64, TSDataType.INT64),
+                    Arrays.asList(1.1, 2L, 3L, 4L, 5L));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause() ;
+            assert e.getMessage().contains("class java.lang.Double cannot be cast to class java.lang.Long (java.lang.Double and java.lang.Long are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+        try {
+            session.insertAlignedRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.INT64, TSDataType.INT64, TSDataType.INT64, TSDataType.INT64, TSDataType.INT64),
+                    Arrays.asList("1", 2L, 3L, 4L, 5L));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause() ;
+            assert e.getMessage().contains("class java.lang.String cannot be cast to class java.lang.Long (java.lang.String and java.lang.Long are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+        try {
+            session.insertAlignedRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.INT64, TSDataType.INT64, TSDataType.INT64, TSDataType.INT64, TSDataType.INT64),
+                    Arrays.asList(new Binary("1", StandardCharsets.UTF_8), 2L, 3L, 4L, 5L));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause() ;
+            assert e.getMessage().contains("class org.apache.tsfile.utils.Binary cannot be cast to class java.lang.Long (org.apache.tsfile.utils.Binary is in unnamed module of loader 'app'; java.lang.Long is in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+        try {
+            session.insertAlignedRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.INT64, TSDataType.INT64, TSDataType.INT64, TSDataType.INT64, TSDataType.INT64),
+                    Arrays.asList(LocalDate.of(1900, 1, 1), 2L, 3L, 4L, 5L));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause() ;
+            assert e.getMessage().contains("class java.time.LocalDate cannot be cast to class java.lang.Long (java.time.LocalDate and java.lang.Long are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+        try {
+            session.insertAlignedRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP),
+                    Arrays.asList(true, 2L, 3L, 4L, 5L));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause() ;
+            assert e.getMessage().contains("class java.lang.Boolean cannot be cast to class java.lang.Long (java.lang.Boolean and java.lang.Long are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+        try {
+            session.insertAlignedRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP),
+                    Arrays.asList(1, 2L, 3L, 4L, 5L));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause() ;
+            assert e.getMessage().contains("class java.lang.Integer cannot be cast to class java.lang.Long (java.lang.Integer and java.lang.Long are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+        try {
+            session.insertAlignedRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP),
+                    Arrays.asList(1.1F, 2L, 3L, 4L, 5L));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause() ;
+            assert e.getMessage().contains("class java.lang.Float cannot be cast to class java.lang.Long (java.lang.Float and java.lang.Long are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+        try {
+            session.insertAlignedRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP),
+                    Arrays.asList(1.1, 2L, 3L, 4L, 5L));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause() ;
+            assert e.getMessage().contains("class java.lang.Double cannot be cast to class java.lang.Long (java.lang.Double and java.lang.Long are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+        try {
+            session.insertAlignedRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP),
+                    Arrays.asList("1", 2L, 3L, 4L, 5L));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause() ;
+            assert e.getMessage().contains("class java.lang.String cannot be cast to class java.lang.Long (java.lang.String and java.lang.Long are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+        try {
+            session.insertAlignedRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP),
+                    Arrays.asList(new Binary("1", StandardCharsets.UTF_8), 2L, 3L, 4L, 5L));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause() ;
+            assert e.getMessage().contains("class org.apache.tsfile.utils.Binary cannot be cast to class java.lang.Long (org.apache.tsfile.utils.Binary is in unnamed module of loader 'app'; java.lang.Long is in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+        try {
+            session.insertAlignedRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP),
+                    Arrays.asList(LocalDate.of(1900, 1, 1), 2L, 3L, 4L, 5L));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause() ;
+            assert e.getMessage().contains("class java.time.LocalDate cannot be cast to class java.lang.Long (java.time.LocalDate and java.lang.Long are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // 数据类型为 float 时值为非 float 的异常
+        try {
+            session.insertAlignedRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT),
+                    Arrays.asList(true, 2.2F, 3.3F, 4.4F, 5.5F));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Boolean cannot be cast to class java.lang.Float (java.lang.Boolean and java.lang.Float are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+        try {
+            session.insertAlignedRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT),
+                    Arrays.asList(1, 2.2F, 3.3F, 4.4F, 5.5F));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Integer cannot be cast to class java.lang.Float (java.lang.Integer and java.lang.Float are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+        try {
+            session.insertAlignedRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT),
+                    Arrays.asList(1L, 2.2F, 3.3F, 4.4F, 5.5F));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Long cannot be cast to class java.lang.Float (java.lang.Long and java.lang.Float are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+        try {
+            session.insertAlignedRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT),
+                    Arrays.asList(1.1, 2.2F, 3.3F, 4.4F, 5.5F));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Double cannot be cast to class java.lang.Float (java.lang.Double and java.lang.Float are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+        try {
+            session.insertAlignedRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT),
+                    Arrays.asList("1.1F", 2.2F, 3.3F, 4.4F, 5.5F));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.String cannot be cast to class java.lang.Float (java.lang.String and java.lang.Float are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+        try {
+            session.insertAlignedRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT),
+                    Arrays.asList(new Binary("1.1F",StandardCharsets.UTF_8), 2.2F, 3.3F, 4.4F, 5.5F));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class org.apache.tsfile.utils.Binary cannot be cast to class java.lang.Float (org.apache.tsfile.utils.Binary is in unnamed module of loader 'app'; java.lang.Float is in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+        try {
+            session.insertAlignedRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT),
+                    Arrays.asList(LocalDate.of(1970,1,1), 2.2F, 3.3F, 4.4F, 5.5F));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.time.LocalDate cannot be cast to class java.lang.Float (java.time.LocalDate and java.lang.Float are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // 数据类型为 double 时值为非 double 的异常
+        try {
+            session.insertAlignedRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE),
+                    Arrays.asList(true, 2.2, 3.3, 4.4, 5.5));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Boolean cannot be cast to class java.lang.Double (java.lang.Boolean and java.lang.Double are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+        try {
+            session.insertAlignedRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE),
+                    Arrays.asList(1, 2.2, 3.3, 4.4, 5.5));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Integer cannot be cast to class java.lang.Double (java.lang.Integer and java.lang.Double are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+        try {
+            session.insertAlignedRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE),
+                    Arrays.asList(1L, 2.2, 3.3, 4.4, 5.5));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Long cannot be cast to class java.lang.Double (java.lang.Long and java.lang.Double are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+        try {
+            session.insertAlignedRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE),
+                    Arrays.asList(1.1F, 2.2, 3.3, 4.4, 5.5));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Float cannot be cast to class java.lang.Double (java.lang.Float and java.lang.Double are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+        try {
+            session.insertAlignedRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE),
+                    Arrays.asList("1.1F", 2.2, 3.3, 4.4, 5.5));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.String cannot be cast to class java.lang.Double (java.lang.String and java.lang.Double are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+        try {
+            session.insertAlignedRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE),
+                    Arrays.asList(new Binary("1.1F",StandardCharsets.UTF_8), 2.2, 3.3, 4.4, 5.5));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class org.apache.tsfile.utils.Binary cannot be cast to class java.lang.Double (org.apache.tsfile.utils.Binary is in unnamed module of loader 'app'; java.lang.Double is in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+        try {
+            session.insertAlignedRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE),
+                    Arrays.asList(LocalDate.of(1970,1,1), 2.2, 3.3, 4.4, 5.5));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.time.LocalDate cannot be cast to class java.lang.Double (java.time.LocalDate and java.lang.Double are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // 数据类型为 text 或 string 时值为非 text 或 string 的异常
+        try {
+            session.insertAlignedRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT),
+                    Arrays.asList(true, "text2", "text3", "text4", "text5"));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Boolean cannot be cast to class java.lang.String (java.lang.Boolean and java.lang.String are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+        try {
+            session.insertAlignedRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT),
+                    Arrays.asList(1, "text2", "text3", "text4", "text5"));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Integer cannot be cast to class java.lang.String (java.lang.Integer and java.lang.String are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+        try {
+            session.insertAlignedRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT),
+                    Arrays.asList(1L, "text2", "text3", "text4", "text5"));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Long cannot be cast to class java.lang.String (java.lang.Long and java.lang.String are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+        try {
+            session.insertAlignedRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT),
+                    Arrays.asList(1.1F, "text2", "text3", "text4", "text5"));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Float cannot be cast to class java.lang.String (java.lang.Float and java.lang.String are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+        try {
+            session.insertAlignedRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT),
+                    Arrays.asList(1.1, "text2", "text3", "text4", "text5"));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Double cannot be cast to class java.lang.String (java.lang.Double and java.lang.String are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+        // Blob：String和Text类型支持binary数据
+        try {
+            session.insertAlignedRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT),
+                    Arrays.asList(new Binary("text1",StandardCharsets.UTF_8), "text2", "text3", "text4", "text5"));
+        } catch (IoTDBConnectionException | StatementExecutionException e) {
+            throw new RuntimeException(e);
+        }
+        try {
+            session.insertAlignedRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT),
+                    Arrays.asList(LocalDate.of(1970,1,1), "text2", "text3", "text4", "text5"));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.time.LocalDate cannot be cast to class java.lang.String (java.time.LocalDate and java.lang.String are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+        try {
+            session.insertAlignedRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.STRING, TSDataType.STRING, TSDataType.STRING, TSDataType.STRING, TSDataType.STRING),
+                    Arrays.asList(true, "string2", "string3", "string4", "string5"));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Boolean cannot be cast to class java.lang.String (java.lang.Boolean and java.lang.String are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+        try {
+            session.insertAlignedRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.STRING, TSDataType.STRING, TSDataType.STRING, TSDataType.STRING, TSDataType.STRING),
+                    Arrays.asList(1, "string2", "string3", "string4", "string5"));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Integer cannot be cast to class java.lang.String (java.lang.Integer and java.lang.String are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+        try {
+            session.insertAlignedRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.STRING, TSDataType.STRING, TSDataType.STRING, TSDataType.STRING, TSDataType.STRING),
+                    Arrays.asList(1L, "string2", "string3", "string4", "string5"));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Long cannot be cast to class java.lang.String (java.lang.Long and java.lang.String are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+        try {
+            session.insertAlignedRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.STRING, TSDataType.STRING, TSDataType.STRING, TSDataType.STRING, TSDataType.STRING),
+                    Arrays.asList(1.1F, "string2", "string3", "string4", "string5"));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Float cannot be cast to class java.lang.String (java.lang.Float and java.lang.String are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+        try {
+            session.insertAlignedRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.STRING, TSDataType.STRING, TSDataType.STRING, TSDataType.STRING, TSDataType.STRING),
+                    Arrays.asList(1.1, "string2", "string3", "string4", "string5"));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Double cannot be cast to class java.lang.String (java.lang.Double and java.lang.String are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+        // Blob：String和Text类型支持binary数据
+        try {
+            session.insertAlignedRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT),
+                    Arrays.asList(new Binary("text1",StandardCharsets.UTF_8), "string2", "string3", "string4", "string5"));
+        } catch (IoTDBConnectionException | StatementExecutionException e) {
+            throw new RuntimeException(e);
+        }
+        try {
+            session.insertAlignedRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.STRING, TSDataType.STRING, TSDataType.STRING, TSDataType.STRING, TSDataType.STRING),
+                    Arrays.asList(LocalDate.of(1970,1,1), "string2", "string3", "string4", "string5"));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.time.LocalDate cannot be cast to class java.lang.String (java.time.LocalDate and java.lang.String are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Boolean
+        try {
+            session.insertAlignedRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB),
+                    Arrays.asList(true, new Binary("blob2",StandardCharsets.UTF_8), new Binary("blob3",StandardCharsets.UTF_8), new Binary("blob4",StandardCharsets.UTF_8), new Binary("blob5",StandardCharsets.UTF_8)));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Boolean cannot be cast to class org.apache.tsfile.utils.Binary (java.lang.Boolean is in module java.base of loader 'bootstrap'; org.apache.tsfile.utils.Binary is in unnamed module of loader 'app')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Int32
+        try {
+            session.insertAlignedRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB),
+                    Arrays.asList(1, new Binary("blob2",StandardCharsets.UTF_8), new Binary("blob3",StandardCharsets.UTF_8), new Binary("blob4",StandardCharsets.UTF_8), new Binary("blob5",StandardCharsets.UTF_8)));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Integer cannot be cast to class org.apache.tsfile.utils.Binary (java.lang.Integer is in module java.base of loader 'bootstrap'; org.apache.tsfile.utils.Binary is in unnamed module of loader 'app')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Int64、timestamp
+        try {
+            session.insertAlignedRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB),
+                    Arrays.asList(1L, new Binary("blob2",StandardCharsets.UTF_8), new Binary("blob3",StandardCharsets.UTF_8), new Binary("blob4",StandardCharsets.UTF_8), new Binary("blob5",StandardCharsets.UTF_8)));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Long cannot be cast to class org.apache.tsfile.utils.Binary (java.lang.Long is in module java.base of loader 'bootstrap'; org.apache.tsfile.utils.Binary is in unnamed module of loader 'app')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Float
+        try {
+            session.insertAlignedRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB),
+                    Arrays.asList(1.1F, new Binary("blob2",StandardCharsets.UTF_8), new Binary("blob3",StandardCharsets.UTF_8), new Binary("blob4",StandardCharsets.UTF_8), new Binary("blob5",StandardCharsets.UTF_8)));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Float cannot be cast to class org.apache.tsfile.utils.Binary (java.lang.Float is in module java.base of loader 'bootstrap'; org.apache.tsfile.utils.Binary is in unnamed module of loader 'app')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Double
+        try {
+            session.insertAlignedRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB),
+                    Arrays.asList(1.1, new Binary("blob2",StandardCharsets.UTF_8), new Binary("blob3",StandardCharsets.UTF_8), new Binary("blob4",StandardCharsets.UTF_8), new Binary("blob5",StandardCharsets.UTF_8)));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Double cannot be cast to class org.apache.tsfile.utils.Binary (java.lang.Double is in module java.base of loader 'bootstrap'; org.apache.tsfile.utils.Binary is in unnamed module of loader 'app')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Text、String
+        try {
+            session.insertAlignedRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB),
+                    Arrays.asList("blob1", new Binary("blob2",StandardCharsets.UTF_8), new Binary("blob3",StandardCharsets.UTF_8), new Binary("blob4",StandardCharsets.UTF_8), new Binary("blob5",StandardCharsets.UTF_8)));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.String cannot be cast to class org.apache.tsfile.utils.Binary (java.lang.String is in module java.base of loader 'bootstrap'; org.apache.tsfile.utils.Binary is in unnamed module of loader 'app')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Date
+        try {
+            session.insertAlignedRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB),
+                    Arrays.asList(LocalDate.of(1970,1,1), new Binary("blob2",StandardCharsets.UTF_8), new Binary("blob3",StandardCharsets.UTF_8), new Binary("blob4",StandardCharsets.UTF_8), new Binary("blob5",StandardCharsets.UTF_8)));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.time.LocalDate cannot be cast to class org.apache.tsfile.utils.Binary (java.time.LocalDate is in module java.base of loader 'bootstrap'; org.apache.tsfile.utils.Binary is in unnamed module of loader 'app')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Boolean
+        try {
+            session.insertAlignedRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.DATE, TSDataType.DATE, TSDataType.DATE, TSDataType.DATE, TSDataType.DATE),
+                    Arrays.asList(true, LocalDate.of(1970,1,1), LocalDate.of(1970,1,1), LocalDate.of(1970,1,1), LocalDate.of(1970,1,1)));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Boolean cannot be cast to class java.time.LocalDate (java.lang.Boolean and java.time.LocalDate are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Int32
+        try {
+            session.insertAlignedRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.DATE, TSDataType.DATE, TSDataType.DATE, TSDataType.DATE, TSDataType.DATE),
+                    Arrays.asList(1, LocalDate.of(1970,1,1), LocalDate.of(1970,1,1), LocalDate.of(1970,1,1), LocalDate.of(1970,1,1)));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Integer cannot be cast to class java.time.LocalDate (java.lang.Integer and java.time.LocalDate are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Int64、Timestamp
+        try {
+            session.insertAlignedRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.DATE, TSDataType.DATE, TSDataType.DATE, TSDataType.DATE, TSDataType.DATE),
+                    Arrays.asList(1L, LocalDate.of(1970,1,1), LocalDate.of(1970,1,1), LocalDate.of(1970,1,1), LocalDate.of(1970,1,1)));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Long cannot be cast to class java.time.LocalDate (java.lang.Long and java.time.LocalDate are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Float
+        try {
+            session.insertAlignedRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.DATE, TSDataType.DATE, TSDataType.DATE, TSDataType.DATE, TSDataType.DATE),
+                    Arrays.asList(1.1F, LocalDate.of(1970,1,1), LocalDate.of(1970,1,1), LocalDate.of(1970,1,1), LocalDate.of(1970,1,1)));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Float cannot be cast to class java.time.LocalDate (java.lang.Float and java.time.LocalDate are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Double
+        try {
+            session.insertAlignedRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.DATE, TSDataType.DATE, TSDataType.DATE, TSDataType.DATE, TSDataType.DATE),
+                    Arrays.asList(1.1, LocalDate.of(1970,1,1), LocalDate.of(1970,1,1), LocalDate.of(1970,1,1), LocalDate.of(1970,1,1)));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Double cannot be cast to class java.time.LocalDate (java.lang.Double and java.time.LocalDate are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Text、String
+        try {
+            session.insertAlignedRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.DATE, TSDataType.DATE, TSDataType.DATE, TSDataType.DATE, TSDataType.DATE),
+                    Arrays.asList("1970.1.1", LocalDate.of(1970,1,1), LocalDate.of(1970,1,1), LocalDate.of(1970,1,1), LocalDate.of(1970,1,1)));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.String cannot be cast to class java.time.LocalDate (java.lang.String and java.time.LocalDate are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Blob
+        try {
+            session.insertAlignedRecord(
+                    "root.db1.d1",
+                    0,
+                    Arrays.asList("s1", "s2", "s3", "s4", "s5"),
+                    Arrays.asList(TSDataType.DATE, TSDataType.DATE, TSDataType.DATE, TSDataType.DATE, TSDataType.DATE),
+                    Arrays.asList(new Binary("1970.1.1",StandardCharsets.UTF_8), LocalDate.of(1970,1,1), LocalDate.of(1970,1,1), LocalDate.of(1970,1,1), LocalDate.of(1970,1,1)));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class org.apache.tsfile.utils.Binary cannot be cast to class java.time.LocalDate (org.apache.tsfile.utils.Binary is in unnamed module of loader 'app'; java.time.LocalDate is in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+    }
+
+
+    /**
+     * 测试 insertTablet 的错误情况：值和数据类型的类型不一致
+     */
+    @Test(priority = 49)
+    public void testInsertRecordsError3() {
+        // int32
+        try {
+            session.insertRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN), Arrays.asList(TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN), Arrays.asList(TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN)),
+                    Arrays.asList(Arrays.asList(1, true, true, true, true), Arrays.asList(1, true, true, true, true), Arrays.asList(1, true, true, true, true)));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Integer cannot be cast to class java.lang.Boolean (java.lang.Integer and java.lang.Boolean are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // int64、 timestamp
+        try {
+            session.insertRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN), Arrays.asList(TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN), Arrays.asList(TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN)),
+                    Arrays.asList(Arrays.asList(1L, true, true, true, true), Arrays.asList(1L, true, true, true, true), Arrays.asList(1L, true, true, true, true)));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Long cannot be cast to class java.lang.Boolean (java.lang.Long and java.lang.Boolean are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // float
+        try {
+            session.insertRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN), Arrays.asList(TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN), Arrays.asList(TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN)),
+                    Arrays.asList(Arrays.asList(1.1F, true, true, true, true), Arrays.asList(1.1F, true, true, true, true), Arrays.asList(1.1F, true, true, true, true)));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Float cannot be cast to class java.lang.Boolean (java.lang.Float and java.lang.Boolean are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // double
+        try {
+            session.insertRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN), Arrays.asList(TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN), Arrays.asList(TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN)),
+                    Arrays.asList(Arrays.asList(1.1, true, true, true, true), Arrays.asList(1.1, true, true, true, true), Arrays.asList(1.1, true, true, true, true)));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Double cannot be cast to class java.lang.Boolean (java.lang.Double and java.lang.Boolean are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // text、 string
+        try {
+            session.insertRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN), Arrays.asList(TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN), Arrays.asList(TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN)),
+                    Arrays.asList(Arrays.asList("true", true, true, true, true), Arrays.asList("true", true, true, true, true), Arrays.asList("true", true, true, true, true)));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.String cannot be cast to class java.lang.Boolean (java.lang.String and java.lang.Boolean are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // blob
+        try {
+            session.insertRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN), Arrays.asList(TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN), Arrays.asList(TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN)),
+                    Arrays.asList(Arrays.asList(new Binary("true", StandardCharsets.UTF_8), true, true, true, true), Arrays.asList(new Binary("true", StandardCharsets.UTF_8), true, true, true, true), Arrays.asList(new Binary("true", StandardCharsets.UTF_8), true, true, true, true)));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class org.apache.tsfile.utils.Binary cannot be cast to class java.lang.Boolean (org.apache.tsfile.utils.Binary is in unnamed module of loader 'app'; java.lang.Boolean is in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // date
+        try {
+            session.insertRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN), Arrays.asList(TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN), Arrays.asList(TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN)),
+                    Arrays.asList(Arrays.asList(LocalDate.of(1970, 1, 1), true, true, true, true), Arrays.asList(LocalDate.of(1970, 1, 1), true, true, true, true), Arrays.asList(LocalDate.of(1970, 1, 1), true, true, true, true)));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.time.LocalDate cannot be cast to class java.lang.Boolean (java.time.LocalDate and java.lang.Boolean are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // boolean
+        try {
+            session.insertRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.INT32, TSDataType.INT32, TSDataType.INT32, TSDataType.INT32, TSDataType.INT32), Arrays.asList(TSDataType.INT32, TSDataType.INT32, TSDataType.INT32, TSDataType.INT32, TSDataType.INT32), Arrays.asList(TSDataType.INT32, TSDataType.INT32, TSDataType.INT32, TSDataType.INT32, TSDataType.INT32)),
+                    Arrays.asList(Arrays.asList(true, 2, 3, 4, 5), Arrays.asList(true, 2, 3, 4, 5), Arrays.asList(true, 2, 3, 4, 5)));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Boolean cannot be cast to class java.lang.Integer (java.lang.Boolean and java.lang.Integer are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // long、timestamp
+        try {
+            session.insertRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.INT32, TSDataType.INT32, TSDataType.INT32, TSDataType.INT32, TSDataType.INT32), Arrays.asList(TSDataType.INT32, TSDataType.INT32, TSDataType.INT32, TSDataType.INT32, TSDataType.INT32), Arrays.asList(TSDataType.INT32, TSDataType.INT32, TSDataType.INT32, TSDataType.INT32, TSDataType.INT32)),
+                    Arrays.asList(Arrays.asList(1L, 2, 3, 4, 5), Arrays.asList(1L, 2, 3, 4, 5), Arrays.asList(1L, 2, 3, 4, 5)));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Long cannot be cast to class java.lang.Integer (java.lang.Long and java.lang.Integer are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // float
+        try {
+            session.insertRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.INT32, TSDataType.INT32, TSDataType.INT32, TSDataType.INT32, TSDataType.INT32), Arrays.asList(TSDataType.INT32, TSDataType.INT32, TSDataType.INT32, TSDataType.INT32, TSDataType.INT32), Arrays.asList(TSDataType.INT32, TSDataType.INT32, TSDataType.INT32, TSDataType.INT32, TSDataType.INT32)),
+                    Arrays.asList(Arrays.asList(1.1F, 2, 3, 4, 5), Arrays.asList(1.1F, 2, 3, 4, 5), Arrays.asList(1.1F, 2, 3, 4, 5)));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Float cannot be cast to class java.lang.Integer (java.lang.Float and java.lang.Integer are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // double
+        try {
+            session.insertRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.INT32, TSDataType.INT32, TSDataType.INT32, TSDataType.INT32, TSDataType.INT32), Arrays.asList(TSDataType.INT32, TSDataType.INT32, TSDataType.INT32, TSDataType.INT32, TSDataType.INT32), Arrays.asList(TSDataType.INT32, TSDataType.INT32, TSDataType.INT32, TSDataType.INT32, TSDataType.INT32)),
+                    Arrays.asList(Arrays.asList(1.1, 2, 3, 4, 5), Arrays.asList(1.1, 2, 3, 4, 5), Arrays.asList(1.1, 2, 3, 4, 5)));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Double cannot be cast to class java.lang.Integer (java.lang.Double and java.lang.Integer are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // text、string
+        try {
+            session.insertRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.INT32, TSDataType.INT32, TSDataType.INT32, TSDataType.INT32, TSDataType.INT32), Arrays.asList(TSDataType.INT32, TSDataType.INT32, TSDataType.INT32, TSDataType.INT32, TSDataType.INT32), Arrays.asList(TSDataType.INT32, TSDataType.INT32, TSDataType.INT32, TSDataType.INT32, TSDataType.INT32)),
+                    Arrays.asList(Arrays.asList("1", 2, 3, 4, 5), Arrays.asList("1", 2, 3, 4, 5), Arrays.asList("1", 2, 3, 4, 5)));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.String cannot be cast to class java.lang.Integer (java.lang.String and java.lang.Integer are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // blob
+        try {
+            session.insertRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.INT32, TSDataType.INT32, TSDataType.INT32, TSDataType.INT32, TSDataType.INT32), Arrays.asList(TSDataType.INT32, TSDataType.INT32, TSDataType.INT32, TSDataType.INT32, TSDataType.INT32), Arrays.asList(TSDataType.INT32, TSDataType.INT32, TSDataType.INT32, TSDataType.INT32, TSDataType.INT32)),
+                    Arrays.asList(Arrays.asList(new Binary("1", StandardCharsets.UTF_8), 2, 3, 4, 5), Arrays.asList(new Binary("1", StandardCharsets.UTF_8), 2, 3, 4, 5), Arrays.asList(new Binary("1", StandardCharsets.UTF_8), 2, 3, 4, 5)));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class org.apache.tsfile.utils.Binary cannot be cast to class java.lang.Integer (org.apache.tsfile.utils.Binary is in unnamed module of loader 'app'; java.lang.Integer is in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // date
+        try {
+            session.insertRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.INT32, TSDataType.INT32, TSDataType.INT32, TSDataType.INT32, TSDataType.INT32), Arrays.asList(TSDataType.INT32, TSDataType.INT32, TSDataType.INT32, TSDataType.INT32, TSDataType.INT32), Arrays.asList(TSDataType.INT32, TSDataType.INT32, TSDataType.INT32, TSDataType.INT32, TSDataType.INT32)),
+                    Arrays.asList(Arrays.asList(LocalDate.of(1970, 1, 1), 2, 3, 4, 5), Arrays.asList(LocalDate.of(1970, 1, 1), 2, 3, 4, 5), Arrays.asList(LocalDate.of(1970, 1, 1), 2, 3, 4, 5)));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.time.LocalDate cannot be cast to class java.lang.Integer (java.time.LocalDate and java.lang.Integer are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Boolean
+        try {
+            session.insertRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.INT64, TSDataType.INT64, TSDataType.INT64, TSDataType.INT64, TSDataType.INT64), Arrays.asList(TSDataType.INT64, TSDataType.INT64, TSDataType.INT64, TSDataType.INT64, TSDataType.INT64), Arrays.asList(TSDataType.INT64, TSDataType.INT64, TSDataType.INT64, TSDataType.INT64, TSDataType.INT64)),
+                    Arrays.asList(Arrays.asList(true, 2L, 3L, 4L, 5L), Arrays.asList(true, 2L, 3L, 4L, 5L), Arrays.asList(true, 2L, 3L, 4L, 5L)));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Boolean cannot be cast to class java.lang.Long (java.lang.Boolean and java.lang.Long are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Int32
+        try {
+            session.insertRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.INT64, TSDataType.INT64, TSDataType.INT64, TSDataType.INT64, TSDataType.INT64), Arrays.asList(TSDataType.INT64, TSDataType.INT64, TSDataType.INT64, TSDataType.INT64, TSDataType.INT64), Arrays.asList(TSDataType.INT64, TSDataType.INT64, TSDataType.INT64, TSDataType.INT64, TSDataType.INT64)),
+                    Arrays.asList(Arrays.asList(1, 2L, 3L, 4L, 5L), Arrays.asList(1, 2L, 3L, 4L, 5L), Arrays.asList(1, 2L, 3L, 4L, 5L)));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Integer cannot be cast to class java.lang.Long (java.lang.Integer and java.lang.Long are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Float
+        try {
+            session.insertRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.INT64, TSDataType.INT64, TSDataType.INT64, TSDataType.INT64, TSDataType.INT64), Arrays.asList(TSDataType.INT64, TSDataType.INT64, TSDataType.INT64, TSDataType.INT64, TSDataType.INT64), Arrays.asList(TSDataType.INT64, TSDataType.INT64, TSDataType.INT64, TSDataType.INT64, TSDataType.INT64)),
+                    Arrays.asList(Arrays.asList(1.1F, 2L, 3L, 4L, 5L), Arrays.asList(1.1F, 2L, 3L, 4L, 5L), Arrays.asList(1.1F, 2L, 3L, 4L, 5L)));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Float cannot be cast to class java.lang.Long (java.lang.Float and java.lang.Long are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Double
+        try {
+            session.insertRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.INT64, TSDataType.INT64, TSDataType.INT64, TSDataType.INT64, TSDataType.INT64), Arrays.asList(TSDataType.INT64, TSDataType.INT64, TSDataType.INT64, TSDataType.INT64, TSDataType.INT64), Arrays.asList(TSDataType.INT64, TSDataType.INT64, TSDataType.INT64, TSDataType.INT64, TSDataType.INT64)),
+                    Arrays.asList(Arrays.asList(1.1, 2L, 3L, 4L, 5L), Arrays.asList(1.1, 2L, 3L, 4L, 5L), Arrays.asList(1.1, 2L, 3L, 4L, 5L)));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Double cannot be cast to class java.lang.Long (java.lang.Double and java.lang.Long are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Text、String
+        try {
+            session.insertRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.INT64, TSDataType.INT64, TSDataType.INT64, TSDataType.INT64, TSDataType.INT64), Arrays.asList(TSDataType.INT64, TSDataType.INT64, TSDataType.INT64, TSDataType.INT64, TSDataType.INT64), Arrays.asList(TSDataType.INT64, TSDataType.INT64, TSDataType.INT64, TSDataType.INT64, TSDataType.INT64)),
+                    Arrays.asList(Arrays.asList("1L", 2L, 3L, 4L, 5L), Arrays.asList("1L", 2L, 3L, 4L, 5L), Arrays.asList("1L", 2L, 3L, 4L, 5L)));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.String cannot be cast to class java.lang.Long (java.lang.String and java.lang.Long are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Blob
+        try {
+            session.insertRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.INT64, TSDataType.INT64, TSDataType.INT64, TSDataType.INT64, TSDataType.INT64), Arrays.asList(TSDataType.INT64, TSDataType.INT64, TSDataType.INT64, TSDataType.INT64, TSDataType.INT64), Arrays.asList(TSDataType.INT64, TSDataType.INT64, TSDataType.INT64, TSDataType.INT64, TSDataType.INT64)),
+                    Arrays.asList(Arrays.asList(new Binary("1L", StandardCharsets.UTF_8), 2L, 3L, 4L, 5L), Arrays.asList(new Binary("1L", StandardCharsets.UTF_8), 2L, 3L, 4L, 5L), Arrays.asList(new Binary("1L", StandardCharsets.UTF_8), 2L, 3L, 4L, 5L)));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class org.apache.tsfile.utils.Binary cannot be cast to class java.lang.Long (org.apache.tsfile.utils.Binary is in unnamed module of loader 'app'; java.lang.Long is in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Date
+        try {
+            session.insertRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.INT64, TSDataType.INT64, TSDataType.INT64, TSDataType.INT64, TSDataType.INT64), Arrays.asList(TSDataType.INT64, TSDataType.INT64, TSDataType.INT64, TSDataType.INT64, TSDataType.INT64), Arrays.asList(TSDataType.INT64, TSDataType.INT64, TSDataType.INT64, TSDataType.INT64, TSDataType.INT64)),
+                    Arrays.asList(Arrays.asList(LocalDate.of(1900, 1, 1), 2L, 3L, 4L, 5L), Arrays.asList(LocalDate.of(1900, 1, 1), 2L, 3L, 4L, 5L), Arrays.asList(LocalDate.of(1900, 1, 1), 2L, 3L, 4L, 5L)));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.time.LocalDate cannot be cast to class java.lang.Long (java.time.LocalDate and java.lang.Long are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Boolean
+        try {
+            session.insertRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP), Arrays.asList(TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP), Arrays.asList(TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP)),
+                    Arrays.asList(Arrays.asList(true, 2L, 3L, 4L, 5L), Arrays.asList(true, 2L, 3L, 4L, 5L), Arrays.asList(true, 2L, 3L, 4L, 5L)));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Boolean cannot be cast to class java.lang.Long (java.lang.Boolean and java.lang.Long are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Int32
+        try {
+            session.insertRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP), Arrays.asList(TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP), Arrays.asList(TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP)),
+                    Arrays.asList(Arrays.asList(1, 2L, 3L, 4L, 5L), Arrays.asList(1, 2L, 3L, 4L, 5L), Arrays.asList(1, 2L, 3L, 4L, 5L)));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Integer cannot be cast to class java.lang.Long (java.lang.Integer and java.lang.Long are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Float
+        try {
+            session.insertRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP), Arrays.asList(TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP), Arrays.asList(TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP)),
+                    Arrays.asList(Arrays.asList(1.1F, 2L, 3L, 4L, 5L), Arrays.asList(1.1F, 2L, 3L, 4L, 5L), Arrays.asList(1.1F, 2L, 3L, 4L, 5L)));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Float cannot be cast to class java.lang.Long (java.lang.Float and java.lang.Long are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Double
+        try {
+            session.insertRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP), Arrays.asList(TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP), Arrays.asList(TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP)),
+                    Arrays.asList(Arrays.asList(1.1, 2L, 3L, 4L, 5L), Arrays.asList(1.1, 2L, 3L, 4L, 5L), Arrays.asList(1.1, 2L, 3L, 4L, 5L)));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Double cannot be cast to class java.lang.Long (java.lang.Double and java.lang.Long are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Text、String
+        try {
+            session.insertRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP), Arrays.asList(TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP), Arrays.asList(TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP)),
+                    Arrays.asList(Arrays.asList("1L", 2L, 3L, 4L, 5L), Arrays.asList("1L", 2L, 3L, 4L, 5L), Arrays.asList("1L", 2L, 3L, 4L, 5L)));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.String cannot be cast to class java.lang.Long (java.lang.String and java.lang.Long are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Blob
+        try {
+            session.insertRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP), Arrays.asList(TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP), Arrays.asList(TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP)),
+                    Arrays.asList(Arrays.asList(new Binary("1L", StandardCharsets.UTF_8), 2L, 3L, 4L, 5L), Arrays.asList(new Binary("1L", StandardCharsets.UTF_8), 2L, 3L, 4L, 5L), Arrays.asList(new Binary("1L", StandardCharsets.UTF_8), 2L, 3L, 4L, 5L)));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class org.apache.tsfile.utils.Binary cannot be cast to class java.lang.Long (org.apache.tsfile.utils.Binary is in unnamed module of loader 'app'; java.lang.Long is in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Date
+        try {
+            session.insertRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP), Arrays.asList(TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP), Arrays.asList(TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP)),
+                    Arrays.asList(Arrays.asList(LocalDate.of(1900, 1, 1), 2L, 3L, 4L, 5L), Arrays.asList(LocalDate.of(1900, 1, 1), 2L, 3L, 4L, 5L), Arrays.asList(LocalDate.of(1900, 1, 1), 2L, 3L, 4L, 5L)));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.time.LocalDate cannot be cast to class java.lang.Long (java.time.LocalDate and java.lang.Long are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Boolean
+        try {
+            session.insertRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT), Arrays.asList(TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT), Arrays.asList(TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT)),
+                    Arrays.asList(Arrays.asList(true, 2.2F, 3.3F, 4.4F, 5.5F), Arrays.asList(true, 2.2F, 3.3F, 4.4F, 5.5F), Arrays.asList(true, 2.2F, 3.3F, 4.4F, 5.5F)));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Boolean cannot be cast to class java.lang.Float (java.lang.Boolean and java.lang.Float are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Int32
+        try {
+            session.insertRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT), Arrays.asList(TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT), Arrays.asList(TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT)),
+                    Arrays.asList(Arrays.asList(1, 2.2F, 3.3F, 4.4F, 5.5F), Arrays.asList(1, 2.2F, 3.3F, 4.4F, 5.5F), Arrays.asList(1, 2.2F, 3.3F, 4.4F, 5.5F)));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Integer cannot be cast to class java.lang.Float (java.lang.Integer and java.lang.Float are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Int64
+        try {
+            session.insertRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT), Arrays.asList(TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT), Arrays.asList(TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT)),
+                    Arrays.asList(Arrays.asList(1L, 2.2F, 3.3F, 4.4F, 5.5F), Arrays.asList(1L, 2.2F, 3.3F, 4.4F, 5.5F), Arrays.asList(1L, 2.2F, 3.3F, 4.4F, 5.5F)));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Long cannot be cast to class java.lang.Float (java.lang.Long and java.lang.Float are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Double
+        try {
+            session.insertRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT), Arrays.asList(TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT), Arrays.asList(TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT)),
+                    Arrays.asList(Arrays.asList(1.1, 2.2F, 3.3F, 4.4F, 5.5F), Arrays.asList(1.1, 2.2F, 3.3F, 4.4F, 5.5F), Arrays.asList(1.1, 2.2F, 3.3F, 4.4F, 5.5F)));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Double cannot be cast to class java.lang.Float (java.lang.Double and java.lang.Float are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Text、String
+        try {
+            session.insertRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT), Arrays.asList(TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT), Arrays.asList(TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT)),
+                    Arrays.asList(Arrays.asList("1F", 2.2F, 3.3F, 4.4F, 5.5F), Arrays.asList("1F", 2.2F, 3.3F, 4.4F, 5.5F), Arrays.asList("1F", 2.2F, 3.3F, 4.4F, 5.5F)));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.String cannot be cast to class java.lang.Float (java.lang.String and java.lang.Float are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Blob
+        try {
+            session.insertRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT), Arrays.asList(TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT), Arrays.asList(TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT)),
+                    Arrays.asList(Arrays.asList(new Binary("1F", StandardCharsets.UTF_8), 2.2F, 3.3F, 4.4F, 5.5F), Arrays.asList(new Binary("1F", StandardCharsets.UTF_8), 2.2F, 3.3F, 4.4F, 5.5F), Arrays.asList(new Binary("1F", StandardCharsets.UTF_8), 2.2F, 3.3F, 4.4F, 5.5F)));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class org.apache.tsfile.utils.Binary cannot be cast to class java.lang.Float (org.apache.tsfile.utils.Binary is in unnamed module of loader 'app'; java.lang.Float is in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Date
+        try {
+            session.insertRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT), Arrays.asList(TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT), Arrays.asList(TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT)),
+                    Arrays.asList(Arrays.asList(LocalDate.of(1970, 1, 1), 2.2F, 3.3F, 4.4F, 5.5F), Arrays.asList(LocalDate.of(1970, 1, 1), 2.2F, 3.3F, 4.4F, 5.5F), Arrays.asList(LocalDate.of(1970, 1, 1), 2.2F, 3.3F, 4.4F, 5.5F)));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.time.LocalDate cannot be cast to class java.lang.Float (java.time.LocalDate and java.lang.Float are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Boolean
+        try {
+            session.insertRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE), Arrays.asList(TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE), Arrays.asList(TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE)),
+                    Arrays.asList(Arrays.asList(true, 2.2, 3.3, 4.4, 5.5), Arrays.asList(true, 2.2, 3.3, 4.4, 5.5), Arrays.asList(true, 2.2, 3.3, 4.4, 5.5)));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Boolean cannot be cast to class java.lang.Double (java.lang.Boolean and java.lang.Double are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Int32
+        try {
+            session.insertRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE), Arrays.asList(TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE), Arrays.asList(TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE)),
+                    Arrays.asList(Arrays.asList(1, 2.2, 3.3, 4.4, 5.5), Arrays.asList(1, 2.2, 3.3, 4.4, 5.5), Arrays.asList(1, 2.2, 3.3, 4.4, 5.5)));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Integer cannot be cast to class java.lang.Double (java.lang.Integer and java.lang.Double are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Int64
+        try {
+            session.insertRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE), Arrays.asList(TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE), Arrays.asList(TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE)),
+                    Arrays.asList(Arrays.asList(1L, 2.2, 3.3, 4.4, 5.5), Arrays.asList(1L, 2.2, 3.3, 4.4, 5.5), Arrays.asList(1L, 2.2, 3.3, 4.4, 5.5)));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Long cannot be cast to class java.lang.Double (java.lang.Long and java.lang.Double are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Float
+        try {
+            session.insertRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE), Arrays.asList(TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE), Arrays.asList(TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE)),
+                    Arrays.asList(Arrays.asList(1F, 2.2, 3.3, 4.4, 5.5), Arrays.asList(1F, 2.2, 3.3, 4.4, 5.5), Arrays.asList(1F, 2.2, 3.3, 4.4, 5.5)));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Float cannot be cast to class java.lang.Double (java.lang.Float and java.lang.Double are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Text、String
+        try {
+            session.insertRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE), Arrays.asList(TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE), Arrays.asList(TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE)),
+                    Arrays.asList(Arrays.asList("1.1", 2.2, 3.3, 4.4, 5.5), Arrays.asList("1.1", 2.2, 3.3, 4.4, 5.5), Arrays.asList("1.1", 2.2, 3.3, 4.4, 5.5)));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.String cannot be cast to class java.lang.Double (java.lang.String and java.lang.Double are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Blob
+        try {
+            session.insertRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE), Arrays.asList(TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE), Arrays.asList(TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE)),
+                    Arrays.asList(Arrays.asList(new Binary("1.1", StandardCharsets.UTF_8), 2.2, 3.3, 4.4, 5.5), Arrays.asList(new Binary("1.1", StandardCharsets.UTF_8), 2.2, 3.3, 4.4, 5.5), Arrays.asList(new Binary("1.1", StandardCharsets.UTF_8), 2.2, 3.3, 4.4, 5.5)));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class org.apache.tsfile.utils.Binary cannot be cast to class java.lang.Double (org.apache.tsfile.utils.Binary is in unnamed module of loader 'app'; java.lang.Double is in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Date
+        try {
+            session.insertRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE), Arrays.asList(TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE), Arrays.asList(TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE)),
+                    Arrays.asList(Arrays.asList(LocalDate.of(1970, 1, 1), 2.2, 3.3, 4.4, 5.5), Arrays.asList(LocalDate.of(1970, 1, 1), 2.2, 3.3, 4.4, 5.5), Arrays.asList(LocalDate.of(1970, 1, 1), 2.2, 3.3, 4.4, 5.5)));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.time.LocalDate cannot be cast to class java.lang.Double (java.time.LocalDate and java.lang.Double are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Boolean
+        try {
+            session.insertRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT), Arrays.asList(TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT), Arrays.asList(TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT)),
+                    Arrays.asList(Arrays.asList(true, "text2", "text3", "text4", "text5"), Arrays.asList(true, "text2", "text3", "text4", "text5"), Arrays.asList(true, "text2", "text3", "text4", "text5")));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Boolean cannot be cast to class java.lang.String (java.lang.Boolean and java.lang.String are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Int32
+        try {
+            session.insertRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT), Arrays.asList(TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT), Arrays.asList(TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT)),
+                    Arrays.asList(Arrays.asList(1, "text2", "text3", "text4", "text5"), Arrays.asList(1, "text2", "text3", "text4", "text5"), Arrays.asList(1, "text2", "text3", "text4", "text5")));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Integer cannot be cast to class java.lang.String (java.lang.Integer and java.lang.String are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Int64、Timestamp
+        try {
+            session.insertRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT), Arrays.asList(TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT), Arrays.asList(TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT)),
+                    Arrays.asList(Arrays.asList(1L, "text2", "text3", "text4", "text5"), Arrays.asList(1L, "text2", "text3", "text4", "text5"), Arrays.asList(1L, "text2", "text3", "text4", "text5")));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Long cannot be cast to class java.lang.String (java.lang.Long and java.lang.String are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Float
+        try {
+            session.insertRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT), Arrays.asList(TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT), Arrays.asList(TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT)),
+                    Arrays.asList(Arrays.asList(1.1F, "text2", "text3", "text4", "text5"), Arrays.asList(1.1F, "text2", "text3", "text4", "text5"), Arrays.asList(1.1F, "text2", "text3", "text4", "text5")));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Float cannot be cast to class java.lang.String (java.lang.Float and java.lang.String are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Double
+        try {
+            session.insertRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT), Arrays.asList(TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT), Arrays.asList(TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT)),
+                    Arrays.asList(Arrays.asList(1.1, "text2", "text3", "text4", "text5"), Arrays.asList(1.1, "text2", "text3", "text4", "text5"), Arrays.asList(1.1, "text2", "text3", "text4", "text5")));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Double cannot be cast to class java.lang.String (java.lang.Double and java.lang.String are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Blob：String和Text类型支持binary数据
+        try {
+            session.insertRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT), Arrays.asList(TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT), Arrays.asList(TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT)),
+                    Arrays.asList(Arrays.asList(new Binary("text1", StandardCharsets.UTF_8), "text2", "text3", "text4", "text5"), Arrays.asList(new Binary("text1", StandardCharsets.UTF_8), "text2", "text3", "text4", "text5"), Arrays.asList(new Binary("text1", StandardCharsets.UTF_8), "text2", "text3", "text4", "text5")));
+            session.executeNonQueryStatement("delete database root.**");
+        } catch (IoTDBConnectionException | StatementExecutionException e) {
+            throw new RuntimeException(e);
+        }
+
+        // Date
+        try {
+            session.insertRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT), Arrays.asList(TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT), Arrays.asList(TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT)),
+                    Arrays.asList(Arrays.asList(LocalDate.of(1970,1,1), "text2", "text3", "text4", "text5"), Arrays.asList(LocalDate.of(1970,1,1), "text2", "text3", "text4", "text5"), Arrays.asList(LocalDate.of(1970,1,1), "text2", "text3", "text4", "text5")));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.time.LocalDate cannot be cast to class java.lang.String (java.time.LocalDate and java.lang.String are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Boolean
+        try {
+            session.insertRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.STRING, TSDataType.STRING, TSDataType.STRING, TSDataType.STRING, TSDataType.STRING), Arrays.asList(TSDataType.STRING, TSDataType.STRING, TSDataType.STRING, TSDataType.STRING, TSDataType.STRING), Arrays.asList(TSDataType.STRING, TSDataType.STRING, TSDataType.STRING, TSDataType.STRING, TSDataType.STRING)),
+                    Arrays.asList(Arrays.asList(true, "string2", "string3", "string4", "string5"), Arrays.asList(true, "string2", "string3", "string4", "string5"), Arrays.asList(true, "string2", "string3", "string4", "string5")));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Boolean cannot be cast to class java.lang.String (java.lang.Boolean and java.lang.String are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Int32
+        try {
+            session.insertRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.STRING, TSDataType.STRING, TSDataType.STRING, TSDataType.STRING, TSDataType.STRING), Arrays.asList(TSDataType.STRING, TSDataType.STRING, TSDataType.STRING, TSDataType.STRING, TSDataType.STRING), Arrays.asList(TSDataType.STRING, TSDataType.STRING, TSDataType.STRING, TSDataType.STRING, TSDataType.STRING)),
+                    Arrays.asList(Arrays.asList(1, "string2", "string3", "string4", "string5"), Arrays.asList(1, "string2", "string3", "string4", "string5"), Arrays.asList(1, "string2", "string3", "string4", "string5")));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Integer cannot be cast to class java.lang.String (java.lang.Integer and java.lang.String are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Int64、Timestamp
+        try {
+            session.insertRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.STRING, TSDataType.STRING, TSDataType.STRING, TSDataType.STRING, TSDataType.STRING), Arrays.asList(TSDataType.STRING, TSDataType.STRING, TSDataType.STRING, TSDataType.STRING, TSDataType.STRING), Arrays.asList(TSDataType.STRING, TSDataType.STRING, TSDataType.STRING, TSDataType.STRING, TSDataType.STRING)),
+                    Arrays.asList(Arrays.asList(1L, "string2", "string3", "string4", "string5"), Arrays.asList(1L, "string2", "string3", "string4", "string5"), Arrays.asList(1L, "string2", "string3", "string4", "string5")));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Long cannot be cast to class java.lang.String (java.lang.Long and java.lang.String are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Float
+        try {
+            session.insertRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.STRING, TSDataType.STRING, TSDataType.STRING, TSDataType.STRING, TSDataType.STRING), Arrays.asList(TSDataType.STRING, TSDataType.STRING, TSDataType.STRING, TSDataType.STRING, TSDataType.STRING), Arrays.asList(TSDataType.STRING, TSDataType.STRING, TSDataType.STRING, TSDataType.STRING, TSDataType.STRING)),
+                    Arrays.asList(Arrays.asList(1.1F, "string2", "string3", "string4", "string5"), Arrays.asList(1.1F, "string2", "string3", "string4", "string5"), Arrays.asList(1.1F, "string2", "string3", "string4", "string5")));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Float cannot be cast to class java.lang.String (java.lang.Float and java.lang.String are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Double
+        try {
+            session.insertRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.STRING, TSDataType.STRING, TSDataType.STRING, TSDataType.STRING, TSDataType.STRING), Arrays.asList(TSDataType.STRING, TSDataType.STRING, TSDataType.STRING, TSDataType.STRING, TSDataType.STRING), Arrays.asList(TSDataType.STRING, TSDataType.STRING, TSDataType.STRING, TSDataType.STRING, TSDataType.STRING)),
+                    Arrays.asList(Arrays.asList(1.1, "string2", "string3", "string4", "string5"), Arrays.asList(1.1, "string2", "string3", "string4", "string5"), Arrays.asList(1.1, "string2", "string3", "string4", "string5")));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Double cannot be cast to class java.lang.String (java.lang.Double and java.lang.String are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Blob：String和Text类型支持binary数据
+        try {
+            session.insertRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.STRING, TSDataType.STRING, TSDataType.STRING, TSDataType.STRING, TSDataType.STRING), Arrays.asList(TSDataType.STRING, TSDataType.STRING, TSDataType.STRING, TSDataType.STRING, TSDataType.STRING), Arrays.asList(TSDataType.STRING, TSDataType.STRING, TSDataType.STRING, TSDataType.STRING, TSDataType.STRING)),
+                    Arrays.asList(Arrays.asList(new Binary("string1", StandardCharsets.UTF_8), "string2", "string3", "string4", "string5"), Arrays.asList(new Binary("string1", StandardCharsets.UTF_8), "string2", "string3", "string4", "string5"), Arrays.asList(new Binary("string1", StandardCharsets.UTF_8), "string2", "string3", "string4", "string5")));
+            session.executeNonQueryStatement("delete database root.**");
+        } catch (IoTDBConnectionException | StatementExecutionException e) {
+            throw new RuntimeException(e);
+        }
+
+        // Date
+        try {
+            session.insertRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.STRING, TSDataType.STRING, TSDataType.STRING, TSDataType.STRING, TSDataType.STRING), Arrays.asList(TSDataType.STRING, TSDataType.STRING, TSDataType.STRING, TSDataType.STRING, TSDataType.STRING), Arrays.asList(TSDataType.STRING, TSDataType.STRING, TSDataType.STRING, TSDataType.STRING, TSDataType.STRING)),
+                    Arrays.asList(Arrays.asList(LocalDate.of(1970, 1, 1), "string2", "string3", "string4", "string5"), Arrays.asList(LocalDate.of(1970, 1, 1), "string2", "string3", "string4", "string5"), Arrays.asList(LocalDate.of(1970, 1, 1), "string2", "string3", "string4", "string5")));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.time.LocalDate cannot be cast to class java.lang.String (java.time.LocalDate and java.lang.String are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Boolean
+        try {
+            session.insertRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB), Arrays.asList(TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB), Arrays.asList(TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB)),
+                    Arrays.asList(Arrays.asList(true, new Binary("blob2", StandardCharsets.UTF_8), new Binary("blob3", StandardCharsets.UTF_8), new Binary("blob4", StandardCharsets.UTF_8), new Binary("blob5", StandardCharsets.UTF_8)), Arrays.asList(true, new Binary("blob2", StandardCharsets.UTF_8), new Binary("blob3", StandardCharsets.UTF_8), new Binary("blob4", StandardCharsets.UTF_8), new Binary("blob5", StandardCharsets.UTF_8)), Arrays.asList(true, new Binary("blob2", StandardCharsets.UTF_8), new Binary("blob3", StandardCharsets.UTF_8), new Binary("blob4", StandardCharsets.UTF_8), new Binary("blob5", StandardCharsets.UTF_8))));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Boolean cannot be cast to class org.apache.tsfile.utils.Binary (java.lang.Boolean is in module java.base of loader 'bootstrap'; org.apache.tsfile.utils.Binary is in unnamed module of loader 'app')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Int32
+        try {
+            session.insertRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB), Arrays.asList(TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB), Arrays.asList(TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB)),
+                    Arrays.asList(Arrays.asList(1, new Binary("blob2", StandardCharsets.UTF_8), new Binary("blob3", StandardCharsets.UTF_8), new Binary("blob4", StandardCharsets.UTF_8), new Binary("blob5", StandardCharsets.UTF_8)), Arrays.asList(1, new Binary("blob2", StandardCharsets.UTF_8), new Binary("blob3", StandardCharsets.UTF_8), new Binary("blob4", StandardCharsets.UTF_8), new Binary("blob5", StandardCharsets.UTF_8)), Arrays.asList(1, new Binary("blob2", StandardCharsets.UTF_8), new Binary("blob3", StandardCharsets.UTF_8), new Binary("blob4", StandardCharsets.UTF_8), new Binary("blob5", StandardCharsets.UTF_8))));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Integer cannot be cast to class org.apache.tsfile.utils.Binary (java.lang.Integer is in module java.base of loader 'bootstrap'; org.apache.tsfile.utils.Binary is in unnamed module of loader 'app')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Int64、timestamp
+        try {
+            session.insertRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB), Arrays.asList(TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB), Arrays.asList(TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB)),
+                    Arrays.asList(Arrays.asList(1L, new Binary("blob2", StandardCharsets.UTF_8), new Binary("blob3", StandardCharsets.UTF_8), new Binary("blob4", StandardCharsets.UTF_8), new Binary("blob5", StandardCharsets.UTF_8)), Arrays.asList(1L, new Binary("blob2", StandardCharsets.UTF_8), new Binary("blob3", StandardCharsets.UTF_8), new Binary("blob4", StandardCharsets.UTF_8), new Binary("blob5", StandardCharsets.UTF_8)), Arrays.asList(1L, new Binary("blob2", StandardCharsets.UTF_8), new Binary("blob3", StandardCharsets.UTF_8), new Binary("blob4", StandardCharsets.UTF_8), new Binary("blob5", StandardCharsets.UTF_8))));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Long cannot be cast to class org.apache.tsfile.utils.Binary (java.lang.Long is in module java.base of loader 'bootstrap'; org.apache.tsfile.utils.Binary is in unnamed module of loader 'app')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Float
+        try {
+            session.insertRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB), Arrays.asList(TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB), Arrays.asList(TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB)),
+                    Arrays.asList(Arrays.asList(1.1F, new Binary("blob2", StandardCharsets.UTF_8), new Binary("blob3", StandardCharsets.UTF_8), new Binary("blob4", StandardCharsets.UTF_8), new Binary("blob5", StandardCharsets.UTF_8)), Arrays.asList(1.1F, new Binary("blob2", StandardCharsets.UTF_8), new Binary("blob3", StandardCharsets.UTF_8), new Binary("blob4", StandardCharsets.UTF_8), new Binary("blob5", StandardCharsets.UTF_8)), Arrays.asList(1.1F, new Binary("blob2", StandardCharsets.UTF_8), new Binary("blob3", StandardCharsets.UTF_8), new Binary("blob4", StandardCharsets.UTF_8), new Binary("blob5", StandardCharsets.UTF_8))));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Float cannot be cast to class org.apache.tsfile.utils.Binary (java.lang.Float is in module java.base of loader 'bootstrap'; org.apache.tsfile.utils.Binary is in unnamed module of loader 'app')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Double
+        try {
+            session.insertRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB), Arrays.asList(TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB), Arrays.asList(TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB)),
+                    Arrays.asList(Arrays.asList(1.1, new Binary("blob2", StandardCharsets.UTF_8), new Binary("blob3", StandardCharsets.UTF_8), new Binary("blob4", StandardCharsets.UTF_8), new Binary("blob5", StandardCharsets.UTF_8)), Arrays.asList(1.1, new Binary("blob2", StandardCharsets.UTF_8), new Binary("blob3", StandardCharsets.UTF_8), new Binary("blob4", StandardCharsets.UTF_8), new Binary("blob5", StandardCharsets.UTF_8)), Arrays.asList(1.1, new Binary("blob2", StandardCharsets.UTF_8), new Binary("blob3", StandardCharsets.UTF_8), new Binary("blob4", StandardCharsets.UTF_8), new Binary("blob5", StandardCharsets.UTF_8))));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Double cannot be cast to class org.apache.tsfile.utils.Binary (java.lang.Double is in module java.base of loader 'bootstrap'; org.apache.tsfile.utils.Binary is in unnamed module of loader 'app')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Text、String
+        try {
+            session.insertRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB), Arrays.asList(TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB), Arrays.asList(TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB)),
+                    Arrays.asList(Arrays.asList("blob1", new Binary("blob2", StandardCharsets.UTF_8), new Binary("blob3", StandardCharsets.UTF_8), new Binary("blob4", StandardCharsets.UTF_8), new Binary("blob5", StandardCharsets.UTF_8)), Arrays.asList("blob1", new Binary("blob2", StandardCharsets.UTF_8), new Binary("blob3", StandardCharsets.UTF_8), new Binary("blob4", StandardCharsets.UTF_8), new Binary("blob5", StandardCharsets.UTF_8)), Arrays.asList("blob1", new Binary("blob2", StandardCharsets.UTF_8), new Binary("blob3", StandardCharsets.UTF_8), new Binary("blob4", StandardCharsets.UTF_8), new Binary("blob5", StandardCharsets.UTF_8))));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.String cannot be cast to class org.apache.tsfile.utils.Binary (java.lang.String is in module java.base of loader 'bootstrap'; org.apache.tsfile.utils.Binary is in unnamed module of loader 'app')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Date
+        try {
+            session.insertRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB), Arrays.asList(TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB), Arrays.asList(TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB)),
+                    Arrays.asList(Arrays.asList(LocalDate.of(1970, 1, 1), new Binary("blob2", StandardCharsets.UTF_8), new Binary("blob3", StandardCharsets.UTF_8), new Binary("blob4", StandardCharsets.UTF_8), new Binary("blob5", StandardCharsets.UTF_8)), Arrays.asList(LocalDate.of(1970, 1, 1), new Binary("blob2", StandardCharsets.UTF_8), new Binary("blob3", StandardCharsets.UTF_8), new Binary("blob4", StandardCharsets.UTF_8), new Binary("blob5", StandardCharsets.UTF_8)), Arrays.asList(LocalDate.of(1970, 1, 1), new Binary("blob2", StandardCharsets.UTF_8), new Binary("blob3", StandardCharsets.UTF_8), new Binary("blob4", StandardCharsets.UTF_8), new Binary("blob5", StandardCharsets.UTF_8))));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.time.LocalDate cannot be cast to class org.apache.tsfile.utils.Binary (java.time.LocalDate is in module java.base of loader 'bootstrap'; org.apache.tsfile.utils.Binary is in unnamed module of loader 'app')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Boolean
+        try {
+            session.insertRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.DATE, TSDataType.DATE, TSDataType.DATE, TSDataType.DATE, TSDataType.DATE), Arrays.asList(TSDataType.DATE, TSDataType.DATE, TSDataType.DATE, TSDataType.DATE, TSDataType.DATE), Arrays.asList(TSDataType.DATE, TSDataType.DATE, TSDataType.DATE, TSDataType.DATE, TSDataType.DATE)),
+                    Arrays.asList(Arrays.asList(true, LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1)), Arrays.asList(false, LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1)), Arrays.asList(true, LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1))));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Boolean cannot be cast to class java.time.LocalDate (java.lang.Boolean and java.time.LocalDate are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Int32
+        try {
+            session.insertRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.DATE, TSDataType.DATE, TSDataType.DATE, TSDataType.DATE, TSDataType.DATE), Arrays.asList(TSDataType.DATE, TSDataType.DATE, TSDataType.DATE, TSDataType.DATE, TSDataType.DATE), Arrays.asList(TSDataType.DATE, TSDataType.DATE, TSDataType.DATE, TSDataType.DATE, TSDataType.DATE)),
+                    Arrays.asList(Arrays.asList(1, LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1)), Arrays.asList(2, LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1)), Arrays.asList(3, LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1))));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Integer cannot be cast to class java.time.LocalDate (java.lang.Integer and java.time.LocalDate are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Int64、Timestamp
+        try {
+            session.insertRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.DATE, TSDataType.DATE, TSDataType.DATE, TSDataType.DATE, TSDataType.DATE), Arrays.asList(TSDataType.DATE, TSDataType.DATE, TSDataType.DATE, TSDataType.DATE, TSDataType.DATE), Arrays.asList(TSDataType.DATE, TSDataType.DATE, TSDataType.DATE, TSDataType.DATE, TSDataType.DATE)),
+                    Arrays.asList(Arrays.asList(1L, LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1)), Arrays.asList(2L, LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1)), Arrays.asList(3L, LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1))));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Long cannot be cast to class java.time.LocalDate (java.lang.Long and java.time.LocalDate are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Float
+        try {
+            session.insertRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.DATE, TSDataType.DATE, TSDataType.DATE, TSDataType.DATE, TSDataType.DATE), Arrays.asList(TSDataType.DATE, TSDataType.DATE, TSDataType.DATE, TSDataType.DATE, TSDataType.DATE), Arrays.asList(TSDataType.DATE, TSDataType.DATE, TSDataType.DATE, TSDataType.DATE, TSDataType.DATE)),
+                    Arrays.asList(Arrays.asList(1.1F, LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1)), Arrays.asList(1.1F, LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1)), Arrays.asList(1.1F, LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1))));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Float cannot be cast to class java.time.LocalDate (java.lang.Float and java.time.LocalDate are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Double
+        try {
+            session.insertRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.DATE, TSDataType.DATE, TSDataType.DATE, TSDataType.DATE, TSDataType.DATE), Arrays.asList(TSDataType.DATE, TSDataType.DATE, TSDataType.DATE, TSDataType.DATE, TSDataType.DATE), Arrays.asList(TSDataType.DATE, TSDataType.DATE, TSDataType.DATE, TSDataType.DATE, TSDataType.DATE)),
+                    Arrays.asList(Arrays.asList(1.1, LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1)), Arrays.asList(1.1, LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1)), Arrays.asList(1.1, LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1))));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Double cannot be cast to class java.time.LocalDate (java.lang.Double and java.time.LocalDate are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Text、String
+        try {
+            session.insertRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.DATE, TSDataType.DATE, TSDataType.DATE, TSDataType.DATE, TSDataType.DATE), Arrays.asList(TSDataType.DATE, TSDataType.DATE, TSDataType.DATE, TSDataType.DATE, TSDataType.DATE), Arrays.asList(TSDataType.DATE, TSDataType.DATE, TSDataType.DATE, TSDataType.DATE, TSDataType.DATE)),
+                    Arrays.asList(Arrays.asList("1970.1.1", LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1)), Arrays.asList("1970.1.1", LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1)), Arrays.asList("1970.1.1", LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1))));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.String cannot be cast to class java.time.LocalDate (java.lang.String and java.time.LocalDate are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Blob
+        try {
+            session.insertRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.DATE, TSDataType.DATE, TSDataType.DATE, TSDataType.DATE, TSDataType.DATE), Arrays.asList(TSDataType.DATE, TSDataType.DATE, TSDataType.DATE, TSDataType.DATE, TSDataType.DATE), Arrays.asList(TSDataType.DATE, TSDataType.DATE, TSDataType.DATE, TSDataType.DATE, TSDataType.DATE)),
+                    Arrays.asList(Arrays.asList(new Binary("1970.1.1", StandardCharsets.UTF_8), LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1)), Arrays.asList(new Binary("1970.1.1", StandardCharsets.UTF_8), LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1)), Arrays.asList(new Binary("1970.1.1", StandardCharsets.UTF_8), LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1))));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class org.apache.tsfile.utils.Binary cannot be cast to class java.time.LocalDate (org.apache.tsfile.utils.Binary is in unnamed module of loader 'app'; java.time.LocalDate is in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+    }
+
+    /**
+     * 测试 insertAlignedRecords 的错误情况：值和数据类型的类型不一致
+     */
+    @Test(priority = 50)
+    public void testInsertAlignedRecordsError3() {
+        // int32
+        try {
+            session.insertAlignedRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN), Arrays.asList(TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN), Arrays.asList(TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN)),
+                    Arrays.asList(Arrays.asList(1, true, true, true, true), Arrays.asList(1, true, true, true, true), Arrays.asList(1, true, true, true, true)));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Integer cannot be cast to class java.lang.Boolean (java.lang.Integer and java.lang.Boolean are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // int64、 timestamp
+        try {
+            session.insertAlignedRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN), Arrays.asList(TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN), Arrays.asList(TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN)),
+                    Arrays.asList(Arrays.asList(1L, true, true, true, true), Arrays.asList(1L, true, true, true, true), Arrays.asList(1L, true, true, true, true)));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Long cannot be cast to class java.lang.Boolean (java.lang.Long and java.lang.Boolean are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // float
+        try {
+            session.insertAlignedRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN), Arrays.asList(TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN), Arrays.asList(TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN)),
+                    Arrays.asList(Arrays.asList(1.1F, true, true, true, true), Arrays.asList(1.1F, true, true, true, true), Arrays.asList(1.1F, true, true, true, true)));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Float cannot be cast to class java.lang.Boolean (java.lang.Float and java.lang.Boolean are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // double
+        try {
+            session.insertAlignedRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN), Arrays.asList(TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN), Arrays.asList(TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN)),
+                    Arrays.asList(Arrays.asList(1.1, true, true, true, true), Arrays.asList(1.1, true, true, true, true), Arrays.asList(1.1, true, true, true, true)));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Double cannot be cast to class java.lang.Boolean (java.lang.Double and java.lang.Boolean are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // text、 string
+        try {
+            session.insertAlignedRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN), Arrays.asList(TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN), Arrays.asList(TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN)),
+                    Arrays.asList(Arrays.asList("true", true, true, true, true), Arrays.asList("true", true, true, true, true), Arrays.asList("true", true, true, true, true)));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.String cannot be cast to class java.lang.Boolean (java.lang.String and java.lang.Boolean are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // blob
+        try {
+            session.insertAlignedRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN), Arrays.asList(TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN), Arrays.asList(TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN)),
+                    Arrays.asList(Arrays.asList(new Binary("true", StandardCharsets.UTF_8), true, true, true, true), Arrays.asList(new Binary("true", StandardCharsets.UTF_8), true, true, true, true), Arrays.asList(new Binary("true", StandardCharsets.UTF_8), true, true, true, true)));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class org.apache.tsfile.utils.Binary cannot be cast to class java.lang.Boolean (org.apache.tsfile.utils.Binary is in unnamed module of loader 'app'; java.lang.Boolean is in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // date
+        try {
+            session.insertAlignedRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN), Arrays.asList(TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN), Arrays.asList(TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN, TSDataType.BOOLEAN)),
+                    Arrays.asList(Arrays.asList(LocalDate.of(1970, 1, 1), true, true, true, true), Arrays.asList(LocalDate.of(1970, 1, 1), true, true, true, true), Arrays.asList(LocalDate.of(1970, 1, 1), true, true, true, true)));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.time.LocalDate cannot be cast to class java.lang.Boolean (java.time.LocalDate and java.lang.Boolean are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // boolean
+        try {
+            session.insertAlignedRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.INT32, TSDataType.INT32, TSDataType.INT32, TSDataType.INT32, TSDataType.INT32), Arrays.asList(TSDataType.INT32, TSDataType.INT32, TSDataType.INT32, TSDataType.INT32, TSDataType.INT32), Arrays.asList(TSDataType.INT32, TSDataType.INT32, TSDataType.INT32, TSDataType.INT32, TSDataType.INT32)),
+                    Arrays.asList(Arrays.asList(true, 2, 3, 4, 5), Arrays.asList(true, 2, 3, 4, 5), Arrays.asList(true, 2, 3, 4, 5)));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Boolean cannot be cast to class java.lang.Integer (java.lang.Boolean and java.lang.Integer are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // long、timestamp
+        try {
+            session.insertAlignedRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.INT32, TSDataType.INT32, TSDataType.INT32, TSDataType.INT32, TSDataType.INT32), Arrays.asList(TSDataType.INT32, TSDataType.INT32, TSDataType.INT32, TSDataType.INT32, TSDataType.INT32), Arrays.asList(TSDataType.INT32, TSDataType.INT32, TSDataType.INT32, TSDataType.INT32, TSDataType.INT32)),
+                    Arrays.asList(Arrays.asList(1L, 2, 3, 4, 5), Arrays.asList(1L, 2, 3, 4, 5), Arrays.asList(1L, 2, 3, 4, 5)));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Long cannot be cast to class java.lang.Integer (java.lang.Long and java.lang.Integer are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // float
+        try {
+            session.insertAlignedRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.INT32, TSDataType.INT32, TSDataType.INT32, TSDataType.INT32, TSDataType.INT32), Arrays.asList(TSDataType.INT32, TSDataType.INT32, TSDataType.INT32, TSDataType.INT32, TSDataType.INT32), Arrays.asList(TSDataType.INT32, TSDataType.INT32, TSDataType.INT32, TSDataType.INT32, TSDataType.INT32)),
+                    Arrays.asList(Arrays.asList(1.1F, 2, 3, 4, 5), Arrays.asList(1.1F, 2, 3, 4, 5), Arrays.asList(1.1F, 2, 3, 4, 5)));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Float cannot be cast to class java.lang.Integer (java.lang.Float and java.lang.Integer are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // double
+        try {
+            session.insertAlignedRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.INT32, TSDataType.INT32, TSDataType.INT32, TSDataType.INT32, TSDataType.INT32), Arrays.asList(TSDataType.INT32, TSDataType.INT32, TSDataType.INT32, TSDataType.INT32, TSDataType.INT32), Arrays.asList(TSDataType.INT32, TSDataType.INT32, TSDataType.INT32, TSDataType.INT32, TSDataType.INT32)),
+                    Arrays.asList(Arrays.asList(1.1, 2, 3, 4, 5), Arrays.asList(1.1, 2, 3, 4, 5), Arrays.asList(1.1, 2, 3, 4, 5)));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Double cannot be cast to class java.lang.Integer (java.lang.Double and java.lang.Integer are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // text、string
+        try {
+            session.insertAlignedRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.INT32, TSDataType.INT32, TSDataType.INT32, TSDataType.INT32, TSDataType.INT32), Arrays.asList(TSDataType.INT32, TSDataType.INT32, TSDataType.INT32, TSDataType.INT32, TSDataType.INT32), Arrays.asList(TSDataType.INT32, TSDataType.INT32, TSDataType.INT32, TSDataType.INT32, TSDataType.INT32)),
+                    Arrays.asList(Arrays.asList("1", 2, 3, 4, 5), Arrays.asList("1", 2, 3, 4, 5), Arrays.asList("1", 2, 3, 4, 5)));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.String cannot be cast to class java.lang.Integer (java.lang.String and java.lang.Integer are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // blob
+        try {
+            session.insertAlignedRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.INT32, TSDataType.INT32, TSDataType.INT32, TSDataType.INT32, TSDataType.INT32), Arrays.asList(TSDataType.INT32, TSDataType.INT32, TSDataType.INT32, TSDataType.INT32, TSDataType.INT32), Arrays.asList(TSDataType.INT32, TSDataType.INT32, TSDataType.INT32, TSDataType.INT32, TSDataType.INT32)),
+                    Arrays.asList(Arrays.asList(new Binary("1", StandardCharsets.UTF_8), 2, 3, 4, 5), Arrays.asList(new Binary("1", StandardCharsets.UTF_8), 2, 3, 4, 5), Arrays.asList(new Binary("1", StandardCharsets.UTF_8), 2, 3, 4, 5)));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class org.apache.tsfile.utils.Binary cannot be cast to class java.lang.Integer (org.apache.tsfile.utils.Binary is in unnamed module of loader 'app'; java.lang.Integer is in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // date
+        try {
+            session.insertAlignedRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.INT32, TSDataType.INT32, TSDataType.INT32, TSDataType.INT32, TSDataType.INT32), Arrays.asList(TSDataType.INT32, TSDataType.INT32, TSDataType.INT32, TSDataType.INT32, TSDataType.INT32), Arrays.asList(TSDataType.INT32, TSDataType.INT32, TSDataType.INT32, TSDataType.INT32, TSDataType.INT32)),
+                    Arrays.asList(Arrays.asList(LocalDate.of(1970, 1, 1), 2, 3, 4, 5), Arrays.asList(LocalDate.of(1970, 1, 1), 2, 3, 4, 5), Arrays.asList(LocalDate.of(1970, 1, 1), 2, 3, 4, 5)));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.time.LocalDate cannot be cast to class java.lang.Integer (java.time.LocalDate and java.lang.Integer are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Boolean
+        try {
+            session.insertAlignedRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.INT64, TSDataType.INT64, TSDataType.INT64, TSDataType.INT64, TSDataType.INT64), Arrays.asList(TSDataType.INT64, TSDataType.INT64, TSDataType.INT64, TSDataType.INT64, TSDataType.INT64), Arrays.asList(TSDataType.INT64, TSDataType.INT64, TSDataType.INT64, TSDataType.INT64, TSDataType.INT64)),
+                    Arrays.asList(Arrays.asList(true, 2L, 3L, 4L, 5L), Arrays.asList(true, 2L, 3L, 4L, 5L), Arrays.asList(true, 2L, 3L, 4L, 5L)));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Boolean cannot be cast to class java.lang.Long (java.lang.Boolean and java.lang.Long are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Int32
+        try {
+            session.insertAlignedRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.INT64, TSDataType.INT64, TSDataType.INT64, TSDataType.INT64, TSDataType.INT64), Arrays.asList(TSDataType.INT64, TSDataType.INT64, TSDataType.INT64, TSDataType.INT64, TSDataType.INT64), Arrays.asList(TSDataType.INT64, TSDataType.INT64, TSDataType.INT64, TSDataType.INT64, TSDataType.INT64)),
+                    Arrays.asList(Arrays.asList(1, 2L, 3L, 4L, 5L), Arrays.asList(1, 2L, 3L, 4L, 5L), Arrays.asList(1, 2L, 3L, 4L, 5L)));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Integer cannot be cast to class java.lang.Long (java.lang.Integer and java.lang.Long are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Float
+        try {
+            session.insertAlignedRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.INT64, TSDataType.INT64, TSDataType.INT64, TSDataType.INT64, TSDataType.INT64), Arrays.asList(TSDataType.INT64, TSDataType.INT64, TSDataType.INT64, TSDataType.INT64, TSDataType.INT64), Arrays.asList(TSDataType.INT64, TSDataType.INT64, TSDataType.INT64, TSDataType.INT64, TSDataType.INT64)),
+                    Arrays.asList(Arrays.asList(1.1F, 2L, 3L, 4L, 5L), Arrays.asList(1.1F, 2L, 3L, 4L, 5L), Arrays.asList(1.1F, 2L, 3L, 4L, 5L)));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Float cannot be cast to class java.lang.Long (java.lang.Float and java.lang.Long are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Double
+        try {
+            session.insertAlignedRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.INT64, TSDataType.INT64, TSDataType.INT64, TSDataType.INT64, TSDataType.INT64), Arrays.asList(TSDataType.INT64, TSDataType.INT64, TSDataType.INT64, TSDataType.INT64, TSDataType.INT64), Arrays.asList(TSDataType.INT64, TSDataType.INT64, TSDataType.INT64, TSDataType.INT64, TSDataType.INT64)),
+                    Arrays.asList(Arrays.asList(1.1, 2L, 3L, 4L, 5L), Arrays.asList(1.1, 2L, 3L, 4L, 5L), Arrays.asList(1.1, 2L, 3L, 4L, 5L)));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Double cannot be cast to class java.lang.Long (java.lang.Double and java.lang.Long are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Text、String
+        try {
+            session.insertAlignedRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.INT64, TSDataType.INT64, TSDataType.INT64, TSDataType.INT64, TSDataType.INT64), Arrays.asList(TSDataType.INT64, TSDataType.INT64, TSDataType.INT64, TSDataType.INT64, TSDataType.INT64), Arrays.asList(TSDataType.INT64, TSDataType.INT64, TSDataType.INT64, TSDataType.INT64, TSDataType.INT64)),
+                    Arrays.asList(Arrays.asList("1L", 2L, 3L, 4L, 5L), Arrays.asList("1L", 2L, 3L, 4L, 5L), Arrays.asList("1L", 2L, 3L, 4L, 5L)));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.String cannot be cast to class java.lang.Long (java.lang.String and java.lang.Long are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Blob
+        try {
+            session.insertAlignedRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.INT64, TSDataType.INT64, TSDataType.INT64, TSDataType.INT64, TSDataType.INT64), Arrays.asList(TSDataType.INT64, TSDataType.INT64, TSDataType.INT64, TSDataType.INT64, TSDataType.INT64), Arrays.asList(TSDataType.INT64, TSDataType.INT64, TSDataType.INT64, TSDataType.INT64, TSDataType.INT64)),
+                    Arrays.asList(Arrays.asList(new Binary("1L", StandardCharsets.UTF_8), 2L, 3L, 4L, 5L), Arrays.asList(new Binary("1L", StandardCharsets.UTF_8), 2L, 3L, 4L, 5L), Arrays.asList(new Binary("1L", StandardCharsets.UTF_8), 2L, 3L, 4L, 5L)));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class org.apache.tsfile.utils.Binary cannot be cast to class java.lang.Long (org.apache.tsfile.utils.Binary is in unnamed module of loader 'app'; java.lang.Long is in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Date
+        try {
+            session.insertAlignedRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.INT64, TSDataType.INT64, TSDataType.INT64, TSDataType.INT64, TSDataType.INT64), Arrays.asList(TSDataType.INT64, TSDataType.INT64, TSDataType.INT64, TSDataType.INT64, TSDataType.INT64), Arrays.asList(TSDataType.INT64, TSDataType.INT64, TSDataType.INT64, TSDataType.INT64, TSDataType.INT64)),
+                    Arrays.asList(Arrays.asList(LocalDate.of(1900, 1, 1), 2L, 3L, 4L, 5L), Arrays.asList(LocalDate.of(1900, 1, 1), 2L, 3L, 4L, 5L), Arrays.asList(LocalDate.of(1900, 1, 1), 2L, 3L, 4L, 5L)));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.time.LocalDate cannot be cast to class java.lang.Long (java.time.LocalDate and java.lang.Long are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Boolean
+        try {
+            session.insertAlignedRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP), Arrays.asList(TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP), Arrays.asList(TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP)),
+                    Arrays.asList(Arrays.asList(true, 2L, 3L, 4L, 5L), Arrays.asList(true, 2L, 3L, 4L, 5L), Arrays.asList(true, 2L, 3L, 4L, 5L)));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Boolean cannot be cast to class java.lang.Long (java.lang.Boolean and java.lang.Long are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Int32
+        try {
+            session.insertAlignedRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP), Arrays.asList(TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP), Arrays.asList(TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP)),
+                    Arrays.asList(Arrays.asList(1, 2L, 3L, 4L, 5L), Arrays.asList(1, 2L, 3L, 4L, 5L), Arrays.asList(1, 2L, 3L, 4L, 5L)));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Integer cannot be cast to class java.lang.Long (java.lang.Integer and java.lang.Long are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Float
+        try {
+            session.insertAlignedRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP), Arrays.asList(TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP), Arrays.asList(TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP)),
+                    Arrays.asList(Arrays.asList(1.1F, 2L, 3L, 4L, 5L), Arrays.asList(1.1F, 2L, 3L, 4L, 5L), Arrays.asList(1.1F, 2L, 3L, 4L, 5L)));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Float cannot be cast to class java.lang.Long (java.lang.Float and java.lang.Long are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Double
+        try {
+            session.insertAlignedRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP), Arrays.asList(TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP), Arrays.asList(TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP)),
+                    Arrays.asList(Arrays.asList(1.1, 2L, 3L, 4L, 5L), Arrays.asList(1.1, 2L, 3L, 4L, 5L), Arrays.asList(1.1, 2L, 3L, 4L, 5L)));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Double cannot be cast to class java.lang.Long (java.lang.Double and java.lang.Long are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Text、String
+        try {
+            session.insertAlignedRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP), Arrays.asList(TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP), Arrays.asList(TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP)),
+                    Arrays.asList(Arrays.asList("1L", 2L, 3L, 4L, 5L), Arrays.asList("1L", 2L, 3L, 4L, 5L), Arrays.asList("1L", 2L, 3L, 4L, 5L)));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.String cannot be cast to class java.lang.Long (java.lang.String and java.lang.Long are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Blob
+        try {
+            session.insertAlignedRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP), Arrays.asList(TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP), Arrays.asList(TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP)),
+                    Arrays.asList(Arrays.asList(new Binary("1L", StandardCharsets.UTF_8), 2L, 3L, 4L, 5L), Arrays.asList(new Binary("1L", StandardCharsets.UTF_8), 2L, 3L, 4L, 5L), Arrays.asList(new Binary("1L", StandardCharsets.UTF_8), 2L, 3L, 4L, 5L)));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class org.apache.tsfile.utils.Binary cannot be cast to class java.lang.Long (org.apache.tsfile.utils.Binary is in unnamed module of loader 'app'; java.lang.Long is in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Date
+        try {
+            session.insertAlignedRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP), Arrays.asList(TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP), Arrays.asList(TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP, TSDataType.TIMESTAMP)),
+                    Arrays.asList(Arrays.asList(LocalDate.of(1900, 1, 1), 2L, 3L, 4L, 5L), Arrays.asList(LocalDate.of(1900, 1, 1), 2L, 3L, 4L, 5L), Arrays.asList(LocalDate.of(1900, 1, 1), 2L, 3L, 4L, 5L)));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.time.LocalDate cannot be cast to class java.lang.Long (java.time.LocalDate and java.lang.Long are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Boolean
+        try {
+            session.insertAlignedRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT), Arrays.asList(TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT), Arrays.asList(TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT)),
+                    Arrays.asList(Arrays.asList(true, 2.2F, 3.3F, 4.4F, 5.5F), Arrays.asList(true, 2.2F, 3.3F, 4.4F, 5.5F), Arrays.asList(true, 2.2F, 3.3F, 4.4F, 5.5F)));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Boolean cannot be cast to class java.lang.Float (java.lang.Boolean and java.lang.Float are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Int32
+        try {
+            session.insertAlignedRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT), Arrays.asList(TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT), Arrays.asList(TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT)),
+                    Arrays.asList(Arrays.asList(1, 2.2F, 3.3F, 4.4F, 5.5F), Arrays.asList(1, 2.2F, 3.3F, 4.4F, 5.5F), Arrays.asList(1, 2.2F, 3.3F, 4.4F, 5.5F)));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Integer cannot be cast to class java.lang.Float (java.lang.Integer and java.lang.Float are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Int64
+        try {
+            session.insertAlignedRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT), Arrays.asList(TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT), Arrays.asList(TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT)),
+                    Arrays.asList(Arrays.asList(1L, 2.2F, 3.3F, 4.4F, 5.5F), Arrays.asList(1L, 2.2F, 3.3F, 4.4F, 5.5F), Arrays.asList(1L, 2.2F, 3.3F, 4.4F, 5.5F)));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Long cannot be cast to class java.lang.Float (java.lang.Long and java.lang.Float are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Double
+        try {
+            session.insertAlignedRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT), Arrays.asList(TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT), Arrays.asList(TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT)),
+                    Arrays.asList(Arrays.asList(1.1, 2.2F, 3.3F, 4.4F, 5.5F), Arrays.asList(1.1, 2.2F, 3.3F, 4.4F, 5.5F), Arrays.asList(1.1, 2.2F, 3.3F, 4.4F, 5.5F)));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Double cannot be cast to class java.lang.Float (java.lang.Double and java.lang.Float are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Text、String
+        try {
+            session.insertAlignedRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT), Arrays.asList(TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT), Arrays.asList(TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT)),
+                    Arrays.asList(Arrays.asList("1F", 2.2F, 3.3F, 4.4F, 5.5F), Arrays.asList("1F", 2.2F, 3.3F, 4.4F, 5.5F), Arrays.asList("1F", 2.2F, 3.3F, 4.4F, 5.5F)));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.String cannot be cast to class java.lang.Float (java.lang.String and java.lang.Float are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Blob
+        try {
+            session.insertAlignedRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT), Arrays.asList(TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT), Arrays.asList(TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT)),
+                    Arrays.asList(Arrays.asList(new Binary("1F", StandardCharsets.UTF_8), 2.2F, 3.3F, 4.4F, 5.5F), Arrays.asList(new Binary("1F", StandardCharsets.UTF_8), 2.2F, 3.3F, 4.4F, 5.5F), Arrays.asList(new Binary("1F", StandardCharsets.UTF_8), 2.2F, 3.3F, 4.4F, 5.5F)));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class org.apache.tsfile.utils.Binary cannot be cast to class java.lang.Float (org.apache.tsfile.utils.Binary is in unnamed module of loader 'app'; java.lang.Float is in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Date
+        try {
+            session.insertAlignedRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT), Arrays.asList(TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT), Arrays.asList(TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT, TSDataType.FLOAT)),
+                    Arrays.asList(Arrays.asList(LocalDate.of(1970, 1, 1), 2.2F, 3.3F, 4.4F, 5.5F), Arrays.asList(LocalDate.of(1970, 1, 1), 2.2F, 3.3F, 4.4F, 5.5F), Arrays.asList(LocalDate.of(1970, 1, 1), 2.2F, 3.3F, 4.4F, 5.5F)));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.time.LocalDate cannot be cast to class java.lang.Float (java.time.LocalDate and java.lang.Float are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Boolean
+        try {
+            session.insertAlignedRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE), Arrays.asList(TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE), Arrays.asList(TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE)),
+                    Arrays.asList(Arrays.asList(true, 2.2, 3.3, 4.4, 5.5), Arrays.asList(true, 2.2, 3.3, 4.4, 5.5), Arrays.asList(true, 2.2, 3.3, 4.4, 5.5)));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Boolean cannot be cast to class java.lang.Double (java.lang.Boolean and java.lang.Double are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Int32
+        try {
+            session.insertAlignedRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE), Arrays.asList(TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE), Arrays.asList(TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE)),
+                    Arrays.asList(Arrays.asList(1, 2.2, 3.3, 4.4, 5.5), Arrays.asList(1, 2.2, 3.3, 4.4, 5.5), Arrays.asList(1, 2.2, 3.3, 4.4, 5.5)));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Integer cannot be cast to class java.lang.Double (java.lang.Integer and java.lang.Double are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Int64
+        try {
+            session.insertAlignedRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE), Arrays.asList(TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE), Arrays.asList(TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE)),
+                    Arrays.asList(Arrays.asList(1L, 2.2, 3.3, 4.4, 5.5), Arrays.asList(1L, 2.2, 3.3, 4.4, 5.5), Arrays.asList(1L, 2.2, 3.3, 4.4, 5.5)));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Long cannot be cast to class java.lang.Double (java.lang.Long and java.lang.Double are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Float
+        try {
+            session.insertAlignedRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE), Arrays.asList(TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE), Arrays.asList(TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE)),
+                    Arrays.asList(Arrays.asList(1F, 2.2, 3.3, 4.4, 5.5), Arrays.asList(1F, 2.2, 3.3, 4.4, 5.5), Arrays.asList(1F, 2.2, 3.3, 4.4, 5.5)));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Float cannot be cast to class java.lang.Double (java.lang.Float and java.lang.Double are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Text、String
+        try {
+            session.insertAlignedRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE), Arrays.asList(TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE), Arrays.asList(TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE)),
+                    Arrays.asList(Arrays.asList("1.1", 2.2, 3.3, 4.4, 5.5), Arrays.asList("1.1", 2.2, 3.3, 4.4, 5.5), Arrays.asList("1.1", 2.2, 3.3, 4.4, 5.5)));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.String cannot be cast to class java.lang.Double (java.lang.String and java.lang.Double are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Blob
+        try {
+            session.insertAlignedRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE), Arrays.asList(TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE), Arrays.asList(TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE)),
+                    Arrays.asList(Arrays.asList(new Binary("1.1", StandardCharsets.UTF_8), 2.2, 3.3, 4.4, 5.5), Arrays.asList(new Binary("1.1", StandardCharsets.UTF_8), 2.2, 3.3, 4.4, 5.5), Arrays.asList(new Binary("1.1", StandardCharsets.UTF_8), 2.2, 3.3, 4.4, 5.5)));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class org.apache.tsfile.utils.Binary cannot be cast to class java.lang.Double (org.apache.tsfile.utils.Binary is in unnamed module of loader 'app'; java.lang.Double is in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Date
+        try {
+            session.insertAlignedRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE), Arrays.asList(TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE), Arrays.asList(TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE, TSDataType.DOUBLE)),
+                    Arrays.asList(Arrays.asList(LocalDate.of(1970, 1, 1), 2.2, 3.3, 4.4, 5.5), Arrays.asList(LocalDate.of(1970, 1, 1), 2.2, 3.3, 4.4, 5.5), Arrays.asList(LocalDate.of(1970, 1, 1), 2.2, 3.3, 4.4, 5.5)));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.time.LocalDate cannot be cast to class java.lang.Double (java.time.LocalDate and java.lang.Double are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Boolean
+        try {
+            session.insertAlignedRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT), Arrays.asList(TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT), Arrays.asList(TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT)),
+                    Arrays.asList(Arrays.asList(true, "text2", "text3", "text4", "text5"), Arrays.asList(true, "text2", "text3", "text4", "text5"), Arrays.asList(true, "text2", "text3", "text4", "text5")));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Boolean cannot be cast to class java.lang.String (java.lang.Boolean and java.lang.String are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Int32
+        try {
+            session.insertAlignedRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT), Arrays.asList(TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT), Arrays.asList(TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT)),
+                    Arrays.asList(Arrays.asList(1, "text2", "text3", "text4", "text5"), Arrays.asList(1, "text2", "text3", "text4", "text5"), Arrays.asList(1, "text2", "text3", "text4", "text5")));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Integer cannot be cast to class java.lang.String (java.lang.Integer and java.lang.String are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Int64、Timestamp
+        try {
+            session.insertAlignedRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT), Arrays.asList(TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT), Arrays.asList(TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT)),
+                    Arrays.asList(Arrays.asList(1L, "text2", "text3", "text4", "text5"), Arrays.asList(1L, "text2", "text3", "text4", "text5"), Arrays.asList(1L, "text2", "text3", "text4", "text5")));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Long cannot be cast to class java.lang.String (java.lang.Long and java.lang.String are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Float
+        try {
+            session.insertAlignedRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT), Arrays.asList(TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT), Arrays.asList(TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT)),
+                    Arrays.asList(Arrays.asList(1.1F, "text2", "text3", "text4", "text5"), Arrays.asList(1.1F, "text2", "text3", "text4", "text5"), Arrays.asList(1.1F, "text2", "text3", "text4", "text5")));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Float cannot be cast to class java.lang.String (java.lang.Float and java.lang.String are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Double
+        try {
+            session.insertAlignedRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT), Arrays.asList(TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT), Arrays.asList(TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT)),
+                    Arrays.asList(Arrays.asList(1.1, "text2", "text3", "text4", "text5"), Arrays.asList(1.1, "text2", "text3", "text4", "text5"), Arrays.asList(1.1, "text2", "text3", "text4", "text5")));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Double cannot be cast to class java.lang.String (java.lang.Double and java.lang.String are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Blob：String和Text类型支持binary数据
+        try {
+            session.insertAlignedRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT), Arrays.asList(TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT), Arrays.asList(TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT)),
+                    Arrays.asList(Arrays.asList(new Binary("text1", StandardCharsets.UTF_8), "text2", "text3", "text4", "text5"), Arrays.asList(new Binary("text1", StandardCharsets.UTF_8), "text2", "text3", "text4", "text5"), Arrays.asList(new Binary("text1", StandardCharsets.UTF_8), "text2", "text3", "text4", "text5")));
+            session.executeNonQueryStatement("delete database root.**");
+        } catch (IoTDBConnectionException | StatementExecutionException e) {
+            throw new RuntimeException(e);
+        }
+
+        // Date
+        try {
+            session.insertAlignedRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT), Arrays.asList(TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT), Arrays.asList(TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT, TSDataType.TEXT)),
+                    Arrays.asList(Arrays.asList(LocalDate.of(1970,1,1), "text2", "text3", "text4", "text5"), Arrays.asList(LocalDate.of(1970,1,1), "text2", "text3", "text4", "text5"), Arrays.asList(LocalDate.of(1970,1,1), "text2", "text3", "text4", "text5")));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.time.LocalDate cannot be cast to class java.lang.String (java.time.LocalDate and java.lang.String are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Boolean
+        try {
+            session.insertAlignedRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.STRING, TSDataType.STRING, TSDataType.STRING, TSDataType.STRING, TSDataType.STRING), Arrays.asList(TSDataType.STRING, TSDataType.STRING, TSDataType.STRING, TSDataType.STRING, TSDataType.STRING), Arrays.asList(TSDataType.STRING, TSDataType.STRING, TSDataType.STRING, TSDataType.STRING, TSDataType.STRING)),
+                    Arrays.asList(Arrays.asList(true, "string2", "string3", "string4", "string5"), Arrays.asList(true, "string2", "string3", "string4", "string5"), Arrays.asList(true, "string2", "string3", "string4", "string5")));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Boolean cannot be cast to class java.lang.String (java.lang.Boolean and java.lang.String are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Int32
+        try {
+            session.insertAlignedRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.STRING, TSDataType.STRING, TSDataType.STRING, TSDataType.STRING, TSDataType.STRING), Arrays.asList(TSDataType.STRING, TSDataType.STRING, TSDataType.STRING, TSDataType.STRING, TSDataType.STRING), Arrays.asList(TSDataType.STRING, TSDataType.STRING, TSDataType.STRING, TSDataType.STRING, TSDataType.STRING)),
+                    Arrays.asList(Arrays.asList(1, "string2", "string3", "string4", "string5"), Arrays.asList(1, "string2", "string3", "string4", "string5"), Arrays.asList(1, "string2", "string3", "string4", "string5")));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Integer cannot be cast to class java.lang.String (java.lang.Integer and java.lang.String are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Int64、Timestamp
+        try {
+            session.insertAlignedRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.STRING, TSDataType.STRING, TSDataType.STRING, TSDataType.STRING, TSDataType.STRING), Arrays.asList(TSDataType.STRING, TSDataType.STRING, TSDataType.STRING, TSDataType.STRING, TSDataType.STRING), Arrays.asList(TSDataType.STRING, TSDataType.STRING, TSDataType.STRING, TSDataType.STRING, TSDataType.STRING)),
+                    Arrays.asList(Arrays.asList(1L, "string2", "string3", "string4", "string5"), Arrays.asList(1L, "string2", "string3", "string4", "string5"), Arrays.asList(1L, "string2", "string3", "string4", "string5")));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Long cannot be cast to class java.lang.String (java.lang.Long and java.lang.String are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Float
+        try {
+            session.insertAlignedRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.STRING, TSDataType.STRING, TSDataType.STRING, TSDataType.STRING, TSDataType.STRING), Arrays.asList(TSDataType.STRING, TSDataType.STRING, TSDataType.STRING, TSDataType.STRING, TSDataType.STRING), Arrays.asList(TSDataType.STRING, TSDataType.STRING, TSDataType.STRING, TSDataType.STRING, TSDataType.STRING)),
+                    Arrays.asList(Arrays.asList(1.1F, "string2", "string3", "string4", "string5"), Arrays.asList(1.1F, "string2", "string3", "string4", "string5"), Arrays.asList(1.1F, "string2", "string3", "string4", "string5")));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Float cannot be cast to class java.lang.String (java.lang.Float and java.lang.String are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Double
+        try {
+            session.insertAlignedRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.STRING, TSDataType.STRING, TSDataType.STRING, TSDataType.STRING, TSDataType.STRING), Arrays.asList(TSDataType.STRING, TSDataType.STRING, TSDataType.STRING, TSDataType.STRING, TSDataType.STRING), Arrays.asList(TSDataType.STRING, TSDataType.STRING, TSDataType.STRING, TSDataType.STRING, TSDataType.STRING)),
+                    Arrays.asList(Arrays.asList(1.1, "string2", "string3", "string4", "string5"), Arrays.asList(1.1, "string2", "string3", "string4", "string5"), Arrays.asList(1.1, "string2", "string3", "string4", "string5")));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Double cannot be cast to class java.lang.String (java.lang.Double and java.lang.String are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Blob：String和Text类型支持binary数据
+        try {
+            session.insertAlignedRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.STRING, TSDataType.STRING, TSDataType.STRING, TSDataType.STRING, TSDataType.STRING), Arrays.asList(TSDataType.STRING, TSDataType.STRING, TSDataType.STRING, TSDataType.STRING, TSDataType.STRING), Arrays.asList(TSDataType.STRING, TSDataType.STRING, TSDataType.STRING, TSDataType.STRING, TSDataType.STRING)),
+                    Arrays.asList(Arrays.asList(new Binary("string1", StandardCharsets.UTF_8), "string2", "string3", "string4", "string5"), Arrays.asList(new Binary("string1", StandardCharsets.UTF_8), "string2", "string3", "string4", "string5"), Arrays.asList(new Binary("string1", StandardCharsets.UTF_8), "string2", "string3", "string4", "string5")));
+            session.executeNonQueryStatement("delete database root.**");
+        } catch (IoTDBConnectionException | StatementExecutionException e) {
+            throw new RuntimeException(e);
+        }
+
+        // Date
+        try {
+            session.insertAlignedRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.STRING, TSDataType.STRING, TSDataType.STRING, TSDataType.STRING, TSDataType.STRING), Arrays.asList(TSDataType.STRING, TSDataType.STRING, TSDataType.STRING, TSDataType.STRING, TSDataType.STRING), Arrays.asList(TSDataType.STRING, TSDataType.STRING, TSDataType.STRING, TSDataType.STRING, TSDataType.STRING)),
+                    Arrays.asList(Arrays.asList(LocalDate.of(1970, 1, 1), "string2", "string3", "string4", "string5"), Arrays.asList(LocalDate.of(1970, 1, 1), "string2", "string3", "string4", "string5"), Arrays.asList(LocalDate.of(1970, 1, 1), "string2", "string3", "string4", "string5")));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.time.LocalDate cannot be cast to class java.lang.String (java.time.LocalDate and java.lang.String are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Boolean
+        try {
+            session.insertAlignedRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB), Arrays.asList(TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB), Arrays.asList(TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB)),
+                    Arrays.asList(Arrays.asList(true, new Binary("blob2", StandardCharsets.UTF_8), new Binary("blob3", StandardCharsets.UTF_8), new Binary("blob4", StandardCharsets.UTF_8), new Binary("blob5", StandardCharsets.UTF_8)), Arrays.asList(true, new Binary("blob2", StandardCharsets.UTF_8), new Binary("blob3", StandardCharsets.UTF_8), new Binary("blob4", StandardCharsets.UTF_8), new Binary("blob5", StandardCharsets.UTF_8)), Arrays.asList(true, new Binary("blob2", StandardCharsets.UTF_8), new Binary("blob3", StandardCharsets.UTF_8), new Binary("blob4", StandardCharsets.UTF_8), new Binary("blob5", StandardCharsets.UTF_8))));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Boolean cannot be cast to class org.apache.tsfile.utils.Binary (java.lang.Boolean is in module java.base of loader 'bootstrap'; org.apache.tsfile.utils.Binary is in unnamed module of loader 'app')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Int32
+        try {
+            session.insertAlignedRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB), Arrays.asList(TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB), Arrays.asList(TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB)),
+                    Arrays.asList(Arrays.asList(1, new Binary("blob2", StandardCharsets.UTF_8), new Binary("blob3", StandardCharsets.UTF_8), new Binary("blob4", StandardCharsets.UTF_8), new Binary("blob5", StandardCharsets.UTF_8)), Arrays.asList(1, new Binary("blob2", StandardCharsets.UTF_8), new Binary("blob3", StandardCharsets.UTF_8), new Binary("blob4", StandardCharsets.UTF_8), new Binary("blob5", StandardCharsets.UTF_8)), Arrays.asList(1, new Binary("blob2", StandardCharsets.UTF_8), new Binary("blob3", StandardCharsets.UTF_8), new Binary("blob4", StandardCharsets.UTF_8), new Binary("blob5", StandardCharsets.UTF_8))));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Integer cannot be cast to class org.apache.tsfile.utils.Binary (java.lang.Integer is in module java.base of loader 'bootstrap'; org.apache.tsfile.utils.Binary is in unnamed module of loader 'app')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Int64、timestamp
+        try {
+            session.insertAlignedRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB), Arrays.asList(TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB), Arrays.asList(TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB)),
+                    Arrays.asList(Arrays.asList(1L, new Binary("blob2", StandardCharsets.UTF_8), new Binary("blob3", StandardCharsets.UTF_8), new Binary("blob4", StandardCharsets.UTF_8), new Binary("blob5", StandardCharsets.UTF_8)), Arrays.asList(1L, new Binary("blob2", StandardCharsets.UTF_8), new Binary("blob3", StandardCharsets.UTF_8), new Binary("blob4", StandardCharsets.UTF_8), new Binary("blob5", StandardCharsets.UTF_8)), Arrays.asList(1L, new Binary("blob2", StandardCharsets.UTF_8), new Binary("blob3", StandardCharsets.UTF_8), new Binary("blob4", StandardCharsets.UTF_8), new Binary("blob5", StandardCharsets.UTF_8))));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Long cannot be cast to class org.apache.tsfile.utils.Binary (java.lang.Long is in module java.base of loader 'bootstrap'; org.apache.tsfile.utils.Binary is in unnamed module of loader 'app')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Float
+        try {
+            session.insertAlignedRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB), Arrays.asList(TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB), Arrays.asList(TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB)),
+                    Arrays.asList(Arrays.asList(1.1F, new Binary("blob2", StandardCharsets.UTF_8), new Binary("blob3", StandardCharsets.UTF_8), new Binary("blob4", StandardCharsets.UTF_8), new Binary("blob5", StandardCharsets.UTF_8)), Arrays.asList(1.1F, new Binary("blob2", StandardCharsets.UTF_8), new Binary("blob3", StandardCharsets.UTF_8), new Binary("blob4", StandardCharsets.UTF_8), new Binary("blob5", StandardCharsets.UTF_8)), Arrays.asList(1.1F, new Binary("blob2", StandardCharsets.UTF_8), new Binary("blob3", StandardCharsets.UTF_8), new Binary("blob4", StandardCharsets.UTF_8), new Binary("blob5", StandardCharsets.UTF_8))));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Float cannot be cast to class org.apache.tsfile.utils.Binary (java.lang.Float is in module java.base of loader 'bootstrap'; org.apache.tsfile.utils.Binary is in unnamed module of loader 'app')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Double
+        try {
+            session.insertAlignedRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB), Arrays.asList(TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB), Arrays.asList(TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB)),
+                    Arrays.asList(Arrays.asList(1.1, new Binary("blob2", StandardCharsets.UTF_8), new Binary("blob3", StandardCharsets.UTF_8), new Binary("blob4", StandardCharsets.UTF_8), new Binary("blob5", StandardCharsets.UTF_8)), Arrays.asList(1.1, new Binary("blob2", StandardCharsets.UTF_8), new Binary("blob3", StandardCharsets.UTF_8), new Binary("blob4", StandardCharsets.UTF_8), new Binary("blob5", StandardCharsets.UTF_8)), Arrays.asList(1.1, new Binary("blob2", StandardCharsets.UTF_8), new Binary("blob3", StandardCharsets.UTF_8), new Binary("blob4", StandardCharsets.UTF_8), new Binary("blob5", StandardCharsets.UTF_8))));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Double cannot be cast to class org.apache.tsfile.utils.Binary (java.lang.Double is in module java.base of loader 'bootstrap'; org.apache.tsfile.utils.Binary is in unnamed module of loader 'app')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Text、String
+        try {
+            session.insertAlignedRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB), Arrays.asList(TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB), Arrays.asList(TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB)),
+                    Arrays.asList(Arrays.asList("blob1", new Binary("blob2", StandardCharsets.UTF_8), new Binary("blob3", StandardCharsets.UTF_8), new Binary("blob4", StandardCharsets.UTF_8), new Binary("blob5", StandardCharsets.UTF_8)), Arrays.asList("blob1", new Binary("blob2", StandardCharsets.UTF_8), new Binary("blob3", StandardCharsets.UTF_8), new Binary("blob4", StandardCharsets.UTF_8), new Binary("blob5", StandardCharsets.UTF_8)), Arrays.asList("blob1", new Binary("blob2", StandardCharsets.UTF_8), new Binary("blob3", StandardCharsets.UTF_8), new Binary("blob4", StandardCharsets.UTF_8), new Binary("blob5", StandardCharsets.UTF_8))));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.String cannot be cast to class org.apache.tsfile.utils.Binary (java.lang.String is in module java.base of loader 'bootstrap'; org.apache.tsfile.utils.Binary is in unnamed module of loader 'app')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Date
+        try {
+            session.insertAlignedRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB), Arrays.asList(TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB), Arrays.asList(TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB, TSDataType.BLOB)),
+                    Arrays.asList(Arrays.asList(LocalDate.of(1970, 1, 1), new Binary("blob2", StandardCharsets.UTF_8), new Binary("blob3", StandardCharsets.UTF_8), new Binary("blob4", StandardCharsets.UTF_8), new Binary("blob5", StandardCharsets.UTF_8)), Arrays.asList(LocalDate.of(1970, 1, 1), new Binary("blob2", StandardCharsets.UTF_8), new Binary("blob3", StandardCharsets.UTF_8), new Binary("blob4", StandardCharsets.UTF_8), new Binary("blob5", StandardCharsets.UTF_8)), Arrays.asList(LocalDate.of(1970, 1, 1), new Binary("blob2", StandardCharsets.UTF_8), new Binary("blob3", StandardCharsets.UTF_8), new Binary("blob4", StandardCharsets.UTF_8), new Binary("blob5", StandardCharsets.UTF_8))));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.time.LocalDate cannot be cast to class org.apache.tsfile.utils.Binary (java.time.LocalDate is in module java.base of loader 'bootstrap'; org.apache.tsfile.utils.Binary is in unnamed module of loader 'app')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Boolean
+        try {
+            session.insertAlignedRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.DATE, TSDataType.DATE, TSDataType.DATE, TSDataType.DATE, TSDataType.DATE), Arrays.asList(TSDataType.DATE, TSDataType.DATE, TSDataType.DATE, TSDataType.DATE, TSDataType.DATE), Arrays.asList(TSDataType.DATE, TSDataType.DATE, TSDataType.DATE, TSDataType.DATE, TSDataType.DATE)),
+                    Arrays.asList(Arrays.asList(true, LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1)), Arrays.asList(false, LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1)), Arrays.asList(true, LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1))));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Boolean cannot be cast to class java.time.LocalDate (java.lang.Boolean and java.time.LocalDate are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Int32
+        try {
+            session.insertAlignedRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.DATE, TSDataType.DATE, TSDataType.DATE, TSDataType.DATE, TSDataType.DATE), Arrays.asList(TSDataType.DATE, TSDataType.DATE, TSDataType.DATE, TSDataType.DATE, TSDataType.DATE), Arrays.asList(TSDataType.DATE, TSDataType.DATE, TSDataType.DATE, TSDataType.DATE, TSDataType.DATE)),
+                    Arrays.asList(Arrays.asList(1, LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1)), Arrays.asList(2, LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1)), Arrays.asList(3, LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1))));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Integer cannot be cast to class java.time.LocalDate (java.lang.Integer and java.time.LocalDate are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Int64、Timestamp
+        try {
+            session.insertAlignedRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.DATE, TSDataType.DATE, TSDataType.DATE, TSDataType.DATE, TSDataType.DATE), Arrays.asList(TSDataType.DATE, TSDataType.DATE, TSDataType.DATE, TSDataType.DATE, TSDataType.DATE), Arrays.asList(TSDataType.DATE, TSDataType.DATE, TSDataType.DATE, TSDataType.DATE, TSDataType.DATE)),
+                    Arrays.asList(Arrays.asList(1L, LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1)), Arrays.asList(2L, LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1)), Arrays.asList(3L, LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1))));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Long cannot be cast to class java.time.LocalDate (java.lang.Long and java.time.LocalDate are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Float
+        try {
+            session.insertAlignedRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.DATE, TSDataType.DATE, TSDataType.DATE, TSDataType.DATE, TSDataType.DATE), Arrays.asList(TSDataType.DATE, TSDataType.DATE, TSDataType.DATE, TSDataType.DATE, TSDataType.DATE), Arrays.asList(TSDataType.DATE, TSDataType.DATE, TSDataType.DATE, TSDataType.DATE, TSDataType.DATE)),
+                    Arrays.asList(Arrays.asList(1.1F, LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1)), Arrays.asList(1.1F, LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1)), Arrays.asList(1.1F, LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1))));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Float cannot be cast to class java.time.LocalDate (java.lang.Float and java.time.LocalDate are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Double
+        try {
+            session.insertAlignedRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.DATE, TSDataType.DATE, TSDataType.DATE, TSDataType.DATE, TSDataType.DATE), Arrays.asList(TSDataType.DATE, TSDataType.DATE, TSDataType.DATE, TSDataType.DATE, TSDataType.DATE), Arrays.asList(TSDataType.DATE, TSDataType.DATE, TSDataType.DATE, TSDataType.DATE, TSDataType.DATE)),
+                    Arrays.asList(Arrays.asList(1.1, LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1)), Arrays.asList(1.1, LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1)), Arrays.asList(1.1, LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1))));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.Double cannot be cast to class java.time.LocalDate (java.lang.Double and java.time.LocalDate are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Text、String
+        try {
+            session.insertAlignedRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.DATE, TSDataType.DATE, TSDataType.DATE, TSDataType.DATE, TSDataType.DATE), Arrays.asList(TSDataType.DATE, TSDataType.DATE, TSDataType.DATE, TSDataType.DATE, TSDataType.DATE), Arrays.asList(TSDataType.DATE, TSDataType.DATE, TSDataType.DATE, TSDataType.DATE, TSDataType.DATE)),
+                    Arrays.asList(Arrays.asList("1970.1.1", LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1)), Arrays.asList("1970.1.1", LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1)), Arrays.asList("1970.1.1", LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1))));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class java.lang.String cannot be cast to class java.time.LocalDate (java.lang.String and java.time.LocalDate are in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
+
+        // Blob
+        try {
+            session.insertAlignedRecords(
+                    Arrays.asList("root.db1.d1", "root.db1.d2", "root.db1.d3"),
+                    Arrays.asList(0L, 1L, 2L),
+                    Arrays.asList(Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5"), Arrays.asList("s1", "s2", "s3", "s4", "s5")),
+                    Arrays.asList(Arrays.asList(TSDataType.DATE, TSDataType.DATE, TSDataType.DATE, TSDataType.DATE, TSDataType.DATE), Arrays.asList(TSDataType.DATE, TSDataType.DATE, TSDataType.DATE, TSDataType.DATE, TSDataType.DATE), Arrays.asList(TSDataType.DATE, TSDataType.DATE, TSDataType.DATE, TSDataType.DATE, TSDataType.DATE)),
+                    Arrays.asList(Arrays.asList(new Binary("1970.1.1", StandardCharsets.UTF_8), LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1)), Arrays.asList(new Binary("1970.1.1", StandardCharsets.UTF_8), LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1)), Arrays.asList(new Binary("1970.1.1", StandardCharsets.UTF_8), LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1))));
+            assert false : "Expecting an error exception, but running normally";
+        } catch (Exception e) {
+            assert e instanceof ClassCastException : "Unexpected exception type, expect: ClassCastException, actual: " + e.getCause();
+            assert e.getMessage().contains("class org.apache.tsfile.utils.Binary cannot be cast to class java.time.LocalDate (org.apache.tsfile.utils.Binary is in unnamed module of loader 'app'; java.time.LocalDate is in module java.base of loader 'bootstrap')") : "Unexpected error message, actual: " + e.getMessage();
+        }
     }
 }
