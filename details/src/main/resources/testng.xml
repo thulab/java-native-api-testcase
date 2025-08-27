@@ -43,6 +43,7 @@
             <class name="org.apache.iotdb.api.test.table.data_manage.TestInsertNormal"/>
             <class name="org.apache.iotdb.api.test.table.data_manage.TestInsertError"/>
             <class name="org.apache.iotdb.api.test.table.session.TestTableSessionBuilder"/>
+            <class name="org.apache.iotdb.api.test.table.session.TestTableSessionBuilderError"/>
             <class name="org.apache.iotdb.api.test.table.session.TestTableSessionPoolBuilder"/>
         </classes>
     </test>
@@ -108,36 +109,36 @@
         </classes>
     </test>
 
-<!--    <test name="SQL" preserve-order="true">-->
-<!--        <classes>-->
-<!--            <class name="org.apache.iotdb.api.test.sql.TestSQL"/>-->
-<!--        </classes>-->
-<!--    </test>-->
+    <!--    <test name="SQL" preserve-order="true">-->
+    <!--        <classes>-->
+    <!--            <class name="org.apache.iotdb.api.test.sql.TestSQL"/>-->
+    <!--        </classes>-->
+    <!--    </test>-->
 
 
 
 
-<!--测试场景特殊，需要手动开启测试-->
-<!--    <test name="TriggerNameTest" preserve-order="true">-->
-<!--        <classes>-->
-<!--            <class name="org.apache.iotdb.api.test.tree.other.TriggerNameTest"></class>-->
-<!--        </classes>-->
-<!--    </test>-->
-<!--    <test name="UDFNameTest" preserve-order="true">-->
-<!--        <classes>-->
-<!--            <class name="org.apache.iotdb.api.test.tree.other.UDFNameTest"></class>-->
-<!--        </classes>-->
-<!--    </test>-->
+    <!--测试场景特殊，需要手动开启测试-->
+    <!--    <test name="TriggerNameTest" preserve-order="true">-->
+    <!--        <classes>-->
+    <!--            <class name="org.apache.iotdb.api.test.tree.other.TriggerNameTest"></class>-->
+    <!--        </classes>-->
+    <!--    </test>-->
+    <!--    <test name="UDFNameTest" preserve-order="true">-->
+    <!--        <classes>-->
+    <!--            <class name="org.apache.iotdb.api.test.tree.other.UDFNameTest"></class>-->
+    <!--        </classes>-->
+    <!--    </test>-->
 
-<!--    <test name="End" preserve-order="true">-->
-<!--        <classes>-->
-<!--            <class name="org.apache.iotdb.api.test.FinalTest"/>-->
-<!--        </classes>-->
-<!--    </test>-->
+    <!--    <test name="End" preserve-order="true">-->
+    <!--        <classes>-->
+    <!--            <class name="org.apache.iotdb.api.test.FinalTest"/>-->
+    <!--        </classes>-->
+    <!--    </test>-->
 
 
     <listeners>
-<!--        <listener class-name="org.testng.reporters.JUnitXMLReporter"/>-->
+        <!--        <listener class-name="org.testng.reporters.JUnitXMLReporter"/>-->
         <listener class-name="org.testng.reporters.XMLReporter"/>
         <listener class-name="org.testng.reporters.DotTestListener"/>
     </listeners>

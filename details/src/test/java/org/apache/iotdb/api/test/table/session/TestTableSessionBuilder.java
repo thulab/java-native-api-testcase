@@ -81,7 +81,7 @@ public class TestTableSessionBuilder  {
     /**
      * 测试 username 和 password 方法
      */
-//    @Test(priority = 20) TODO：需要确定最终默认密码之后测试
+    @Test(priority = 20)
     public void testUserNameAndPassword() {
         if (config.getValue("is_cluster").equals("false")) {
             // 单机的root用户
