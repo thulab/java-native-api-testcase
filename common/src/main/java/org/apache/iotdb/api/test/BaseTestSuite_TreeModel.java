@@ -494,7 +494,7 @@ public class BaseTestSuite_TreeModel {
     public void deactivateTemplate(String templateName, String path) throws IoTDBConnectionException, StatementExecutionException {
         String sql = "deactivate schema template " + templateName + " from " + path;
         logger.debug(sql);
-        Session session = PrepareConnection.getSession();  // TODO：过多的会话会导致TestOrdinary连接不上服务端
+        Session session = PrepareConnection.getSession();  // TODO：过多的会话会导致TestOrdinary连接不上服务端，但是去除无法执行语句，需要优化
         session.executeNonQueryStatement(sql);
         session.close();
     }
