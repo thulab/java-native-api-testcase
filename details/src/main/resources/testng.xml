@@ -109,6 +109,7 @@
         </classes>
     </test>
 
+    <!--用于测试SQL覆盖率的-->
     <!--    <test name="SQL" preserve-order="true">-->
     <!--        <classes>-->
     <!--            <class name="org.apache.iotdb.api.test.sql.TestSQL"/>-->
@@ -127,12 +128,6 @@
     <!--    <test name="UDFNameTest" preserve-order="true">-->
     <!--        <classes>-->
     <!--            <class name="org.apache.iotdb.api.test.tree.other.UDFNameTest"></class>-->
-    <!--        </classes>-->
-    <!--    </test>-->
-
-    <!--    <test name="End" preserve-order="true">-->
-    <!--        <classes>-->
-    <!--            <class name="org.apache.iotdb.api.test.FinalTest"/>-->
     <!--        </classes>-->
     <!--    </test>-->
 

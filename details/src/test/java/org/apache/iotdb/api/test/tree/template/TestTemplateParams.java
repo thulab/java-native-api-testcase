@@ -141,7 +141,7 @@ public class TestTemplateParams extends BaseTestSuite_TreeModel {
 
     @Test(priority = 44, expectedExceptions = StatementExecutionException.class)
     public void testDeactive_wildcardPath_noActive() throws IoTDBConnectionException, StatementExecutionException {
-        deactiveTemplate(tName, database + ".**");
+        deactivateTemplate(tName, database + ".**");
     }
 
     @Test(priority = 48)
@@ -156,32 +156,32 @@ public class TestTemplateParams extends BaseTestSuite_TreeModel {
 
     @Test(priority = 51, expectedExceptions = StatementExecutionException.class)
     public void testDeactive_nullTemplate() throws IoTDBConnectionException, StatementExecutionException {
-        deactiveTemplate(null, database);
+        deactivateTemplate(null, database);
     }
 
     @Test(priority = 52, expectedExceptions = StatementExecutionException.class)
     public void testDeactive_nullPath() throws IoTDBConnectionException, StatementExecutionException {
-        deactiveTemplate(tName, (String) null);
+        deactivateTemplate(tName, (String) null);
     }
 
     @Test(priority = 53, expectedExceptions = StatementExecutionException.class)
     public void testDeactive_emptyTemplate() throws IoTDBConnectionException, StatementExecutionException {
-        deactiveTemplate("", database);
+        deactivateTemplate("", database);
     }
 
     @Test(priority = 54, expectedExceptions = StatementExecutionException.class)
     public void testDeactive_emptyPath() throws IoTDBConnectionException, StatementExecutionException {
-        deactiveTemplate(tName, "");
+        deactivateTemplate(tName, "");
     }
 
     @Test(priority = 55, expectedExceptions = StatementExecutionException.class)
     public void testDeactive_nonExistTemplate() throws IoTDBConnectionException, StatementExecutionException {
-        deactiveTemplate(tName + "030", database);
+        deactivateTemplate(tName + "030", database);
     }
 
     @Test(priority = 56, expectedExceptions = StatementExecutionException.class)
     public void testDeactive_nonExistPath() throws IoTDBConnectionException, StatementExecutionException {
-        deactiveTemplate(tName, "root.d");
+        deactivateTemplate(tName, "root.d");
     }
 
     @Test(priority = 57, expectedExceptions = StatementExecutionException.class)
@@ -191,7 +191,7 @@ public class TestTemplateParams extends BaseTestSuite_TreeModel {
 
     @Test(priority = 58)
     public void testDeactive_wildcardPath() throws IoTDBConnectionException, StatementExecutionException {
-        deactiveTemplate(tName, database + ".**");
+        deactivateTemplate(tName, database + ".**");
     }
 
     @Test(priority = 60, expectedExceptions = StatementExecutionException.class)

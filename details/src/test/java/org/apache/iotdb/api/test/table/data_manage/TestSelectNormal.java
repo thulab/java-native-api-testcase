@@ -33,6 +33,11 @@ import java.util.List;
  * Date：2024/12/29
  */
 public class TestSelectNormal extends BaseTestSuite_TableModel {
+
+    private final List<String> measurementList = new ArrayList<>();
+    private final List<TSDataType> dataTypeList = new ArrayList<>();
+    private final List<ColumnCategory> columnCategoryList = new ArrayList<>();
+
     /**
      * 创建测试环境
      */
@@ -52,45 +57,44 @@ public class TestSelectNormal extends BaseTestSuite_TableModel {
                 "    TAG1 string tag," +
                 "    attr1 string ATTRIBUTE," +
                 "    s1 BOOLEAN FIELD," +
-                "    s2 INT32 FIELD," +
+                "    S2 INT32 FIELD," +
                 "    s3 INT64 FIELD," +
-                "    s4 FLOAT FIELD," +
+                "    S4 FLOAT FIELD," +
                 "    s5 DOUBLE FIELD," +
-                "    s6 TEXT FIELD," +
+                "    S6 TEXT FIELD," +
                 "    s7 STRING FIELD," +
                 "    S8 BLOB FIELD," +
                 "    s9 DATE FIELD," +
-                "    s10 TIMESTAMP FIELD" +
+                "    S10 TIMESTAMP FIELD" +
                 ")");
         session.executeNonQueryStatement("create table t2 (" +
                 "    TAG1 string tag," +
                 "    attr1 string ATTRIBUTE," +
                 "    s1 BOOLEAN FIELD," +
-                "    s2 INT32 FIELD," +
+                "    S2 INT32 FIELD," +
                 "    s3 INT64 FIELD," +
-                "    s4 FLOAT FIELD," +
+                "    S4 FLOAT FIELD," +
                 "    s5 DOUBLE FIELD," +
-                "    s6 TEXT FIELD," +
+                "    S6 TEXT FIELD," +
                 "    s7 STRING FIELD," +
                 "    S8 BLOB FIELD," +
                 "    s9 DATE FIELD," +
-                "    s10 TIMESTAMP FIELD" +
+                "    S10 TIMESTAMP FIELD" +
                 ")");
-        // 插入数据
-        List<String> measurementList = new ArrayList<>();
+        // 插入列名
         measurementList.add("TAG1");
         measurementList.add("attr1");
         measurementList.add("s1");
-        measurementList.add("s2");
+        measurementList.add("S2");
         measurementList.add("s3");
-        measurementList.add("s4");
+        measurementList.add("S4");
         measurementList.add("s5");
-        measurementList.add("s6");
+        measurementList.add("S6");
         measurementList.add("s7");
         measurementList.add("S8");
         measurementList.add("s9");
-        measurementList.add("s10");
-        List<TSDataType> dataTypeList = new ArrayList<>();
+        measurementList.add("S10");
+        // 插入数据类型
         dataTypeList.add(TSDataType.STRING);
         dataTypeList.add(TSDataType.STRING);
         dataTypeList.add(TSDataType.BOOLEAN);
@@ -103,7 +107,7 @@ public class TestSelectNormal extends BaseTestSuite_TableModel {
         dataTypeList.add(TSDataType.BLOB);
         dataTypeList.add(TSDataType.DATE);
         dataTypeList.add(TSDataType.TIMESTAMP);
-        List<ColumnCategory> columnCategoryList = new ArrayList<>();
+        // 插入列类型
         columnCategoryList.add(ColumnCategory.TAG);
         columnCategoryList.add(ColumnCategory.ATTRIBUTE);
         columnCategoryList.add(ColumnCategory.FIELD);
@@ -123,7 +127,7 @@ public class TestSelectNormal extends BaseTestSuite_TableModel {
         for (int row = 0; row < 10; row++) {
             tablet.addTimestamp(row, time++);
             if (row % 2 == 0) {
-                tablet.addValue(measurementList.get(0), row, "tag1");
+                tablet.addValue(measurementList.get(0), row, "TAG1");
                 tablet.addValue(measurementList.get(1), row, "attr1");
                 tablet.addValue(measurementList.get(2), row, true);
                 tablet.addValue(measurementList.get(3), row, 1);
@@ -159,59 +163,94 @@ public class TestSelectNormal extends BaseTestSuite_TableModel {
     }
 
     /**
-     * 测试使用DataIterator获取查询数据 TODO：待完善
+     * 测试使用 DataIterator 获取查询数据
      */
     @Test(priority = 10) // 测试执行的优先级为10
-    public void test1() throws IoTDBConnectionException, StatementExecutionException, IOException {
-        SessionDataSet dataSet = session.executeQueryStatement("select tag1,attr1,s1,s2,s3,s4,s5,s6,s7,S8,s9,s10 from t1");
-        List<String> columnNameList = Arrays.asList("tag1", "attr1", "s1", "s2", "s3", "s4", "s5", "s6", "s7", "S8", "s9", "s10");
-        List<String> columnTypeList = Arrays.asList("STRING", "STRING", "BOOLEAN", "INT32", "INT64", "FLOAT", "DOUBLE", "TEXT", "STRING", "BLOB", "DATE", "TIMESTAMP");
+    public void test1() throws IoTDBConnectionException, StatementExecutionException {
+        // 构造 DataIterator 对象（查询列名大写，则返回的列名也是大写）
+        SessionDataSet dataSet = session.executeQueryStatement("select time,TAG1,attr1,s1,S2,s3,S4,s5,S6,s7,S8,s9,S10 from t1 order by time");
         SessionDataSet.DataIterator dataIterator = dataSet.new DataIterator();
-        for (int i = 0; i < columnNameList.size(); i++) {
-            assert columnNameList.get(i).equals(dataIterator.getColumnNameList().get(i));
+        // 验证第一列为time列
+        assert "time".equals(dataIterator.getColumnNameList().get(0)) : "期待列名和实际不一致，期待：time，实际：" + dataIterator.getColumnNameList().get(0);
+        assert "TIMESTAMP".equals(dataIterator.getColumnTypeList().get(0)) : "期待数据类型名和实际不一致，期待：TIMESTAMP，实际：" + dataIterator.getColumnTypeList().get(0);
+        // 验证其他列
+        for (int i = 0; i < measurementList.size(); i++) {
+            assert measurementList.get(i).equals(dataIterator.getColumnNameList().get(i + 1)) : "期待列名和实际不一致，期待：" + measurementList.get(i) + "，实际：" + dataIterator.getColumnNameList().get(i + 1);
         }
-        for (int i = 0; i < columnTypeList.size(); i++) {
-            assert columnTypeList.get(i).equals(dataIterator.getColumnTypeList().get(i));
-        }
-        assert dataIterator.getColumnNameList().size() == 12;
-        assert dataIterator.getColumnTypeList().size() == 12;
-        while (dataIterator.next()) {
-            if (!(dataIterator.getString("tag1") == null)) {
-                assert dataIterator.getString("tag1").equals(dataIterator.getString(1));
-                assert dataIterator.getString("attr1").equals(dataIterator.getString(2));
-                assert dataIterator.getBoolean("s1") == dataIterator.getBoolean(3);
+        for (int i = 0; i < dataTypeList.size(); i++) {
+            switch (dataTypeList.get(i)) {
+                case STRING:
+                    assert dataIterator.getColumnTypeList().get(i + 1).equals("STRING") : "期待数据类型和实际不一致，期待：STRING，实际：" + dataIterator.getColumnTypeList().get(i + 1);
+                    break;
+                case BOOLEAN:
+                    assert dataIterator.getColumnTypeList().get(i + 1).equals("BOOLEAN") : "期待数据类型和实际不一致，期待：BOOLEAN，实际：" + dataIterator.getColumnTypeList().get(i + 1);
+                    break;
+                case INT32:
+                    assert dataIterator.getColumnTypeList().get(i + 1).equals("INT32") : "期待数据类型和实际不一致，期待：INT32，实际：" + dataIterator.getColumnTypeList().get(i + 1);
+                    break;
+                case INT64:
+                    assert dataIterator.getColumnTypeList().get(i + 1).equals("INT64") : "期待数据类型和实际不一致，期待：INT64，实际：" + dataIterator.getColumnTypeList().get(i + 1);
+                    break;
+                case FLOAT:
+                    assert dataIterator.getColumnTypeList().get(i + 1).equals("FLOAT") : "期待数据类型和实际不一致，期待：FLOAT，实际：" + dataIterator.getColumnTypeList().get(i + 1);
+                    break;
+                case DOUBLE:
+                    assert dataIterator.getColumnTypeList().get(i + 1).equals("DOUBLE") : "期待数据类型和实际不一致，期待：DOUBLE，实际：" + dataIterator.getColumnTypeList().get(i + 1);
+                    break;
+                case TEXT:
+                    assert dataIterator.getColumnTypeList().get(i + 1).equals("TEXT") : "期待数据类型和实际不一致，期待：TEXT，实际：" + dataIterator.getColumnTypeList().get(i + 1);
+                    break;
+                case BLOB:
+                    assert dataIterator.getColumnTypeList().get(i + 1).equals("BLOB") : "期待数据类型和实际不一致，期待：BLOB，实际：" + dataIterator.getColumnTypeList().get(i + 1);
+                    break;
+                case DATE:
+                    assert dataIterator.getColumnTypeList().get(i + 1).equals("DATE") : "期待数据类型和实际不一致，期待：DATE，实际：" + dataIterator.getColumnTypeList().get(i + 1);
+                    break;
+                case TIMESTAMP:
+                    assert dataIterator.getColumnTypeList().get(i + 1).equals("TIMESTAMP") : "期待数据类型和实际不一致，期待：TIMESTAMP，实际：" + dataIterator.getColumnTypeList().get(i + 1);
+                    break;
+                default:
+                    assert false : "未知数据类型";
             }
-            dataIterator.getInt("s2");
+        }
+        // 验证值
+        while (dataIterator.next()) {
+            if (!(dataIterator.getString("TAG1") == null)) {
+                assert dataIterator.getString("TAG1").equals(dataIterator.getString(2)) : "期待值和实际不一致，期待：" + dataIterator.getString("TAG1") + "，实际：" + dataIterator.getString(2);
+                assert dataIterator.getString("attr1").equals(dataIterator.getString(3)) : "期待值和实际不一致，期待：" + dataIterator.getString("attr1") + "，实际：" + dataIterator.getString(3);
+                assert dataIterator.getBoolean("s1") == dataIterator.getBoolean(4) : "期待值和实际不一致，期待：" + dataIterator.getBoolean("s1") + "，实际：" + dataIterator.getString(4);
+            }
+            dataIterator.getInt("S2");
             dataIterator.getLong("s3");
-            dataIterator.getFloat("s4");
+            dataIterator.getFloat("S4");
             dataIterator.getDouble("s5");
-            dataIterator.getString("s6");
+            dataIterator.getString("S6");
             dataIterator.getString("s7");
             dataIterator.getBlob("S8");
             dataIterator.getDate("s9");
-            dataIterator.getTimestamp("s10");
-            dataIterator.getObject("tag1");
+            dataIterator.getTimestamp("S10");
+            dataIterator.getObject("TAG1");
             dataIterator.getObject("attr1");
             dataIterator.getObject("s1");
-            dataIterator.getObject("s2");
+            dataIterator.getObject("S2");
             dataIterator.getObject("s3");
-            dataIterator.getObject("s4");
+            dataIterator.getObject("S4");
             dataIterator.getObject("s5");
-            dataIterator.getObject("s6");
+            dataIterator.getObject("S6");
             dataIterator.getObject("s7");
             dataIterator.getObject("S8");
             dataIterator.getObject("s9");
-            dataIterator.getObject("s10");
+            dataIterator.getObject("S10");
             //
-            dataIterator.getInt(4);
-            dataIterator.getLong(5);
-            dataIterator.getFloat(6);
-            dataIterator.getDouble(7);
-            dataIterator.getString(8);
+            dataIterator.getInt(5);
+            dataIterator.getLong(6);
+            dataIterator.getFloat(7);
+            dataIterator.getDouble(8);
             dataIterator.getString(9);
-            dataIterator.getBlob(10);
-            dataIterator.getDate(11);
-            dataIterator.getTimestamp(12);
+            dataIterator.getString(10);
+            dataIterator.getBlob(11);
+            dataIterator.getDate(12);
+            dataIterator.getTimestamp(13);
             dataIterator.getObject(1);
             dataIterator.getObject(2);
             dataIterator.getObject(3);
@@ -224,6 +263,7 @@ public class TestSelectNormal extends BaseTestSuite_TableModel {
             dataIterator.getObject(10);
             dataIterator.getObject(11);
             dataIterator.getObject(12);
+            dataIterator.getObject(13);
             // 其他方法
             dataIterator.findColumn("s1");
             dataIterator.isNull(1);
@@ -238,18 +278,19 @@ public class TestSelectNormal extends BaseTestSuite_TableModel {
             dataIterator.isNull(10);
             dataIterator.isNull(11);
             dataIterator.isNull(12);
-            dataIterator.isNull("tag1");
+            dataIterator.isNull(13);
+            dataIterator.isNull("TAG1");
             dataIterator.isNull("attr1");
             dataIterator.isNull("s1");
-            dataIterator.isNull("s2");
+            dataIterator.isNull("S2");
             dataIterator.isNull("s3");
-            dataIterator.isNull("s4");
+            dataIterator.isNull("S4");
             dataIterator.isNull("s5");
-            dataIterator.isNull("s6");
+            dataIterator.isNull("S6");
             dataIterator.isNull("s7");
             dataIterator.isNull("S8");
             dataIterator.isNull("s9");
-            dataIterator.isNull("s10");
+            dataIterator.isNull("S10");
             // 其他类型都可以使用getString
             dataIterator.getString(1);
             dataIterator.getString(2);
@@ -263,22 +304,23 @@ public class TestSelectNormal extends BaseTestSuite_TableModel {
             dataIterator.getString(10);
             dataIterator.getString(11);
             dataIterator.getString(12);
-            dataIterator.getString("tag1");
+            dataIterator.getString(13);
+            dataIterator.getString("TAG1");
             dataIterator.getString("attr1");
             dataIterator.getString("s1");
-            dataIterator.getString("s2");
+            dataIterator.getString("S2");
             dataIterator.getString("s3");
-            dataIterator.getString("s4");
+            dataIterator.getString("S4");
             dataIterator.getString("s5");
-            dataIterator.getString("s6");
+            dataIterator.getString("S6");
             dataIterator.getString("s7");
             dataIterator.getString("S8");
             dataIterator.getString("s9");
-            dataIterator.getString("s10");
+            dataIterator.getString("S10");
             // 错误情况
             try {
                 dataIterator.getString("None");
-            }catch (Exception e) {
+            } catch (Exception e) {
                 assert e.getMessage().equals("Unknown column name: None");
             }
         }
@@ -327,9 +369,9 @@ public class TestSelectNormal extends BaseTestSuite_TableModel {
             session_utc8.executeNonQueryStatement("drop database if exists test_extract");
             session_utc8.executeNonQueryStatement("create database test_extract");
             session_utc8.executeNonQueryStatement("use test_extract");
-            session_utc8.executeNonQueryStatement("create table table1(t1 STRING TAG,s1 TIMESTAMP FIELD, s2 INT64 FIELD)");
+            session_utc8.executeNonQueryStatement("create table table1(t1 STRING TAG,s1 TIMESTAMP FIELD, S2 INT64 FIELD)");
             // 插入时间 2025-01-01 08:00:00.000 (UTC+8时区)
-            session_utc8.executeNonQueryStatement("INSERT INTO table1(time,t1,s1,s2) values(2025-01-01 08:00:00.000, 't1', 2025-01-01 08:00:00.000, 1)");
+            session_utc8.executeNonQueryStatement("INSERT INTO table1(time,t1,s1,S2) values(2025-01-01 08:00:00.000, 't1', 2025-01-01 08:00:00.000, 1)");
 
             SessionDataSet dataSet = session_utc8.executeQueryStatement("select extract(hour from s1) from table1");
             while (dataSet.hasNext()) {

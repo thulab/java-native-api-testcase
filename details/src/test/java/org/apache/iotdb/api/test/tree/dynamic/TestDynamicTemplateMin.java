@@ -350,19 +350,19 @@ public class TestDynamicTemplateMin extends BaseTestSuite_TreeModel {
         });
         // 解除未使用模版序列
         Assert.assertThrows(StatementExecutionException.class, () -> {
-            deactiveTemplate(templateName, database + ".d0.group0");
+            deactivateTemplate(templateName, database + ".d0.group0");
         });
 
         // 解除单个节点:最后一个
         device = devicePaths.get(devicePaths.size() - 1);
         int count = getActivePathsCount(templateName, verbose);
         count--;
-        deactiveTemplate(templateName, device);
+        deactivateTemplate(templateName, device);
         assert 0 == getTimeSeriesCount(device + ".*", verbose) : "解除模版会删除序列";
         assert count == getActivePathsCount(templateName, verbose) : "模版引用数目-1";
         // 再次解除模版失败
         Assert.assertThrows(StatementExecutionException.class, () -> {
-            deactiveTemplate(templateName, devicePaths.get(devicePaths.size() - 1));
+            deactivateTemplate(templateName, devicePaths.get(devicePaths.size() - 1));
         });
         devicePaths.remove(devicePaths.size() - 1);
 
@@ -374,19 +374,19 @@ public class TestDynamicTemplateMin extends BaseTestSuite_TreeModel {
         // 解除第二个database的所有激活节点
         for (int i = 0; i < devicePaths.size(); i++) {
             if (devicePaths.get(i).startsWith(databases.get(1))) {
-                deactiveTemplate(templateName, devicePaths.get(i));
+                deactivateTemplate(templateName, devicePaths.get(i));
             }
         }
         logger.info("database=" + databases.get(1));
         session.unsetSchemaTemplate(databases.get(1), templateName);
 //        for (int i = 0; i < devicePaths.size(); i++) {
 //            if (devicePaths.get(i).startsWith(databases.get(0))) {
-//                deactiveTemplate(templateName, devicePaths.get(i));
+//                deactivateTemplate(templateName, devicePaths.get(i));
 //            }
 //        }
 
         // TIMECHODB-102
-        deactiveTemplate(templateName, "root.db.**");
+        deactivateTemplate(templateName, "root.db.**");
         // 卸载模版
         assert 0 == getActivePathsCount(templateName, verbose) : "模版引用数目 == 0";
         cleanTemplateNodes(templateName, databases.get(0));

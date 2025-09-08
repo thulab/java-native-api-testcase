@@ -313,7 +313,7 @@ public class TestBlendScenarioAddTS extends BaseTestSuite_TreeModel {
             String templateName = templateNames[i];
             assert checkTemplateExists(templateName) : "模版存在";
             assert checkTemplateContainPath(templateName, devices[i]) : "挂载模版路径";
-            deactiveTemplate(templateName, devices[i]);
+            deactivateTemplate(templateName, devices[i]);
             session.unsetSchemaTemplate(devices[i], templateName);
             assert false == checkTemplateContainPath(templateName, devices[i]) : "解除模版路径成功";
 

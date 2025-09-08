@@ -222,7 +222,6 @@ public class BaseTestSuite_TreeModel {
 
     // 用于查看挂载了某个设备模板的路径
     public boolean checkTemplateContainPath(String templateName, String path) throws IoTDBConnectionException, StatementExecutionException {
-//        try (SessionDataSet dataSet = PrepareConnection.getSession().executeQueryStatement("show paths set schema template " + templateName)) { // TODO：会导致TestDynamicTemplateMin连接不上服务端
         try (SessionDataSet dataSet = session.executeQueryStatement("show paths set schema template " + templateName)) {
             while (dataSet.hasNext()) {
                 String result = dataSet.next().getFields().get(0).toString();
@@ -236,7 +235,6 @@ public class BaseTestSuite_TreeModel {
 
     // 查看某个设备模板下的物理量
     public boolean checkUsingTemplate(String device, boolean verbose) throws IoTDBConnectionException, StatementExecutionException {
-//        try (SessionDataSet dataSet = PrepareConnection.getSession().executeQueryStatement("show child nodes " + device)) { // TODO：会导致TestDynamicTemplateMin连接不上服务端
         try (SessionDataSet dataSet = session.executeQueryStatement("show child nodes " + device)) {
             boolean result = dataSet.hasNext();
             if (verbose) {
@@ -492,23 +490,21 @@ public class BaseTestSuite_TreeModel {
         return countLines(sql, verbose);
     }
 
-    public void deactiveTemplate(String templateName, String path) throws IoTDBConnectionException, StatementExecutionException {
-        // delete timeseries of schema template t1 from root.sg1.d1
-        // deactivate schema template t1 from root.sg1.d1
+    // 解除某个设备模板
+    public void deactivateTemplate(String templateName, String path) throws IoTDBConnectionException, StatementExecutionException {
         String sql = "deactivate schema template " + templateName + " from " + path;
         logger.debug(sql);
-        Session session = PrepareConnection.getSession();  // TODO：会导致TestOrdinary连接不上服务端
+        Session session = PrepareConnection.getSession();  // TODO：过多的会话会导致TestOrdinary连接不上服务端
         session.executeNonQueryStatement(sql);
         session.close();
     }
 
-    public void deactiveTemplate(String templateName, @NotNull List<String> paths) throws IoTDBConnectionException, StatementExecutionException {
+    // 解除多个设备模板
+    public void deactivateTemplate(String templateName, @NotNull List<String> paths) throws IoTDBConnectionException, StatementExecutionException {
         int count = getActivePathsCount(templateName, verbose);
         count -= paths.size();
-        // delete timeseries of schema template t1 from root.sg1.d1
-        // deactivate schema template t1 from root.sg1.d1
         for (int i = 0; i < paths.size(); i++) {
-            checkUsingTemplate(paths.get(i), true);//: paths.get(i)+"使用了模版";
+            checkUsingTemplate(paths.get(i), true);
             String sql = "deactivate schema template " + templateName + " from " + paths.get(i);
             logger.debug(sql);
             session.executeNonQueryStatement(sql);
@@ -572,7 +568,7 @@ public class BaseTestSuite_TreeModel {
         SessionDataSet.DataIterator recordsIter = records.iterator();
         while (recordsIter.next()) {
             if (recordsIter.getString(1).startsWith(prefix)) {
-                deactiveTemplate(templateName, recordsIter.getString(1));
+                deactivateTemplate(templateName, recordsIter.getString(1));
             }
         }
         sql = "show paths set schema template " + templateName;

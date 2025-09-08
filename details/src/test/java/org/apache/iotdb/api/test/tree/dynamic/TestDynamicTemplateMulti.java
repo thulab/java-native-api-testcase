@@ -157,7 +157,7 @@ public class TestDynamicTemplateMulti extends BaseTestSuite_TreeModel {
         int setCount = getSetPathsCount(templateName, verbose);
         int activeCount = getActivePathsCount(templateName, verbose);
         int templateCount_t = getTemplateCount(verbose);
-        deactiveTemplate(this.templateName_clean, d.get(0));
+        deactivateTemplate(this.templateName_clean, d.get(0));
         assert 0 == getActivePathsCount(this.templateName_clean, verbose);
         assert 0 == getTimeSeriesCount(d.get(0) + ".**", verbose) : "解除模版会删除序列";
         session.unsetSchemaTemplate(database, this.templateName_clean);

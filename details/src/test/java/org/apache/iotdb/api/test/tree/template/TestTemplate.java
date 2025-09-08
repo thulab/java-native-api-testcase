@@ -248,7 +248,7 @@ public class TestTemplate extends BaseTestSuite_TreeModel {
         createTemplate(name, loadNode, isAligned, null);
         // 解除
         assert 1 == getActivePathsCount(name, verbose) : "解除模版前：" + name;
-        deactiveTemplate(name, loadNode);
+        deactivateTemplate(name, loadNode);
         assert 0 == getActivePathsCount(name, verbose) : "解除模版成功:" + name;
         // 卸载
         assert 1 == getSetPathsCount(name, verbose) : "解除模版前:" + name;
@@ -343,7 +343,7 @@ public class TestTemplate extends BaseTestSuite_TreeModel {
             assert 1 == getActivePathsCount(templateNames.get(i), verbose) : "激活成功";
             assert 0 == getTimeSeriesCount(device + ".**", verbose) : "没有任何TS";
             assert 0 == getDeviceCount(device + ".**", verbose) : "没有任何device";
-            deactiveTemplate(templateNames.get(i), device);
+            deactivateTemplate(templateNames.get(i), device);
             assert 0 == getActivePathsCount(templateNames.get(i), verbose) : "激活成功";
             session.unsetSchemaTemplate(device, templateNames.get(i));
             assert 0 == getSetPathsCount(templateNames.get(i), verbose) : "激活成功";
@@ -433,7 +433,7 @@ public class TestTemplate extends BaseTestSuite_TreeModel {
         Assert.assertThrows(StatementExecutionException.class, () -> {
             session.dropSchemaTemplate(templateName);
         });
-        deactiveTemplate(templateName, database + ".**");
+        deactivateTemplate(templateName, database + ".**");
 //        deactiveTemplate(templateName, paths);
         assert 0 == getActivePathsCount(templateName, verbose) : "解除成功：查询template激活path数量";
         session.unsetSchemaTemplate(database, templateName);
@@ -475,7 +475,7 @@ public class TestTemplate extends BaseTestSuite_TreeModel {
         for (int i = 0; i < maxLength; i++) {
             insertTabletMulti(paths.get(i), schemaList, 10, isAligned);
         }
-        deactiveTemplate(templateName, database + ".**");
+        deactivateTemplate(templateName, database + ".**");
         session.deleteDatabase(database);
         session.dropSchemaTemplate(templateName);
         long end = System.currentTimeMillis();

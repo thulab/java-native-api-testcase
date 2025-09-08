@@ -89,7 +89,7 @@ public class TestOrdinary extends BaseTestSuite_TreeModel {
             insertRecordSingle(path + ".ts_append_auto", tsDataType, isAligned, null);
             assert 3 == getTSCountInTemplate(tName, verbose) : "直接插入自动修改模版ts数量3";
         }
-        deactiveTemplate(tName, path);
+        deactivateTemplate(tName, path);
         session.unsetSchemaTemplate(path, tName);
         assert 0 == getSetPathsCount(tName, verbose) : "挂载成功:挂载路径数量";
         session.dropSchemaTemplate(tName);

@@ -210,7 +210,7 @@ public class TestTemplateNonAligned extends BaseTestSuite_TreeModel {
         assert checkTemplateContainPath(templateName, loadNode) : "挂载模版路径";
         assert 1 == getSetPathsCount(templateName, verbose) : "挂载路径数";
         assert 1 == getActivePathsCount(templateName, verbose) : "激活路径数";
-        deactiveTemplate(templateName, device);
+        deactivateTemplate(templateName, device);
         // IOTDB-5436 StatementExecutionException: 300: Modify template has not been supported.
 //        session.deleteNodeInTemplate(templateName, loadNode);
         assert 0 == getActivePathsCount(templateName, verbose) : "解除挂载模版路径成功";

@@ -88,7 +88,7 @@ public class TestCleanUp extends BaseTestSuite_TreeModel {
         // 写入数据
         insertTabletMulti(device, schemaList, insertCount, true);
         // 解除
-        deactiveTemplate(templateName, device);
+        deactivateTemplate(templateName, device);
         assert 0 == getTimeSeriesCount(device+".**", verbose) : "解除后查询TS:0";
         // 卸载
         session.unsetSchemaTemplate(device, templateName);
@@ -127,7 +127,7 @@ public class TestCleanUp extends BaseTestSuite_TreeModel {
         // 写入数据
         insertTabletMulti(device, schemaList, insertCount, false);
         // 解除
-        deactiveTemplate(templateName, device);
+        deactivateTemplate(templateName, device);
         assert 0 == getTimeSeriesCount(device+".**", verbose) : "解除后查询TS:0";
         // 卸载
         session.unsetSchemaTemplate(device, templateName);

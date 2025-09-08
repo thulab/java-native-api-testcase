@@ -5,6 +5,7 @@ import org.apache.iotdb.api.test.utils.CustomDataProvider;
 import org.apache.iotdb.api.test.utils.PrepareConnection;
 import org.apache.iotdb.api.test.utils.ReadConfig;
 import org.apache.iotdb.api.test.utils.Tools;
+import org.apache.iotdb.isession.SessionDataSet;
 import org.apache.iotdb.isession.template.Template;
 import org.apache.iotdb.rpc.IoTDBConnectionException;
 import org.apache.iotdb.rpc.StatementExecutionException;
@@ -110,24 +111,72 @@ public class ActiveInBatch extends BaseTestSuite_TreeModel {
         assert checkTemplateContainPath(templateName, database) : templateName + " 挂载模版失败";
         // 根据模板创建时间序列（相当于激活模板）
         session.createTimeseriesUsingSchemaTemplate(paths);
-        // TODO：激活模板时间长，所以延长时间，不然判断会不存在
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+        // 判断设备模板的路径（即模板在该路径上已激活，序列已创建）是否存在
+        long startTime1 = System.currentTimeMillis();
+        while (paths.size() != getActivePathsCount(templateName, verbose)) {
+            // 检查是否超时（超过1分钟）
+            if (System.currentTimeMillis() - startTime1 > 60000) {
+                assert false : "激活超时，未检测到设备模板路径";
+            }
+            // 添加短暂延迟，避免过度占用CPU
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                throw new RuntimeException("Interrupted while waiting for template activation", e);
+            }
         }
-//        // 判断设备模板的路径（即模板在该路径上已激活，序列已创建）是否存在（时间不固定故屏蔽该判断）
-//        assert paths.size() == getActivePathsCount(templateName, verbose) : "激活失败: expect " + paths.size() + " actual " + getActivePathsCount(templateName, verbose);
-//        assert checkUsingTemplate(paths.get(0), verbose) : paths.get(0) + "使用了模版";
+        // 验证指定路径使用了模板
+        assert checkUsingTemplate(paths.get(0), verbose) : paths.get(0) + "没有使用了模版";
         // 写入数据
         insertRecordSingle(database + "." + name + "." + name, tsDataType, isAligned, null);
-        // 删除数据库（相当于解除并卸载设备模板）
+//        // 解除模板
+//        deactivateTemplate(templateName, paths);
+//        long startTime2 = System.currentTimeMillis();
+//        while (!session.showPathsTemplateUsingOn(templateName).isEmpty()) {
+//            // 检查是否超时（超过1分钟）
+//            if (System.currentTimeMillis() - startTime2 > 60000) {
+//                assert false : "卸载超时，未能成功卸载";
+//            }
+//            // 添加短暂延迟，避免过度占用CPU
+//            try {
+//                Thread.sleep(1000);
+//            } catch (InterruptedException e) {
+//                Thread.currentThread().interrupt();
+//                throw new RuntimeException("Interrupted while waiting for template activation", e);
+//            }
+//        }
+//        // 卸载模板 TODO：unsetSchemaTemplate方法卸载模板存在问题 org.apache.iotdb.rpc.StatementExecutionException: 507: Invalidate template cache failed
+//        session.unsetSchemaTemplate(database, templateName);
+//        long startTime3 = System.currentTimeMillis();
+//        while (!session.showPathsTemplateSetOn(templateName).isEmpty()) {
+//            // 检查是否超时（超过1分钟）
+//            if (System.currentTimeMillis() - startTime3 > 60000) {
+//                assert false : "卸载超时，未能成功卸载";
+//            }
+//            // 添加短暂延迟，避免过度占用CPU
+//            try {
+//                Thread.sleep(1000);
+//            } catch (InterruptedException e) {
+//                Thread.currentThread().interrupt();
+//                throw new RuntimeException("Interrupted while waiting for template activation", e);
+//            }
+//        }
+        // 删除数据库（也相当于解除并卸载设备模板）
         session.deleteStorageGroup(database);
-        // TODO：卸载模板时间长，所以延长时间，不然判断会不存在
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+        long startTime4 = System.currentTimeMillis();
+        while (!session.showPathsTemplateSetOn(templateName).isEmpty()) {
+            // 检查是否超时（超过1分钟）
+            if (System.currentTimeMillis() - startTime4 > 60000) {
+                assert false : "卸载超时，未能成功卸载模板：" + templateName;
+            }
+            // 添加短暂延迟，避免过度占用CPU
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                throw new RuntimeException("Interrupted while waiting for template activation", e);
+            }
         }
         // 删除模板
         session.dropSchemaTemplate(templateName);
