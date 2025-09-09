@@ -62,12 +62,12 @@ public class TestTemplate extends BaseTestSuite_TreeModel {
 //        return new CustomDataProvider().load("data/insert-records.csv").getData();
 //    }
 
-    @DataProvider(name = "getErrorNames", parallel = true)
+    @DataProvider(name = "getErrorNames", parallel = false)
     public Iterator<Object[]> getErrorNames() throws IOException {
         return new CustomDataProvider().load("data/tree/names-error.csv").getData();
     }
 
-    @DataProvider(name = "getNormalNames", parallel = true)
+    @DataProvider(name = "getNormalNames", parallel = false)
     public Iterator<Object[]> getNormalNames() throws IOException {
         return new CustomDataProvider().load("data/tree/names-normal.csv").getData();
     }
@@ -109,7 +109,7 @@ public class TestTemplate extends BaseTestSuite_TreeModel {
     /**
      * 获取正确的模板数据结构
      */
-    @DataProvider(name = "getNormalStructures", parallel = true)
+    @DataProvider(name = "getNormalStructures", parallel = false)
     public Iterator<Object[]> getNormalStructures() throws IOException {
         CustomDataProvider provider = new CustomDataProvider();
         structures = provider.parseTSStructure("data/tree/ts-structures.csv");
@@ -119,7 +119,7 @@ public class TestTemplate extends BaseTestSuite_TreeModel {
     /**
      * 获取错误的模板数据结构
      */
-    @DataProvider(name = "getErrorStructures", parallel = true)
+    @DataProvider(name = "getErrorStructures", parallel = false)
     public Iterator<Object[]> getErrorStructures() throws IOException {
         CustomDataProvider provider = new CustomDataProvider();
         errStructures = provider.parseTSStructure("data/tree/ts-structures-error.csv");
