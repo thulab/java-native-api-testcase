@@ -249,12 +249,16 @@ public class BaseTestSuite_TreeModel {
 
     // 删除数据库
     public void cleanDatabases(boolean verbose) throws IoTDBConnectionException, StatementExecutionException {
-        int count = getCount("count databases", verbose);
-        if (verbose) {
-            logger.info("drop databases: " + count);
-        }
-        if (count > 0) {
-            session.executeNonQueryStatement("drop database root.**");
+        SessionDataSet dataSet = session.executeQueryStatement("show databases");
+        while (dataSet.hasNext()) {
+            RowRecord record = dataSet.next();
+            String database = record.getFields().get(0).toString();
+            if (verbose) {
+                logger.info("drop databases: " + database);
+            }
+            if (!database.equals("root.__audit")) {
+                session.executeNonQueryStatement("drop database " + database);
+            }
         }
     }
 

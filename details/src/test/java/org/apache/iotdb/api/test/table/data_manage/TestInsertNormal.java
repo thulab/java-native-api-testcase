@@ -435,7 +435,7 @@ public class TestInsertNormal extends BaseTestSuite_TableModel {
     }
 
     /**
-     * 测试使用insert方法自动创建标识、属性和测点列
+     * 测试使用insert方法自动创建标识、属性和测点列 TODO:补充Java原生接口insertTablet自动创建元数据表名带多个引号的测试用例
      */
     @Test(priority = 40)
     public void insertAutoCreateColumn() throws IoTDBConnectionException, StatementExecutionException, IOException {
