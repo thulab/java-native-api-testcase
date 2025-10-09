@@ -113,7 +113,7 @@ public class TestTableSessionBuilderError {
                                 .build();
             } catch (Exception e) {
                 assert e instanceof IoTDBConnectionException : "Error and expectation are inconsistent, expect: IoTDBConnectionException, actual: " + e.getClass().getName();
-                assert e.getMessage().contains("801: Authentication failed.") : "Error and expectation are inconsistent, expect: 801: Authentication failed., actual: " + e.getMessage();
+                assert e.getMessage().contains("804: The user error does not exist.") : "Error and expectation are inconsistent, expect: 804: The user error does not exist., actual: " + e.getMessage();
             }
         } else {
             try {
@@ -125,7 +125,7 @@ public class TestTableSessionBuilderError {
                                 .build();
             } catch (Exception e) {
                 assert e instanceof IoTDBConnectionException : "Error and expectation are inconsistent, expect: IoTDBConnectionException, actual: " + e.getClass().getName();
-                assert e.getMessage().contains("801: Authentication failed.") : "Error and expectation are inconsistent, expect: 801: Authentication failed., actual: " + e.getMessage();
+                assert e.getMessage().contains("804: The user error does not exist.") : "Error and expectation are inconsistent, expect: 804: The user error does not exist., actual: " + e.getMessage();
             }
         }
 
