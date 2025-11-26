@@ -50,8 +50,9 @@ check_dir_exists() {
 check_dir_exists "jacoco/lib"
 check_file_exists "$JACOCO_AGENT"
 check_file_exists "$JACOCO_CLI"
-check_dir_exists "$CLASS_FILES"
-check_dir_exists "$SOURCE_FILES"
+check_file_exists "$SOURCE_FILES"
+# 确保CLASS_FILESS目录存在
+mkdir -p "$CLASS_FILES"
 
 # 2. 清理并打包项目
 mvn clean package -DskipTests

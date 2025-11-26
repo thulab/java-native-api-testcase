@@ -1,14 +1,13 @@
 @echo off
 setlocal enabledelayedexpansion
 
-REM 脚本名称: run_coverage.bat
-REM 功能: 编译项目，运行JaCoCo覆盖率分析并生成报告
+REM Function: Compile project, run JaCoCo coverage analysis and generate report
 
 echo [INFO] ------------------------------------------------------------------------
 echo [INFO] Running coverage analysis
 echo [INFO] ------------------------------------------------------------------------
 
-REM 配置变量
+REM Configure variables
 set JACOCO_AGENT=jacoco\lib\jacocoagent.jar
 set JACOCO_CLI=jacoco\lib\jacococli.jar
 set APP_JAR=details\target\details-master.jar
@@ -17,7 +16,7 @@ set CLASS_FILES=code\classes
 set SOURCE_FILES=code\src
 set REPORT_DIR=jacoco\report
 
-REM 检查必要文件和目录
+REM Check necessary files and directories
 if not exist "jacoco\lib" (
     echo [ERROR] Directory jacoco\lib does not exist
     exit /b 1
@@ -30,27 +29,32 @@ if not exist "%JACOCO_CLI%" (
     echo [ERROR] File %JACOCO_CLI% does not exist
     exit /b 1
 )
-if not exist "%CLASS_FILES%" (
-    echo [ERROR] Class files directory %CLASS_FILES% does not exist
-    exit /b 1
+if exist "%CLASS_FILES%" (
+   del /q "%CLASS_FILES%"\*.*
+   for /d %%i in ("%CLASS_FILES%"\*) do rmdir /s /q "%%i"
+) else (
+    mkdir "%CLASS_FILES%"
 )
 if not exist "%SOURCE_FILES%" (
-    echo [ERROR] Source files directory %SOURCE_FILES% does not exist
+    echo [ERROR] Source directory %SOURCE_FILES% does not exist
+    exit /b 1
+)
+if not exist "%SOURCE_FILES%\org\apache\iotdb" (
+    echo [ERROR] Source code does not exist, please supplement it before execution
     exit /b 1
 )
 
-REM 清理并打包项目
 call mvn clean package -DskipTests
 if %ERRORLEVEL% NEQ 0 (
     echo [ERROR] Maven build failed
     exit /b 1
 )
-
-REM 添加延迟等待，确保编译完成
 timeout /t 2 /nobreak >nul
 
-REM 提取jar中的org.apache类文件并移动到类文件目录
+REM Extract org.apache class files from jar and move to class files directory
+echo [INFO] ------------------------------------------------------------------------
 echo [INFO] Extracting classes from JAR: %APP_JAR%
+echo [INFO] ------------------------------------------------------------------------
 jar -xf "%APP_JAR%" org/
 
 if exist org\apache\iotdb (
@@ -61,12 +65,12 @@ if exist org\apache\tsfile (
     xcopy org\apache\tsfile "%CLASS_FILES%\org\apache\tsfile\" /E /I /H /Y >nul
 )
 
-REM 清理临时目录
+REM Clean up temporary directory
 if exist org (
     rd /s /q org
 )
 
-REM 检查类文件目录中是否有IoTDB和TsFile类目录
+REM Check if IoTDB and TsFile class directories exist in the class files directory
 if not exist "%CLASS_FILES%\org\apache\iotdb" (
     echo [WARN]   - IoTDB classes NOT found
     exit /b 1
@@ -80,14 +84,13 @@ echo [INFO] --------------------------------------------------------------------
 echo [INFO] Running application and collecting coverage data
 echo [INFO] ------------------------------------------------------------------------
 
-REM 运行应用程序并收集覆盖率数据
-echo [INFO] Starting application with JaCoCo agent
+REM Run application and collect coverage data
 java -javaagent:%JACOCO_AGENT%=includes=org.apache.*,output=file,destfile=%EXEC_FILE%,append=false -jar %APP_JAR%
 
-REM 添加延迟等待，确保执行完成
+REM Add delay waiting to ensure execution completion
 timeout /t 5 /nobreak >nul
 
-REM 检查执行数据文件是否存在
+REM Check if execution data file exists
 if not exist "%EXEC_FILE%" (
     echo [ERROR] Execution data file %EXEC_FILE% was not generated
     exit /b 1
@@ -97,25 +100,19 @@ echo [INFO] --------------------------------------------------------------------
 echo [INFO] Generating coverage report
 echo [INFO] ------------------------------------------------------------------------
 
-REM 检查是否有类文件可用于报告生成
+REM Check if class files are available for report generation
 if not exist "%CLASS_FILES%\*" (
     echo [ERROR] No class files found in %CLASS_FILES% for report generation
     exit /b 1
 )
 
-REM 生成覆盖率报告
+REM Generate coverage report
 java -jar %JACOCO_CLI% report %EXEC_FILE% --classfiles %CLASS_FILES% --sourcefiles %SOURCE_FILES% --html %REPORT_DIR%
 
-REM 检查报告生成是否成功
+REM Check if the inspection report was generated successfully
 if %ERRORLEVEL% NEQ 0 (
     echo [ERROR] Failed to generate coverage report
     exit /b 1
-)
-
-REM 清空类目录内容
-if exist "%CLASS_FILES%" (
-    del /q "%CLASS_FILES%"\*.*
-    for /d %%i in ("%CLASS_FILES%"\*) do rmdir /s /q "%%i"
 )
 
 echo [INFO] ------------------------------------------------------------------------
