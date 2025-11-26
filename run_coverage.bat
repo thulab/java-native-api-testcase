@@ -112,9 +112,10 @@ if %ERRORLEVEL% NEQ 0 (
     exit /b 1
 )
 
-REM 清理临时目录
+REM 清空类目录内容
 if exist "%CLASS_FILES%" (
-    rd /s /q "%CLASS_FILES%"
+    del /q "%CLASS_FILES%"\*.*
+    for /d %%i in ("%CLASS_FILES%"\*) do rmdir /s /q "%%i"
 )
 
 echo [INFO] ------------------------------------------------------------------------

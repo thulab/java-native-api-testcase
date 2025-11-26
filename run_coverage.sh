@@ -118,9 +118,9 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-# 清理临时目录
+# 清理临时目录内容
 if [ -d "$CLASS_FILES" ]; then
-    rm -rf "$CLASS_FILES"
+    rm -rf "$CLASS_FILES"/*
 fi
 
 print_message "------------------------------------------------------------------------"
