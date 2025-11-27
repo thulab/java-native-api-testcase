@@ -65,6 +65,26 @@ if exist org\apache\tsfile (
     xcopy org\apache\tsfile "%CLASS_FILES%\org\apache\tsfile\" /E /I /H /Y >nul
 )
 
+REM Delete no need  class directory
+for /d /r "%CLASS_FILES%" %%i in (subscription) do (
+    if exist "%%i" (
+        rd /s /q "%%i"
+    )
+)
+for /d /r "%CLASS_FILES%" %%i in (template) do (
+    if exist "%%i" (
+        rd /s /q "%%i"
+    )
+)
+for /d /r "%CLASS_FILES%" %%i in (filter) do (
+    if exist "%%i" (
+        rd /s /q "%%i"
+    )
+)
+if exist "code\src\org\apache\iotdb\isession\pool" (
+    rd /s /q "code\src\org\apache\iotdb\isession\pool"
+)
+
 REM Clean up temporary directory
 if exist org (
     rd /s /q org
@@ -107,7 +127,7 @@ if not exist "%CLASS_FILES%\*" (
 )
 
 REM Generate coverage report
-java -jar %JACOCO_CLI% report %EXEC_FILE% --classfiles %CLASS_FILES% --sourcefiles %SOURCE_FILES% --html %REPORT_DIR%
+java -jar %JACOCO_CLI% report %EXEC_FILE% --classfiles %CLASS_FILES%\org\apache\iotdb\isession --classfiles %CLASS_FILES%\org\apache\iotdb\session --classfiles %CLASS_FILES%\org\apache\iotdb\rpc --sourcefiles %SOURCE_FILES% --html %REPORT_DIR%
 
 REM Check if the inspection report was generated successfully
 if %ERRORLEVEL% NEQ 0 (
