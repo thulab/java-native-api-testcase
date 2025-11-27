@@ -1,7 +1,7 @@
 # selectSQL：提供各种 select sql语句，用于测试
 # 查询所有
-select * from t1
-select * from t2
+select * from Table1
+select * from Table2
 #select * from TestSelect.table1
 # 指定列查询(单个、多个、顺序、乱序)
 #select string from table1

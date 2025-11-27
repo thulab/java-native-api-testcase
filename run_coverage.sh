@@ -100,7 +100,7 @@ echo "[INFO] Running application and collecting coverage data"
 echo "[INFO] ------------------------------------------------------------------------"
 
 # Run application and collect coverage data
-java -javaagent:$JACOCO_AGENT=includes=org.apache.\*,output=file,destfile=$EXEC_FILE,append=false -jar $APP_JAR
+java -ea -javaagent:$JACOCO_AGENT=includes=org.apache.\*,output=file,destfile=$EXEC_FILE,append=false -jar $APP_JAR
 
 # Add delay waiting to ensure execution completion
 sleep 5

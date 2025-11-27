@@ -44,6 +44,8 @@ if not exist "%SOURCE_FILES%\org\apache\iotdb" (
     exit /b 1
 )
 
+
+REM Build project
 call mvn clean package -DskipTests
 if %ERRORLEVEL% NEQ 0 (
     echo [ERROR] Maven build failed
@@ -105,7 +107,7 @@ echo [INFO] Running application and collecting coverage data
 echo [INFO] ------------------------------------------------------------------------
 
 REM Run application and collect coverage data
-java -javaagent:%JACOCO_AGENT%=includes=org.apache.*,output=file,destfile=%EXEC_FILE%,append=false -jar %APP_JAR%
+java -ea -javaagent:%JACOCO_AGENT%=includes=org.apache.*,output=file,destfile=%EXEC_FILE%,append=false -jar %APP_JAR%
 
 REM Add delay waiting to ensure execution completion
 timeout /t 5 /nobreak >nul
