@@ -4,11 +4,11 @@
 
     <test name="tableModel">
         <classes>
-            <class name="org.apache.iotdb.api.test.table.database_manage.TestDataBaseNormal"/>
-            <class name="org.apache.iotdb.api.test.table.table_manage.TestTableNormal"/>
-            <class name="org.apache.iotdb.api.test.table.data_manage.TestSelectNormal"/>
-            <class name="org.apache.iotdb.api.test.table.data_manage.TestInsertNormal"/>
-            <class name="org.apache.iotdb.api.test.table.data_manage.TestInsertError"/>
+            <class name="org.apache.iotdb.api.test.table.database.TestDataBaseNormal"/>
+            <class name="org.apache.iotdb.api.test.table.table.TestTableNormal"/>
+            <class name="org.apache.iotdb.api.test.table.data.TestSelectNormal"/>
+            <class name="org.apache.iotdb.api.test.table.data.TestInsertNormal"/>
+            <class name="org.apache.iotdb.api.test.table.data.TestInsertError"/>
             <class name="org.apache.iotdb.api.test.table.session.TestTableSessionBuilder"/>
             <class name="org.apache.iotdb.api.test.table.session.TestTableSessionBuilderError"/>
             <class name="org.apache.iotdb.api.test.table.session.TestTableSessionPoolBuilder"/>

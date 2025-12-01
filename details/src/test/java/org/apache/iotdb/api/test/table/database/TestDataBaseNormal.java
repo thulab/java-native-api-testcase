@@ -1,4 +1,4 @@
-package org.apache.iotdb.api.test.table.database_manage;
+package org.apache.iotdb.api.test.table.database;
 
 import org.apache.iotdb.api.test.BaseTestSuiteTableModel;
 import org.apache.iotdb.api.test.utils.CustomDataProvider;
