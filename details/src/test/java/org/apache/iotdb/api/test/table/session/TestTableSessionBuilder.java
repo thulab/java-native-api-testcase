@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Objects;
 
 /**
  * Title：测试 TableSessionBuilder 接口
@@ -23,7 +24,7 @@ import java.util.Collections;
  */
 public class TestTableSessionBuilder {
     // 用于获取配置文件中的配置
-    private static ReadConfig config;
+    private static final ReadConfig config;
     // url
     private static String LOCAL_URLS;
     private static String LOCAL_URL;
@@ -90,7 +91,6 @@ public class TestTableSessionBuilder {
             // 单机的root用户
             try (ITableSession session =
                          new TableSessionBuilder()
-                                 .nodeUrls(Collections.singletonList(LOCAL_URL))
                                  .username(config.getValue("user"))
                                  .password(config.getValue("password"))
                                  .build()) {
@@ -131,7 +131,6 @@ public class TestTableSessionBuilder {
             // 目标 database 不存在
             try (ITableSession session =
                          new TableSessionBuilder()
-                                 .nodeUrls(Collections.singletonList(LOCAL_URL))
                                  .database("testDataBase1")
                                  .build()) {
                 // 判断是否存在数据库
@@ -183,7 +182,7 @@ public class TestTableSessionBuilder {
                     }
                 }
                 String expect = "testdatabase2";
-                assert result.equals(expect) : result + " != " + expect + " 结果和预期不符合，结果为：" + result + " 预期为：" + expect;
+                assert Objects.equals(result, expect) : result + " != " + expect + " 结果和预期不符合，结果为：" + result + " 预期为：" + expect;
                 session.executeNonQueryStatement("drop database testDataBase2");
             } catch (IoTDBConnectionException | StatementExecutionException e) {
                 throw new RuntimeException(e);
@@ -257,7 +256,6 @@ public class TestTableSessionBuilder {
             // 设置查询超时为9223372036854775807
             try (ITableSession session =
                          new TableSessionBuilder()
-                                 .nodeUrls(Collections.singletonList(LOCAL_URL))
                                  .queryTimeoutInMs(9223372036854775807L)
                                  .build()) {
                 // 判断是否和预期符号
@@ -294,7 +292,6 @@ public class TestTableSessionBuilder {
             // 设置查询结果的提取大小为2147483647
             try (ITableSession session =
                          new TableSessionBuilder()
-                                 .nodeUrls(Collections.singletonList(LOCAL_URL))
                                  .fetchSize(2147483647)
                                  .build()) {
                 // 判断是否和预期符号
@@ -430,7 +427,6 @@ public class TestTableSessionBuilder {
             // 设置时区为 America/New_York
             try (ITableSession session =
                          new TableSessionBuilder()
-                                 .nodeUrls(Collections.singletonList(LOCAL_URL))
                                  .zoneId(ZoneId.of("America/New_York"))
                                  .build()) {
                 // 判断是否和预期符号
@@ -499,7 +495,6 @@ public class TestTableSessionBuilder {
             // 设置缓冲区大小为 2147483647
             try (ITableSession session =
                          new TableSessionBuilder()
-                                 .nodeUrls(Collections.singletonList(LOCAL_URL))
                                  .thriftDefaultBufferSize(1024)
                                  .build()) {
                 // 判断是否和预期符号
@@ -539,7 +534,6 @@ public class TestTableSessionBuilder {
             // 设置最大帧大小为 2147483647
             try (ITableSession session =
                          new TableSessionBuilder()
-                                 .nodeUrls(Collections.singletonList(LOCAL_URL))
                                  .thriftMaxFrameSize(2147483647)
                                  .build()) {
                 // 判断是否和预期符号
@@ -577,7 +571,6 @@ public class TestTableSessionBuilder {
             // 单机启用重定向
             try (ITableSession session =
                          new TableSessionBuilder()
-                                 .nodeUrls(Collections.singletonList(LOCAL_URL))
                                  .enableRedirection(true)
                                  .build()) {
                 // 判断是否和预期符号
@@ -603,8 +596,6 @@ public class TestTableSessionBuilder {
             } catch (IoTDBConnectionException | StatementExecutionException e) {
                 throw new RuntimeException(e);
             }
-
-            // TODO:集群启动重定向，关闭其他节点，往leader写入数据，观察其他节点连接数
         }
 
 
@@ -619,7 +610,6 @@ public class TestTableSessionBuilder {
             // 启用自动获取可用数据节点
             try (ITableSession session =
                          new TableSessionBuilder()
-                                 .nodeUrls(Collections.singletonList(LOCAL_URL))
                                  .enableAutoFetch(true)
                                  .build()) {
                 // 判断是否和预期符号
@@ -662,7 +652,6 @@ public class TestTableSessionBuilder {
             // 设置连接尝试的最大重试次数为2147483647
             try (ITableSession session =
                          new TableSessionBuilder()
-                                 .nodeUrls(Collections.singletonList(LOCAL_URL))
                                  .maxRetryCount(2147483647)
                                  .build()) {
                 // 判断是否和预期符号
@@ -704,7 +693,6 @@ public class TestTableSessionBuilder {
             // 设置重试之间的间隔为2147483647
             try (ITableSession session =
                          new TableSessionBuilder()
-                                 .nodeUrls(Collections.singletonList(LOCAL_URL))
                                  .retryIntervalInMs(2147483647)
                                  .build()) {
                 // 判断是否和预期符号
@@ -738,7 +726,7 @@ public class TestTableSessionBuilder {
 
     /**
      * 测试 useSSL、trustStore 和 trustStorePwd 方法
-     * TODO：此测试点需要单独测试，需要在配置文件中更改配置（如下），具体参照SSL 传输数据用户手册文档：https://timechor.feishu.cn/docx/KEkEdh6WBooLXtxjz8BcAJRgnDe
+     * TODO：此测试点需要单独测试，需要在配置文件中更改配置（如下），具体参照SSL 传输数据用户手册文档：<a href="https://timechor.feishu.cn/docx/KEkEdh6WBooLXtxjz8BcAJRgnDe">...</a>
      * enable_thrift_ssl=true
      * key_store_path=私钥位置  # 此处为 C:\\projects\\iotdb\\ssl\\aa.keystore
      * key_store_pwd=私钥密码   # 此次为 123456
@@ -749,7 +737,6 @@ public class TestTableSessionBuilder {
         // 启用安全连接的SSL
         try (ITableSession session =
                      new TableSessionBuilder()
-                             .nodeUrls(Collections.singletonList(LOCAL_URL))
                              .useSSL(true)
                              .trustStore("C:\\projects\\iotdb\\ssl\\aa.truststore")
                              .trustStorePwd("123456")
@@ -773,7 +760,6 @@ public class TestTableSessionBuilder {
         // 启用连接的rpc压缩
         try (ITableSession session =
                      new TableSessionBuilder()
-                             .nodeUrls(Collections.singletonList(LOCAL_URL))
                              .enableCompression(true)
                              .build()) {
             // 判断是否和预期符号
@@ -795,7 +781,6 @@ public class TestTableSessionBuilder {
             // 设置连接超时时间（毫秒）为最大取值
             try (ITableSession session =
                          new TableSessionBuilder()
-                                 .nodeUrls(Collections.singletonList(LOCAL_URL))
                                  .connectionTimeoutInMs(Integer.MAX_VALUE)
                                  .build()) {
                 // 判断是否和预期符号

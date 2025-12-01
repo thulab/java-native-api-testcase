@@ -2,6 +2,7 @@ package org.apache.iotdb.api.test.table.session;
 
 import org.apache.iotdb.api.test.utils.ReadConfig;
 import org.apache.iotdb.isession.ITableSession;
+import org.apache.iotdb.isession.SessionConfig;
 import org.apache.iotdb.isession.SessionDataSet;
 import org.apache.iotdb.isession.pool.ITableSessionPool;
 import org.apache.iotdb.rpc.IoTDBConnectionException;
@@ -13,6 +14,7 @@ import java.io.IOException;
 import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Objects;
 
 /**
  * Title：测试 TableSessionPoolBuilder 接口
@@ -23,7 +25,7 @@ import java.util.Collections;
 public class TestTableSessionPoolBuilder {
 
     // 用于获取配置文件中的配置
-    private static ReadConfig config;
+    private static final ReadConfig config;
     // url
     private static String LOCAL_URLS;
     private static String LOCAL_URL;
@@ -56,7 +58,7 @@ public class TestTableSessionPoolBuilder {
                                  .build()) {
                 // 从sessionPool中获取一个session
                 ITableSession session = sessionPool.getSession();
-                // 判断是否和预期符号
+                // 判断是否符合预期
                 String result = session.executeQueryStatement("show cluster").next().getFields().get(3).getStringValue();
                 String expect = config.getValue("host");
                 assert result.equals(expect) : result + " != " + expect + " 结果和预期不符合，结果为：" + result + " 预期为：" + expect;
@@ -71,7 +73,7 @@ public class TestTableSessionPoolBuilder {
                                  .build()) {
                 // 从sessionPool中获取一个session
                 ITableSession session = sessionPool.getSession();
-                // 判断是否和预期符号
+                // 判断是否符合预期
                 String result = session.executeQueryStatement("show cluster").next().getFields().get(3).getStringValue();
                 String expect = config.getValue("hosts");
                 assert result.equals(expect) : result + " != " + expect + " 结果和预期不符合，结果为：" + result + " 预期为：" + expect;
@@ -85,18 +87,18 @@ public class TestTableSessionPoolBuilder {
     /**
      * 测试 username 和 password 方法
      */
-//    @Test(priority = 20) TODO：需要确定最终默认密码之后测试
+    @Test(priority = 20)
     public void testUserNameAndPassword() {
         if (config.getValue("is_cluster").equals("false")) {
             // 单机的root用户
             try (ITableSessionPool sessionPool =
                          new TableSessionPoolBuilder()
-                                 .user("root")
-                                 .password("root")
+                                 .user(config.getValue("user"))
+                                 .password(config.getValue("password"))
                                  .build()) {
                 // 从sessionPool中获取一个session
                 ITableSession session = sessionPool.getSession();
-                // 判断是否和预期符号
+                // 判断是否符合预期
                 String result = session.executeQueryStatement("SHOW CURRENT_USER").next().getFields().get(0).getStringValue();
                 String expect = "root";
                 assert result.equals(expect) : result + " != " + expect + " 结果和预期不符合，结果为：" + result + " 预期为：" + expect;
@@ -111,7 +113,7 @@ public class TestTableSessionPoolBuilder {
                                  .build()) {
                 // 从sessionPool中获取一个session
                 ITableSession session = sessionPool.getSession();
-                // 判断是否和预期符号
+                // 判断是否符合预期
                 String result = session.executeQueryStatement("SHOW CURRENT_USER").next().getFields().get(0).getStringValue();
                 String expect = "root";
                 assert result.equals(expect) : result + " != " + expect + " 结果和预期不符合，结果为：" + result + " 预期为：" + expect;
@@ -125,7 +127,6 @@ public class TestTableSessionPoolBuilder {
 
     /**
      * 测试 database 方法
-     * TODO：目前指定的数据库为大写的会报错，因为未能将数据库名改小写
      */
     @Test(priority = 30)
     public void testDataBase() {
@@ -161,7 +162,7 @@ public class TestTableSessionPoolBuilder {
                         "INT32 INT32 FIELD," +
                         "timestamp timestamp FIELD," +
                         "date date FIELD)");
-                // 判断是否和预期符号
+                // 判断是否符合预期
                 String result = session.executeQueryStatement("show tables").next().getFields().get(0).toString();
                 String expect = "table1";
                 assert result.equals(expect) : result + " != " + expect + " 结果和预期不符合，结果为：" + result + " 预期为：" + expect;
@@ -178,7 +179,7 @@ public class TestTableSessionPoolBuilder {
                                  .build()) {
                 // 从sessionPool中获取一个session
                 ITableSession session = sessionPool.getSession();
-                // 判断是否和预期符号
+                // 判断是否符合预期
                 String result = null;
                 SessionDataSet dataSet = session.executeQueryStatement("show databases");
                 while (dataSet.hasNext()) {
@@ -188,7 +189,7 @@ public class TestTableSessionPoolBuilder {
                     }
                 }
                 String expect = "testdatabase2";
-                assert result.equals(expect) : result + " != " + expect + " 结果和预期不符合，结果为：" + result + " 预期为：" + expect;
+                assert Objects.equals(result, expect) : result + " != " + expect + " 结果和预期不符合，结果为：" + result + " 预期为：" + expect;
                 session.executeNonQueryStatement("drop database testDataBase2");
             } catch (IoTDBConnectionException | StatementExecutionException e) {
                 throw new RuntimeException(e);
@@ -215,7 +216,7 @@ public class TestTableSessionPoolBuilder {
                         "INT32 INT32 FIELD," +
                         "timestamp timestamp FIELD," +
                         "date date FIELD)");
-                // 判断是否和预期符号
+                // 判断是否符合预期
                 String result = session.executeQueryStatement("show tables").next().getFields().get(0).toString();
                 String expect = "table1";
                 assert result.equals(expect) : result + " != " + expect + " 结果和预期不符合，结果为：" + result + " 预期为：" + expect;
@@ -246,7 +247,7 @@ public class TestTableSessionPoolBuilder {
                         "INT32 INT32 FIELD," +
                         "timestamp timestamp FIELD," +
                         "date date FIELD)");
-                // 判断是否和预期符号
+                // 判断是否符合预期
                 String result = session.executeQueryStatement("show tables").next().getFields().get(0).toString();
                 String expect = "table1";
                 assert result.equals(expect) : result + " != " + expect + " 结果和预期不符合，结果为：" + result + " 预期为：" + expect;
@@ -271,7 +272,7 @@ public class TestTableSessionPoolBuilder {
                                  .build()) {
                 // 从sessionPool中获取一个session
                 ITableSession session = sessionPool.getSession();
-                // 判断是否和预期符号
+                // 判断是否符合预期
                 String result = session.executeQueryStatement("show cluster").next().getFields().get(3).getStringValue();
                 String expect = config.getValue("host");
                 assert result.equals(expect) : result + " != " + expect + " 结果和预期不符合，结果为：" + result + " 预期为：" + expect;
@@ -287,7 +288,7 @@ public class TestTableSessionPoolBuilder {
                                  .build()) {
                 // 从sessionPool中获取一个session
                 ITableSession session = sessionPool.getSession();
-                // 判断是否和预期符号
+                // 判断是否符合预期
                 String result = session.executeQueryStatement("show cluster").next().getFields().get(3).getStringValue();
                 String expect = config.getValue("hosts");
                 assert result.equals(expect) : result + " != " + expect + " 结果和预期不符合，结果为：" + result + " 预期为：" + expect;
@@ -301,7 +302,6 @@ public class TestTableSessionPoolBuilder {
 
     /**
      * 测试 fetchSize 方法
-     * TODO：目前设置获取大小为0或负值会报错
      */
     @Test(priority = 50)
     public void testFetchSize() {
@@ -313,7 +313,7 @@ public class TestTableSessionPoolBuilder {
                                  .build()) {
                 // 从sessionPool中获取一个session
                 ITableSession session = sessionPool.getSession();
-                // 判断是否和预期符号
+                // 判断是否符合预期
                 String result = session.executeQueryStatement("show cluster").next().getFields().get(3).getStringValue();
                 String expect = config.getValue("host");
                 assert result.equals(expect) : result + " != " + expect + " 结果和预期不符合，结果为：" + result + " 预期为：" + expect;
@@ -341,7 +341,7 @@ public class TestTableSessionPoolBuilder {
                     dataSet.next();
                     result++;
                 }
-                // 判断是否和预期符号
+                // 判断是否符合预期
                 assert result == expect : result + " != " + expect + " 结果和预期不符合，结果为：" + result + " 预期为：" + expect;
                 session.executeNonQueryStatement("drop database testFetchSize2");
             } catch (IoTDBConnectionException | StatementExecutionException e) {
@@ -368,7 +368,7 @@ public class TestTableSessionPoolBuilder {
                     dataSet.next();
                     result++;
                 }
-                // 判断是否和预期符号
+                // 判断是否符合预期
                 assert result == expect : result + " != " + expect + " 结果和预期不符合，结果为：" + result + " 预期为：" + expect;
                 session.executeNonQueryStatement("drop database testFetchSize3");
             } catch (IoTDBConnectionException | StatementExecutionException e) {
@@ -384,7 +384,7 @@ public class TestTableSessionPoolBuilder {
                                  .build()) {
                 // 从sessionPool中获取一个session
                 ITableSession session = sessionPool.getSession();
-                // 判断是否和预期符号
+                // 判断是否符合预期
                 String result = session.executeQueryStatement("show cluster").next().getFields().get(3).getStringValue();
                 String expect = config.getValue("hosts");
                 assert result.equals(expect) : result + " != " + expect + " 结果和预期不符合，结果为：" + result + " 预期为：" + expect;
@@ -413,7 +413,7 @@ public class TestTableSessionPoolBuilder {
                     dataSet.next();
                     result++;
                 }
-                // 判断是否和预期符号
+                // 判断是否符合预期
                 assert result == expect : result + " != " + expect + " 结果和预期不符合，结果为：" + result + " 预期为：" + expect;
                 session.executeNonQueryStatement("drop database testFetchSize2");
             } catch (IoTDBConnectionException | StatementExecutionException e) {
@@ -441,7 +441,7 @@ public class TestTableSessionPoolBuilder {
                     dataSet.next();
                     result++;
                 }
-                // 判断是否和预期符号
+                // 判断是否符合预期
                 assert result == expect : result + " != " + expect + " 结果和预期不符合，结果为：" + result + " 预期为：" + expect;
                 session.executeNonQueryStatement("drop database testFetchSize3");
             } catch (IoTDBConnectionException | StatementExecutionException e) {
@@ -465,7 +465,7 @@ public class TestTableSessionPoolBuilder {
                                  .build()) {
                 // 从sessionPool中获取一个session
                 ITableSession session = sessionPool.getSession();
-                // 判断是否和预期符号
+                // 判断是否符合预期
                 String result = session.executeQueryStatement("show cluster").next().getFields().get(3).getStringValue();
                 String expect = config.getValue("host");
                 assert result.equals(expect) : result + " != " + expect + " 结果和预期不符合，结果为：" + result + " 预期为：" + expect;
@@ -480,7 +480,7 @@ public class TestTableSessionPoolBuilder {
                                  .build()) {
                 // 从sessionPool中获取一个session
                 ITableSession session = sessionPool.getSession();
-                // 判断是否和预期符号
+                // 判断是否符合预期
                 String result = session.executeQueryStatement("show cluster").next().getFields().get(3).getStringValue();
                 String expect = config.getValue("host");
                 assert result.equals(expect) : result + " != " + expect + " 结果和预期不符合，结果为：" + result + " 预期为：" + expect;
@@ -496,7 +496,7 @@ public class TestTableSessionPoolBuilder {
                                  .build()) {
                 // 从sessionPool中获取一个session
                 ITableSession session = sessionPool.getSession();
-                // 判断是否和预期符号
+                // 判断是否符合预期
                 String result = session.executeQueryStatement("show cluster").next().getFields().get(3).getStringValue();
                 String expect = config.getValue("hosts");
                 assert result.equals(expect) : result + " != " + expect + " 结果和预期不符合，结果为：" + result + " 预期为：" + expect;
@@ -512,7 +512,7 @@ public class TestTableSessionPoolBuilder {
                                  .build()) {
                 // 从sessionPool中获取一个session
                 ITableSession session = sessionPool.getSession();
-                // 判断是否和预期符号
+                // 判断是否符合预期
                 String result = session.executeQueryStatement("show cluster").next().getFields().get(3).getStringValue();
                 String expect = config.getValue("hosts");
                 assert result.equals(expect) : result + " != " + expect + " 结果和预期不符合，结果为：" + result + " 预期为：" + expect;
@@ -525,7 +525,6 @@ public class TestTableSessionPoolBuilder {
 
     /**
      * 测试 thriftDefaultBufferSize 方法
-     * TODO：目前可以设置无效值，和开发讨论，说之后会确定
      */
     @Test(priority = 70)
     public void testThriftDefaultBufferSize() {
@@ -537,7 +536,7 @@ public class TestTableSessionPoolBuilder {
                                  .build()) {
                 // 从sessionPool中获取一个session
                 ITableSession session = sessionPool.getSession();
-                // 判断是否和预期符号
+                // 判断是否符合预期
                 String result = session.executeQueryStatement("show cluster").next().getFields().get(3).getStringValue();
                 String expect = config.getValue("host");
                 assert result.equals(expect) : result + " != " + expect + " 结果和预期不符合，结果为：" + result + " 预期为：" + expect;
@@ -553,7 +552,7 @@ public class TestTableSessionPoolBuilder {
                                  .build()) {
                 // 从sessionPool中获取一个session
                 ITableSession session = sessionPool.getSession();
-                // 判断是否和预期符号
+                // 判断是否符合预期
                 String result = session.executeQueryStatement("show cluster").next().getFields().get(3).getStringValue();
                 String expect = config.getValue("hosts");
                 assert result.equals(expect) : result + " != " + expect + " 结果和预期不符合，结果为：" + result + " 预期为：" + expect;
@@ -567,7 +566,6 @@ public class TestTableSessionPoolBuilder {
 
     /**
      * 测试 thriftMaxFrameSize 方法
-     * TODO：目前可以设置无效值，和开发讨论，说之后会确定
      */
     @Test(priority = 80)
     public void testThriftMaxFrameSize() {
@@ -579,7 +577,7 @@ public class TestTableSessionPoolBuilder {
                                  .build()) {
                 // 从sessionPool中获取一个session
                 ITableSession session = sessionPool.getSession();
-                // 判断是否和预期符号
+                // 判断是否符合预期
                 String result = session.executeQueryStatement("show cluster").next().getFields().get(3).getStringValue();
                 String expect = config.getValue("host");
                 assert result.equals(expect) : result + " != " + expect + " 结果和预期不符合，结果为：" + result + " 预期为：" + expect;
@@ -595,7 +593,7 @@ public class TestTableSessionPoolBuilder {
                                  .build()) {
                 // 从sessionPool中获取一个session
                 ITableSession session = sessionPool.getSession();
-                // 判断是否和预期符号
+                // 判断是否符合预期
                 String result = session.executeQueryStatement("show cluster").next().getFields().get(3).getStringValue();
                 String expect = config.getValue("hosts");
                 assert result.equals(expect) : result + " != " + expect + " 结果和预期不符合，结果为：" + result + " 预期为：" + expect;
@@ -620,7 +618,7 @@ public class TestTableSessionPoolBuilder {
                                  .build()) {
                 // 从sessionPool中获取一个session
                 ITableSession session = sessionPool.getSession();
-                // 判断是否和预期符号
+                // 判断是否符合预期
                 String result = session.executeQueryStatement("show cluster").next().getFields().get(3).getStringValue();
                 String expect = config.getValue("host");
                 assert result.equals(expect) : result + " != " + expect + " 结果和预期不符合，结果为：" + result + " 预期为：" + expect;
@@ -636,7 +634,7 @@ public class TestTableSessionPoolBuilder {
                                  .build()) {
                 // 从sessionPool中获取一个session
                 ITableSession session = sessionPool.getSession();
-                // 判断是否和预期符号
+                // 判断是否符合预期
                 String result = session.executeQueryStatement("show cluster").next().getFields().get(3).getStringValue();
                 String expect = config.getValue("hosts");
                 assert result.equals(expect) : result + " != " + expect + " 结果和预期不符合，结果为：" + result + " 预期为：" + expect;
@@ -662,7 +660,7 @@ public class TestTableSessionPoolBuilder {
                                  .build()) {
                 // 从sessionPool中获取一个session
                 ITableSession session = sessionPool.getSession();
-                // 判断是否和预期符号
+                // 判断是否符合预期
                 String result = session.executeQueryStatement("show cluster").next().getFields().get(3).getStringValue();
                 String expect = config.getValue("host");
                 assert result.equals(expect) : result + " != " + expect + " 结果和预期不符合，结果为：" + result + " 预期为：" + expect;
@@ -678,7 +676,7 @@ public class TestTableSessionPoolBuilder {
                                  .build()) {
                 // 从sessionPool中获取一个session
                 ITableSession session = sessionPool.getSession();
-                // 判断是否和预期符号
+                // 判断是否符合预期
                 String result = session.executeQueryStatement("show cluster").next().getFields().get(3).getStringValue();
                 String expect = config.getValue("hosts");
                 assert result.equals(expect) : result + " != " + expect + " 结果和预期不符合，结果为：" + result + " 预期为：" + expect;
@@ -705,7 +703,7 @@ public class TestTableSessionPoolBuilder {
                                  .build()) {
                 // 从sessionPool中获取一个session
                 ITableSession session = sessionPool.getSession();
-                // 判断是否和预期符号
+                // 判断是否符合预期
                 String result = session.executeQueryStatement("show cluster").next().getFields().get(3).getStringValue();
                 String expect = config.getValue("host");
                 assert result.equals(expect) : result + " != " + expect + " 结果和预期不符合，结果为：" + result + " 预期为：" + expect;
@@ -721,7 +719,7 @@ public class TestTableSessionPoolBuilder {
                                  .build()) {
                 // 从sessionPool中获取一个session
                 ITableSession session = sessionPool.getSession();
-                // 判断是否和预期符号
+                // 判断是否符合预期
                 String result = session.executeQueryStatement("show cluster").next().getFields().get(3).getStringValue();
                 String expect = config.getValue("hosts");
                 assert result.equals(expect) : result + " != " + expect + " 结果和预期不符合，结果为：" + result + " 预期为：" + expect;
@@ -748,7 +746,7 @@ public class TestTableSessionPoolBuilder {
                                  .build()) {
                 // 从sessionPool中获取一个session
                 ITableSession session = sessionPool.getSession();
-                // 判断是否和预期符号
+                // 判断是否符合预期
                 String result = session.executeQueryStatement("show cluster").next().getFields().get(3).getStringValue();
                 String expect = config.getValue("host");
                 assert result.equals(expect) : result + " != " + expect + " 结果和预期不符合，结果为：" + result + " 预期为：" + expect;
@@ -764,7 +762,7 @@ public class TestTableSessionPoolBuilder {
                                  .build()) {
                 // 从sessionPool中获取一个session
                 ITableSession session = sessionPool.getSession();
-                // 判断是否和预期符号
+                // 判断是否符合预期
                 String result = session.executeQueryStatement("show cluster").next().getFields().get(3).getStringValue();
                 String expect = config.getValue("hosts");
                 assert result.equals(expect) : result + " != " + expect + " 结果和预期不符合，结果为：" + result + " 预期为：" + expect;
@@ -780,7 +778,7 @@ public class TestTableSessionPoolBuilder {
 
     /**
      * 测试 useSSL、trustStore 和 trustStorePwd 方法
-     * TODO：此测试点需要单独测试，需要在配置文件中更改配置（如下），具体参照SSL 传输数据用户手册文档：https://timechor.feishu.cn/docx/KEkEdh6WBooLXtxjz8BcAJRgnDe
+     * TODO：此测试点需要单独测试，需要在配置文件中更改配置（如下），具体参照SSL 传输数据用户手册文档：<a href="https://timechor.feishu.cn/docx/KEkEdh6WBooLXtxjz8BcAJRgnDe">...</a>
      * enable_thrift_ssl=true
      * key_store_path=私钥位置  # 此处为 C:\\projects\\iotdb\\ssl\\aa.keystore
      * key_store_pwd=私钥密码   # 此次为 123456
@@ -796,7 +794,7 @@ public class TestTableSessionPoolBuilder {
                              .build()) {
             // 从sessionPool中获取一个session
             ITableSession session = sessionPool.getSession();
-            // 判断是否和预期符号
+            // 判断是否符合预期
             String result = session.executeQueryStatement("show cluster").next().getFields().get(3).getStringValue();
             String expect = config.getValue("host");
             assert result.equals(expect) : result + " != " + expect + " 结果和预期不符合，结果为：" + result + " 预期为：" + expect;
@@ -818,7 +816,7 @@ public class TestTableSessionPoolBuilder {
                              .build()) {
             // 从sessionPool中获取一个session
             ITableSession session = sessionPool.getSession();
-            // 判断是否和预期符号
+            // 判断是否符合预期
             String result = session.executeQueryStatement("show cluster").next().getFields().get(3).getStringValue();
             String expect = config.getValue("host");
             assert result.equals(expect) : result + " != " + expect + " 结果和预期不符合，结果为：" + result + " 预期为：" + expect;
@@ -829,7 +827,6 @@ public class TestTableSessionPoolBuilder {
 
     /**
      * 测试 connectionTimeoutInMs 方法
-     * TODO：测试点1，感觉方法没有效果？
      */
     @Test(priority = 150)
     public void testConnectionTimeoutInMs() {
@@ -841,7 +838,7 @@ public class TestTableSessionPoolBuilder {
                                  .build()) {
                 // 从sessionPool中获取一个session
                 ITableSession session = sessionPool.getSession();
-                // 判断是否和预期符号
+                // 判断是否符合预期
                 String result = session.executeQueryStatement("show cluster").next().getFields().get(3).getStringValue();
                 String expect = config.getValue("host");
                 assert result.equals(expect) : result + " != " + expect + " 结果和预期不符合，结果为：" + result + " 预期为：" + expect;
@@ -856,7 +853,7 @@ public class TestTableSessionPoolBuilder {
                                  .build()) {
                 // 从sessionPool中获取一个session
                 ITableSession session = sessionPool.getSession();
-                // 判断是否和预期符号
+                // 判断是否符合预期
                 String result = session.executeQueryStatement("show cluster").next().getFields().get(3).getStringValue();
                 String expect = config.getValue("host");
                 assert result.equals(expect) : result + " != " + expect + " 结果和预期不符合，结果为：" + result + " 预期为：" + expect;
@@ -872,7 +869,7 @@ public class TestTableSessionPoolBuilder {
                                  .build()) {
                 // 从sessionPool中获取一个session
                 ITableSession session = sessionPool.getSession();
-                // 判断是否和预期符号
+                // 判断是否符合预期
                 String result = session.executeQueryStatement("show cluster").next().getFields().get(3).getStringValue();
                 String expect = config.getValue("hosts");
                 assert result.equals(expect) : result + " != " + expect + " 结果和预期不符合，结果为：" + result + " 预期为：" + expect;
@@ -888,7 +885,7 @@ public class TestTableSessionPoolBuilder {
                                  .build()) {
                 // 从sessionPool中获取一个session
                 ITableSession session = sessionPool.getSession();
-                // 判断是否和预期符号
+                // 判断是否符合预期
                 String result = session.executeQueryStatement("show cluster").next().getFields().get(3).getStringValue();
                 String expect = config.getValue("hosts");
                 assert result.equals(expect) : result + " != " + expect + " 结果和预期不符合，结果为：" + result + " 预期为：" + expect;
@@ -911,7 +908,7 @@ public class TestTableSessionPoolBuilder {
                                  .build()) {
                 // 从sessionPool中获取一个session
                 ITableSession session = sessionPool.getSession();
-                // 判断是否和预期符号
+                // 判断是否符合预期
                 String result = session.executeQueryStatement("show cluster").next().getFields().get(3).getStringValue();
                 String expect = config.getValue("host");
                 assert result.equals(expect) : result + " != " + expect + " 结果和预期不符合，结果为：" + result + " 预期为：" + expect;
@@ -926,7 +923,7 @@ public class TestTableSessionPoolBuilder {
                                  .build()) {
                 // 从sessionPool中获取一个session
                 ITableSession session = sessionPool.getSession();
-                // 判断是否和预期符号
+                // 判断是否符合预期
                 String result = session.executeQueryStatement("show cluster").next().getFields().get(3).getStringValue();
                 String expect = config.getValue("hosts");
                 assert result.equals(expect) : result + " != " + expect + " 结果和预期不符合，结果为：" + result + " 预期为：" + expect;
@@ -945,11 +942,12 @@ public class TestTableSessionPoolBuilder {
             // 设置会话池的最大大小为 2147483647
             try (ITableSessionPool sessionPool =
                          new TableSessionPoolBuilder()
+                                 .nodeUrls(Collections.singletonList(LOCAL_URL))
                                  .maxSize(2147483647)
                                  .build()) {
                 // 从sessionPool中获取一个session
                 ITableSession session = sessionPool.getSession();
-                // 判断是否和预期符号
+                // 判断是否符合预期
                 String result = session.executeQueryStatement("show cluster").next().getFields().get(3).getStringValue();
                 String expect = config.getValue("host");
                 assert result.equals(expect) : result + " != " + expect + " 结果和预期不符合，结果为：" + result + " 预期为：" + expect;
@@ -964,14 +962,14 @@ public class TestTableSessionPoolBuilder {
                                  .build()) {
                 // 从sessionPool中获取session1
                 ITableSession session1 = sessionPool.getSession();
-                // 判断是否和预期符号
+                // 判断是否符合预期
                 String result1 = session1.executeQueryStatement("show cluster").next().getFields().get(3).getStringValue();
                 String expect1 = config.getValue("host");
                 assert result1.equals(expect1) : result1 + " != " + expect1 + " 结果和预期不符合，结果为：" + result1 + " 预期为：" + expect1;
                 session1.close();
                 // 从sessionPool中获取session2
                 ITableSession session2 = sessionPool.getSession();
-                // 判断是否和预期符号
+                // 判断是否符合预期
                 String result2 = session2.executeQueryStatement("show cluster").next().getFields().get(3).getStringValue();
                 String expect2 = config.getValue("host");
                 assert result2.equals(expect2) : result2 + " != " + expect2 + " 结果和预期不符合，结果为：" + result2 + " 预期为：" + expect2;
@@ -987,14 +985,14 @@ public class TestTableSessionPoolBuilder {
                                  .build()) {
                 // 从sessionPool中获取session1
                 ITableSession session1 = sessionPool.getSession();
-                // 判断是否和预期符号
+                // 判断是否符合预期
                 String result1 = session1.executeQueryStatement("show cluster").next().getFields().get(3).getStringValue();
                 String expect1 = config.getValue("hosts");
                 assert result1.equals(expect1) : result1 + " != " + expect1 + " 结果和预期不符合，结果为：" + result1 + " 预期为：" + expect1;
                 session1.close();
                 // 从sessionPool中获取session2
                 ITableSession session2 = sessionPool.getSession();
-                // 判断是否和预期符号
+                // 判断是否符合预期
                 String result2 = session2.executeQueryStatement("show cluster").next().getFields().get(3).getStringValue();
                 String expect2 = config.getValue("hosts");
                 assert result2.equals(expect2) : result2 + " != " + expect2 + " 结果和预期不符合，结果为：" + result2 + " 预期为：" + expect2;
@@ -1010,14 +1008,14 @@ public class TestTableSessionPoolBuilder {
                                  .build()) {
                 // 从sessionPool中获取session1
                 ITableSession session1 = sessionPool.getSession();
-                // 判断是否和预期符号
+                // 判断是否符合预期
                 String result1 = session1.executeQueryStatement("show cluster").next().getFields().get(3).getStringValue();
                 String expect1 = config.getValue("hosts");
                 assert result1.equals(expect1) : result1 + " != " + expect1 + " 结果和预期不符合，结果为：" + result1 + " 预期为：" + expect1;
                 session1.close();
                 // 从sessionPool中获取session2
                 ITableSession session2 = sessionPool.getSession();
-                // 判断是否和预期符号
+                // 判断是否符合预期
                 String result2 = session2.executeQueryStatement("show cluster").next().getFields().get(3).getStringValue();
                 String expect2 = config.getValue("hosts");
                 assert result2.equals(expect2) : result2 + " != " + expect2 + " 结果和预期不符合，结果为：" + result2 + " 预期为：" + expect2;
@@ -1026,6 +1024,80 @@ public class TestTableSessionPoolBuilder {
             }
         }
 
+    }
+
+    /**
+     * 测试全部的参数
+     */
+    @Test(priority = 180)
+    public void testAll() {
+        if (config.getValue("is_cluster").equals("false")) {
+            // 单机下所有的默认情况
+            try (ITableSessionPool sessionPool =
+                         new TableSessionPoolBuilder()
+                                 .nodeUrls(Collections.singletonList(LOCAL_URL))
+                                 .user(config.getValue("user"))
+                                 .password(config.getValue("password"))
+                                 .database(null)
+                                 .queryTimeoutInMs(SessionConfig.DEFAULT_QUERY_TIME_OUT)
+                                 .fetchSize(SessionConfig.DEFAULT_FETCH_SIZE)
+                                 .zoneId(null)
+                                 .thriftDefaultBufferSize(SessionConfig.DEFAULT_INITIAL_BUFFER_CAPACITY)
+                                 .thriftMaxFrameSize(SessionConfig.DEFAULT_MAX_FRAME_SIZE)
+                                 .enableRedirection(SessionConfig.DEFAULT_REDIRECTION_MODE)
+                                 .enableAutoFetch(SessionConfig.DEFAULT_ENABLE_AUTO_FETCH)
+                                 .maxRetryCount(SessionConfig.MAX_RETRY_COUNT)
+                                 .retryIntervalInMs(SessionConfig.RETRY_INTERVAL_IN_MS)
+                                 .useSSL(false)
+                                 .trustStore("")
+                                 .trustStorePwd("")
+                                 .enableIoTDBRpcCompression(true)
+                                 .enableThriftCompression(false)
+                                 .waitToGetSessionTimeoutInMs(60_000)
+                                 .build()) {
+                // 从sessionPool中获取一个session
+                ITableSession session = sessionPool.getSession();
+                // 判断是否符合预期
+                String result = session.executeQueryStatement("show cluster").next().getFields().get(3).getStringValue();
+                String expect = config.getValue("host");
+                assert result.equals(expect) : result + " != " + expect + " 结果和预期不符合，结果为：" + result + " 预期为：" + expect;
+            } catch (IoTDBConnectionException | StatementExecutionException e) {
+                throw new RuntimeException(e);
+            }
+        } else {
+            // 多个节点的url集群
+            try (ITableSessionPool sessionPool =
+                         new TableSessionPoolBuilder()
+                                 .nodeUrls(Arrays.asList(LOCAL_URLS.split(",")))
+                                 .user(config.getValue("user"))
+                                 .password(config.getValue("password"))
+                                 .database(null)
+                                 .queryTimeoutInMs(SessionConfig.DEFAULT_QUERY_TIME_OUT)
+                                 .fetchSize(SessionConfig.DEFAULT_FETCH_SIZE)
+                                 .zoneId(null)
+                                 .thriftDefaultBufferSize(SessionConfig.DEFAULT_INITIAL_BUFFER_CAPACITY)
+                                 .thriftMaxFrameSize(SessionConfig.DEFAULT_MAX_FRAME_SIZE)
+                                 .enableRedirection(SessionConfig.DEFAULT_REDIRECTION_MODE)
+                                 .enableAutoFetch(SessionConfig.DEFAULT_ENABLE_AUTO_FETCH)
+                                 .maxRetryCount(SessionConfig.MAX_RETRY_COUNT)
+                                 .retryIntervalInMs(SessionConfig.RETRY_INTERVAL_IN_MS)
+                                 .useSSL(false)
+                                 .trustStore("")
+                                 .trustStorePwd("")
+                                 .enableIoTDBRpcCompression(true)
+                                 .enableThriftCompression(false)
+                                 .waitToGetSessionTimeoutInMs(60_000)
+                                 .build()) {
+                // 从sessionPool中获取一个session
+                ITableSession session = sessionPool.getSession();
+                // 判断是否符合预期
+                String result = session.executeQueryStatement("show cluster").next().getFields().get(3).getStringValue();
+                String expect = config.getValue("hosts");
+                assert result.equals(expect) : result + " != " + expect + " 结果和预期不符合，结果为：" + result + " 预期为：" + expect;
+            } catch (IoTDBConnectionException | StatementExecutionException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 
 }
