@@ -1,4 +1,4 @@
-package org.apache.iotdb.api.test.tree.database;
+package org.apache.iotdb.api.test.tree.data.insert;
 
 import org.apache.iotdb.api.test.BaseTestSuite_TreeModel;
 import org.apache.iotdb.api.test.utils.CustomDataProvider;
@@ -41,7 +41,7 @@ public class TestInsertNormalWithoutCreate extends BaseTestSuite_TreeModel {
     public Boolean verbose = true;
 
 
-    @BeforeClass(enabled = true)
+    @BeforeClass()
     public void beforeClass() throws IoTDBConnectionException, StatementExecutionException, IOException {
         cleanDatabases(verbose);
         out.println("创建序列");
@@ -186,7 +186,7 @@ public class TestInsertNormalWithoutCreate extends BaseTestSuite_TreeModel {
         int rowIndex = 0;
         for (Iterator<Object[]> it = getSingleNormal(); it.hasNext(); ) {
             Object[] line = it.next();
-            tablet.addTimestamp(rowIndex, Long.valueOf((String) line[0]));
+            tablet.addTimestamp(rowIndex, Long.parseLong((String) line[0]));
             for (int i = 0; i < schemaList.size(); i++) {
                 insertValue(rowIndex, i, tablet, (String) line[i + 1]);
             }

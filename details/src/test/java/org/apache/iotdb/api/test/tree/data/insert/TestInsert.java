@@ -1,4 +1,4 @@
-package org.apache.iotdb.api.test.tree.database;
+package org.apache.iotdb.api.test.tree.data.insert;
 
 import org.apache.iotdb.api.test.BaseTestSuite_TreeModel;
 import org.apache.iotdb.api.test.utils.CustomDataProvider;
@@ -33,16 +33,14 @@ public class TestInsert extends BaseTestSuite_TreeModel {
     private static final String database = "root.testInsert";
     private static final String device = database + ".d1";
     private static final String alignedDevice = database + ".d2";
-    private Map<String, TSDataType> measureTSTypeInfos = new LinkedHashMap<>(6);
+    private final Map<String, TSDataType> measureTSTypeInfos = new LinkedHashMap<>(6);
     private final List<String> paths = new ArrayList<>(6);
     private final List<String> measurements = new ArrayList<>(6);
     private final List<TSDataType> dataTypes = new ArrayList<>(6);
     private final List<IMeasurementSchema> schemaList = new ArrayList<>();// tablet
 
-    private final int expectCount = 18;
 
-
-    @BeforeClass(enabled = true)
+    @BeforeClass()
     public void beforeClass() throws IoTDBConnectionException, StatementExecutionException {
         if (checkStroageGroupExists(database)) {
             session.deleteDatabase(database);
@@ -99,14 +97,14 @@ public class TestInsert extends BaseTestSuite_TreeModel {
     /**
      * 工具函数：检查一次插入多个设备的结果
      */
-    public void checkInsertMultiDevices(String msg) throws IoTDBConnectionException, StatementExecutionException {
-        int[] expectValueList = new int[]{2, 1, 6};
-        for (int i = 0; i < 3; i++) {
-            assert getRecordCount("root.jni.d" + (i + 1), true) == expectValueList[i] : "root.jni.d" + (i + 1) + ":" + msg;
-        }
-        out.println("清理数据");
-        session.deleteTimeseries("root.jni.**");
-    }
+//    public void checkInsertMultiDevices(String msg) throws IoTDBConnectionException, StatementExecutionException {
+//        int[] expectValueList = new int[]{2, 1, 6};
+//        for (int i = 0; i < 3; i++) {
+//            assert getRecordCount("root.jni.d" + (i + 1), true) == expectValueList[i] : "root.jni.d" + (i + 1) + ":" + msg;
+//        }
+//        out.println("清理数据");
+//        session.deleteTimeseries("root.jni.**");
+//    }
 
     @DataProvider(name = "insertSingleNormal")
     public Iterator<Object[]> getSingleNormal() throws IOException {
@@ -119,9 +117,9 @@ public class TestInsert extends BaseTestSuite_TreeModel {
     }
 
     // @DataProvider(name="insertMultiRecords")
-    public Iterator<Object[]> getMultiRecords() throws IOException {
-        return new CustomDataProvider().load("data/tree/insert-records-multi.csv").getData();
-    }
+//    public Iterator<Object[]> getMultiRecords() throws IOException {
+//        return new CustomDataProvider().load("data/tree/insert-records-multi.csv").getData();
+//    }
 
     /**
      * insert tatblet 同设备
@@ -134,7 +132,7 @@ public class TestInsert extends BaseTestSuite_TreeModel {
         int rowIndex = 0;
         for (Iterator<Object[]> it = getSingleNormal(); it.hasNext(); ) {
             Object[] line = it.next();
-            tablet.addTimestamp(rowIndex++, Long.valueOf((String) line[0]));
+            tablet.addTimestamp(rowIndex++, Long.parseLong((String) line[0]));
             out.println("########### " + rowIndex + ":" + line[0]);
             for (int i = 0; i < schemaList.size(); i++) {
                 out.println("datatype=" + schemaList.get(i).getType());
@@ -182,7 +180,7 @@ public class TestInsert extends BaseTestSuite_TreeModel {
                         if (line[i + 1] == null) {
                             tablet.addValue(schemaList.get(i).getMeasurementName(), rowIndex, "stringnull");
                         } else {
-                            tablet.addValue(schemaList.get(i).getMeasurementName(), rowIndex, (String) line[i + 1]);
+                            tablet.addValue(schemaList.get(i).getMeasurementName(), rowIndex, line[i + 1]);
                         }
                         break;
                 }
@@ -192,14 +190,13 @@ public class TestInsert extends BaseTestSuite_TreeModel {
         countLines("select * from " + device, verbose);
         // 使用对齐方式插入非对齐tablet 1.2 去掉该限制
 //        Assert.assertThrows(StatementExecutionException.class, ()-> session.insertAlignedTablet(tablet));
-        /**
-         * tablet变对齐设备
-         */
+        // tablet变对齐设备
         tablet.setDeviceId(alignedDevice);
         session.insertAlignedTablet(tablet);
         // 使用非对齐方法插入对齐tablet
 //        Assert.assertThrows(StatementExecutionException.class, ()-> session.insertTablet(tablet));
         tablet.reset();
+        int expectCount = 18;
         afterMethod(expectCount, expectCount, "insert tablet");
     }
 
