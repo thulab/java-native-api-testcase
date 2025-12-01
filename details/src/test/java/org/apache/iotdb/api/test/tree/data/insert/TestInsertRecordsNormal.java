@@ -46,8 +46,6 @@ public class TestInsertRecordsNormal extends BaseTestSuite_TreeModel {
     private List<String> measurements;
     // 存储单个设备多个数据类型
     private List<TSDataType> dataTypes;
-    // 存储单个设备多个值
-    private ArrayList<Object> values;
     // 存储路径
     private final List<String> paths = new ArrayList<>();
 
@@ -59,7 +57,7 @@ public class TestInsertRecordsNormal extends BaseTestSuite_TreeModel {
     /**
      * 在测试类之前准备好环境（数据库、时间序列）
      */
-    @BeforeClass(enabled = true)
+    @BeforeClass()
     public void beforeClass() throws IoTDBConnectionException, StatementExecutionException {
         // 1、检查存储组是否存在，如果存在则删除
         if (checkStroageGroupExists(database)) {
@@ -82,9 +80,7 @@ public class TestInsertRecordsNormal extends BaseTestSuite_TreeModel {
         measureTSTypeInfos.put("s_timestamp", TSDataType.TIMESTAMP);
         measureTSTypeInfos.put("s_date", TSDataType.DATE);
         // 3.2、遍历measureTSTypeInfos，将路径、物理量和数据类型存入对应集合中
-        measureTSTypeInfos.forEach((key, value) -> {
-            paths.add(deviceId1 + "." + key);
-        });
+        measureTSTypeInfos.forEach((key, value) -> paths.add(deviceId1 + "." + key));
         for (int i = 0; i < 10; i++) {
             measurements = new ArrayList<>(10);
             dataTypes = new ArrayList<>(10);
@@ -111,9 +107,7 @@ public class TestInsertRecordsNormal extends BaseTestSuite_TreeModel {
         paths.clear();
 
         // 3.5、重复操作为设备2创建非对齐时间序列
-        measureTSTypeInfos.forEach((key, value) -> {
-            paths.add(deviceId2 + "." + key);
-        });
+        measureTSTypeInfos.forEach((key, value) -> paths.add(deviceId2 + "." + key));
         for (int i = 0; i < 10; i++) {
             measurements = new ArrayList<>(10);
             dataTypes = new ArrayList<>(10);
@@ -131,9 +125,7 @@ public class TestInsertRecordsNormal extends BaseTestSuite_TreeModel {
         paths.clear();
 
         // 3.6、重复操作为设备3创建非对齐时间序列
-        measureTSTypeInfos.forEach((key, value) -> {
-            paths.add(deviceId3 + "." + key);
-        });
+        measureTSTypeInfos.forEach((key, value) -> paths.add(deviceId3 + "." + key));
         for (int i = 0; i < 10; i++) {
             measurements = new ArrayList<>(10);
             dataTypes = new ArrayList<>(10);
@@ -160,7 +152,8 @@ public class TestInsertRecordsNormal extends BaseTestSuite_TreeModel {
             for (Iterator<Object[]> it = getSingleNormal(); it.hasNext(); ) {
                 // 统计行数
                 expectCount++;
-                values = new ArrayList<>();
+                // 存储单个设备多个值
+                ArrayList<Object> values = new ArrayList<>();
                 // 获取每行数据
                 Object[] line = it.next();
                 // 遍历每行逐个物理量的数据

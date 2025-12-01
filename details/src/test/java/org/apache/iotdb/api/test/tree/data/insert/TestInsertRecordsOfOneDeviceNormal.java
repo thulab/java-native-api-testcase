@@ -44,8 +44,6 @@ public class TestInsertRecordsOfOneDeviceNormal extends BaseTestSuite_TreeModel 
     private  ArrayList<String> measurements;
     // 用于存储数据类型
     private  ArrayList<TSDataType> dataTypes;
-    // 用于存储值
-    private ArrayList<Object> values;
 
     // 存储物理量名称和数据类型
     private final Map<String, TSDataType> measureTSTypeInfos = new LinkedHashMap<>();
@@ -55,7 +53,7 @@ public class TestInsertRecordsOfOneDeviceNormal extends BaseTestSuite_TreeModel 
     /**
      * 在测试类之前准备好环境（数据库、时间序列）
      */
-    @BeforeClass(enabled = true)
+    @BeforeClass()
     public void beforeClass() throws IoTDBConnectionException, StatementExecutionException {
         // 1、检查存储组是否存在，如果存在则删除
         if (checkStroageGroupExists(database)) {
@@ -78,9 +76,7 @@ public class TestInsertRecordsOfOneDeviceNormal extends BaseTestSuite_TreeModel 
         measureTSTypeInfos.put("s_timestamp", TSDataType.TIMESTAMP);
         measureTSTypeInfos.put("s_date", TSDataType.DATE);
         // 3.2、遍历measureTSTypeInfos，将路径、物理量和数据类型存入对应集合中
-        measureTSTypeInfos.forEach((key, value) -> {
-            paths.add(deviceId + "." + key);
-        });
+        measureTSTypeInfos.forEach((key, value) -> paths.add(deviceId + "." + key));
         for (int i = 0; i < 10; i++) {
             measurements = new ArrayList<>(10);
             dataTypes = new ArrayList<>(10);
@@ -114,7 +110,8 @@ public class TestInsertRecordsOfOneDeviceNormal extends BaseTestSuite_TreeModel 
         for (Iterator<Object[]> it = getSingleNormal(); it.hasNext(); ) {
             // 统计行数
             expectCount++;
-            values = new ArrayList<>();
+            // 用于存储值
+            ArrayList<Object> values = new ArrayList<>();
             // 获取每行数据
             Object[] line = it.next();
             // 遍历每行逐个物理量的数据

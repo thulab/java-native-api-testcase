@@ -29,8 +29,6 @@ public class TestInsertRecordNormal extends BaseTestSuite_TreeModel {
     private static final String database = "root.testInsertRecord";
     // 非对齐设备名称
     private static final String deviceId = database + ".fdq";
-    // 时间戳
-    private Long time = null;
 
     // 存储多个时间序列路径
     private final List<String> paths = new ArrayList<>();
@@ -49,7 +47,7 @@ public class TestInsertRecordNormal extends BaseTestSuite_TreeModel {
     /**
      * 在测试类之前准备好环境（数据库、时间序列）
      */
-    @BeforeClass(enabled = true)
+    @BeforeClass()
     public void beforeClass() throws IoTDBConnectionException, StatementExecutionException {
         // 1、检查存储组是否存在，如果存在则删除
         if (checkStroageGroupExists(database)) {
@@ -102,7 +100,8 @@ public class TestInsertRecordNormal extends BaseTestSuite_TreeModel {
             // 获取每行数据
             Object[] line = it.next();
             // 获取时间戳
-            time = Long.valueOf((String) line[0]);
+            // 时间戳
+            long time = Long.parseLong((String) line[0]);
             // 遍历每行逐个物理量的数据
             for (int i = 0; i < measurements.size(); i++) {
                 // 根据数据类型添加值到values中

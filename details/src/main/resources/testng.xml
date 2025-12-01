@@ -1,8 +1,8 @@
 <!--<?xml version="1.0" encoding="UTF-8"?>-->
 <!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd" >
-<suite name="DetailSuite" verbose="1" parallel="false" preserve-order="true" data-provider-thread-count="10">
+<suite name="DetailSuite" verbose="1" parallel="false">
 
-    <test name="tableModel" preserve-order="true">
+    <test name="tableModel">
         <classes>
             <class name="org.apache.iotdb.api.test.table.database_manage.TestDataBaseNormal"/>
             <class name="org.apache.iotdb.api.test.table.table_manage.TestTableNormal"/>
@@ -15,7 +15,7 @@
         </classes>
     </test>
 
-    <test name="treeModel" preserve-order="true">
+    <test name="treeModel">
         <classes>
             <class name="org.apache.iotdb.api.test.tree.session.TestSessionBuilderNormal"/>
             <class name="org.apache.iotdb.api.test.tree.session.TestSessionBuilderException"/>

@@ -54,7 +54,7 @@ public class TestInsertTabletsNormal extends BaseTestSuite_TreeModel {
     /**
      * 在测试类之前准备好环境（数据库、时间序列）
      */
-    @BeforeClass(enabled = true)
+    @BeforeClass()
     public void beforeClass() throws IoTDBConnectionException, StatementExecutionException {
         // 检查存储组是否存在，如果存在则删除
         if (checkStroageGroupExists(database)) {

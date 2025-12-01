@@ -48,15 +48,13 @@ public class TestInsertAlignedRecordsNormal extends BaseTestSuite_TreeModel {
     private List<String> measurements = new ArrayList<>();
     // 存储单个设备多个数据类型
     private List<TSDataType> dataTypes = new ArrayList<>();
-    // 存储单个设备多个值
-    private ArrayList<Object> values;
     // 预期的记录条数
     private int expectCount = 0;
 
     /**
      * 在测试类之前准备好环境（数据库、时间序列）
      */
-    @BeforeClass(enabled = true)
+    @BeforeClass()
     public void beforeClass() throws IoTDBConnectionException, StatementExecutionException {
         // 1、检查存储组是否存在，如果存在则删除
         if (checkStroageGroupExists(database)) {
@@ -145,7 +143,8 @@ public class TestInsertAlignedRecordsNormal extends BaseTestSuite_TreeModel {
                 // 获取每行数据
                 Object[] line = it.next();
                 // 存储单个设备多个值
-                values = new ArrayList<>();
+                // 存储单个设备多个值
+                ArrayList<Object> values = new ArrayList<>();
                 // 遍历每行逐个物理量的数据
                 for (int j = 0; j < measurements.size(); j++) {
                     // 根据数据类型添加值到values中

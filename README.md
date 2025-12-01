@@ -5,8 +5,8 @@ This project is developed by java, maven and TestNG.
 
 ## required environment
 
-jdk: >= 1.8
-maven: >= 3.8.1
+jdk: >= 17
+maven: >= 3.9.8
 iotdb: = 2.0.6-SNAPSHOT
 
 ## configuration

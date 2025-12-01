@@ -32,11 +32,13 @@ public class TestSessionBuilderException {
     @Test(priority = 10)
     public void testSessionBuilderParamException1() {
         try {
-            new Session.Builder()
+            Session session = new Session.Builder()
                     .host(config.getValue("host"))
                     .port(Integer.parseInt(config.getValue("port")))
                     .nodeUrls(Collections.singletonList(config.getValue("nodeUrl")))
                     .build();
+            session.open(false);
+            session.close();
             assert false : "期待效果和实际效果不一致，期待：执行报错，实际：未执行报错";
         } catch (Exception e) {
             assert e.getMessage().contains("You should specify either nodeUrls or (host + rpcPort), but not both") : "期待值和实际不一致，期待：You should specify either nodeUrls or (host + rpcPort), but not both，实际：" + e.getMessage();
@@ -48,9 +50,11 @@ public class TestSessionBuilderException {
     @Test(priority = 20)
     public void testSessionBuilderParamException2() {
         try {
-            new Session.Builder()
+            Session session = new Session.Builder()
                     .nodeUrls(Collections.emptyList())
                     .build();
+            session.open(false);
+            session.close();
             assert false : "期待效果和实际效果不一致，期待：执行报错，实际：未执行报错";
         } catch (Exception e) {
             assert e.getMessage().contains("nodeUrls shouldn't be empty.") : "期待值和实际不一致，期待：nodeUrls shouldn't be empty.，实际：" + e.getMessage();
