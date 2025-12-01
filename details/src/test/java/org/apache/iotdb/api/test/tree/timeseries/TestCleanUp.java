@@ -1,6 +1,6 @@
 package org.apache.iotdb.api.test.tree.timeseries;
 
-import org.apache.iotdb.api.test.BaseTestSuite_TreeModel;
+import org.apache.iotdb.api.test.BaseTestSuiteTreeModel;
 import org.apache.iotdb.isession.template.Template;
 import org.apache.iotdb.rpc.IoTDBConnectionException;
 import org.apache.iotdb.rpc.StatementExecutionException;
@@ -20,7 +20,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-public class TestCleanUp extends BaseTestSuite_TreeModel {
+public class TestCleanUp extends BaseTestSuiteTreeModel {
     private Map<String, TSDataType> measureTSTypeInfos = new LinkedHashMap<>(6);
     private String templateName = "cleanUpTemplate";
     private String database = "root.cleanUp";

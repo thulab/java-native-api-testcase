@@ -33,8 +33,8 @@ import java.util.StringJoiner;
 import static org.apache.tsfile.encrypt.EncryptUtils.hexStringToByteArray;
 
 // TODO：里面的 SQL 语句很多用的是老版本的，之后若数据库不支持了需要全面更新
-public class BaseTestSuite_TreeModel {
-    public Logger logger = Logger.getLogger(BaseTestSuite_TreeModel.class);
+public class BaseTestSuiteTreeModel {
+    public Logger logger = Logger.getLogger(BaseTestSuiteTreeModel.class);
     public Session session = null;
     public SessionPool sessionPool = null;
     // 是对齐/非对齐序列。dynamic module. 动态模版相关
@@ -48,11 +48,11 @@ public class BaseTestSuite_TreeModel {
     @BeforeClass
     public void beforeSuite() throws IoTDBConnectionException, ParseException, IOException {
         if (ReadConfig.getInstance().getValue("is_sessionPool").equals("false")) {
-            session = PrepareConnection.getSession();
+            session = PrepareConnection.getSessionTreeModel();
         } else {
-            sessionPool = PrepareConnection.getSessionPool();
+            sessionPool = PrepareConnection.getSessionPoolTreeModel();
         }
-//        logger.warn("############ BaseTestSuite_TreeModel BeforeClass ##########" );
+//        logger.warn("############ BaseTestSuiteTreeModel BeforeClass ##########" );
         verbose = Boolean.parseBoolean(ReadConfig.getInstance().getValue("verbose"));
         isAligned = Boolean.parseBoolean(ReadConfig.getInstance().getValue("isAligned"));
         auto_create_schema = Boolean.parseBoolean(ReadConfig.getInstance().getValue("auto_create_schema"));
@@ -61,7 +61,7 @@ public class BaseTestSuite_TreeModel {
 
     @AfterClass
     public void afterSuie() throws IoTDBConnectionException, StatementExecutionException, IOException {
-//        logger.warn("############ BaseTestSuite_TreeModel AfterClass ##########" );
+//        logger.warn("############ BaseTestSuiteTreeModel AfterClass ##########" );
         cleanDatabases(verbose);
         cleanTemplates(verbose);
         if (ReadConfig.getInstance().getValue("is_sessionPool").equals("false")) {
@@ -374,7 +374,7 @@ public class BaseTestSuite_TreeModel {
     public void insertTabletMulti(String device, List<IMeasurementSchema> schemaList, int insertCount, boolean isAligned) throws IoTDBConnectionException, StatementExecutionException {
         Session session = this.session;
         if (insertCount == 0) {
-            PrepareConnection.getSession();
+            PrepareConnection.getSessionTreeModel();
         }
         if (verbose) {
             logger.info("insertTabletMulti device=" + device + " schema=" + schemaList.size() + " insertCount=" + insertCount);
@@ -447,7 +447,7 @@ public class BaseTestSuite_TreeModel {
 
     public void queryLastData(List<String> paths, List<String> expectValues, boolean verbose, Long gtTime) throws IoTDBConnectionException, StatementExecutionException {
         SessionDataSet dataSet;
-        Session session = PrepareConnection.getSession();
+        Session session = PrepareConnection.getSessionTreeModel();
         if (gtTime != null) {
             dataSet = session.executeLastDataQuery(paths, gtTime, 1000L);
         } else {
@@ -498,7 +498,7 @@ public class BaseTestSuite_TreeModel {
     public void deactivateTemplate(String templateName, String path) throws IoTDBConnectionException, StatementExecutionException {
         String sql = "deactivate schema template " + templateName + " from " + path;
         logger.debug(sql);
-        Session session = PrepareConnection.getSession();  // TODO：过多的会话会导致TestOrdinary连接不上服务端，但是去除无法执行语句，需要优化
+        Session session = PrepareConnection.getSessionTreeModel();  // TODO：过多的会话会导致TestOrdinary连接不上服务端，但是去除无法执行语句，需要优化
         session.executeNonQueryStatement(sql);
         session.close();
     }

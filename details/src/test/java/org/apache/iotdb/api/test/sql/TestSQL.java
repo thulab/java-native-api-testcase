@@ -1,12 +1,12 @@
 package org.apache.iotdb.api.test.sql;
 
-import org.apache.iotdb.api.test.BaseTestSuite_TableModel;
+import org.apache.iotdb.api.test.BaseTestSuiteTableModel;
 import org.testng.annotations.Test;
 
 import java.sql.*;
 
 
-public class TestSQL extends BaseTestSuite_TableModel {
+public class TestSQL extends BaseTestSuiteTableModel {
 
     private static final String[] SQLs =
             new String[]{

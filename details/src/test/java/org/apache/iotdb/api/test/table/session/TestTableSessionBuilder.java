@@ -2,10 +2,12 @@ package org.apache.iotdb.api.test.table.session;
 
 import org.apache.iotdb.api.test.utils.ReadConfig;
 import org.apache.iotdb.isession.ITableSession;
+import org.apache.iotdb.isession.SessionConfig;
 import org.apache.iotdb.isession.SessionDataSet;
 import org.apache.iotdb.rpc.IoTDBConnectionException;
 import org.apache.iotdb.rpc.StatementExecutionException;
 import org.apache.iotdb.session.TableSessionBuilder;
+import org.apache.tsfile.file.metadata.enums.TSEncoding;
 import org.testng.annotations.Test;
 
 import java.io.IOException;
@@ -19,21 +21,22 @@ import java.util.Collections;
  * Author：肖林捷
  * Date：2024/12/29
  */
-public class TestTableSessionBuilder  {
+public class TestTableSessionBuilder {
     // 用于获取配置文件中的配置
     private static ReadConfig config;
     // url
     private static String LOCAL_URLS;
     private static String LOCAL_URL;
 
-    // 初始化
+    // 初始化参数
     static {
+        // 获取配置文件
         try {
             config = ReadConfig.getInstance();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        // 判断是否是集群
+        // 判断是否启动集群测试
         if (config.getValue("is_cluster").equals("true")) {
             LOCAL_URLS = config.getValue("host_nodes");
         } else {
@@ -87,8 +90,9 @@ public class TestTableSessionBuilder  {
             // 单机的root用户
             try (ITableSession session =
                          new TableSessionBuilder()
-                                 .username("root")
-                                 .password("root")
+                                 .nodeUrls(Collections.singletonList(LOCAL_URL))
+                                 .username(config.getValue("user"))
+                                 .password(config.getValue("password"))
                                  .build()) {
                 // 判断是否和预期符号
                 String result = session.executeQueryStatement("SHOW CURRENT_USER").next().getFields().get(0).getStringValue();
@@ -102,9 +106,9 @@ public class TestTableSessionBuilder  {
             // 集群的root用户
             try (ITableSession session =
                          new TableSessionBuilder()
-                                 .username("root")
-                                 .password("root")
                                  .nodeUrls(Arrays.asList(LOCAL_URLS.split(",")))
+                                 .username(config.getValue("user"))
+                                 .password(config.getValue("password"))
                                  .build()) {
                 // 判断是否和预期符号
                 String result = session.executeQueryStatement("SHOW CURRENT_USER").next().getFields().get(0).getStringValue();
@@ -127,6 +131,7 @@ public class TestTableSessionBuilder  {
             // 目标 database 不存在
             try (ITableSession session =
                          new TableSessionBuilder()
+                                 .nodeUrls(Collections.singletonList(LOCAL_URL))
                                  .database("testDataBase1")
                                  .build()) {
                 // 判断是否存在数据库
@@ -252,6 +257,7 @@ public class TestTableSessionBuilder  {
             // 设置查询超时为9223372036854775807
             try (ITableSession session =
                          new TableSessionBuilder()
+                                 .nodeUrls(Collections.singletonList(LOCAL_URL))
                                  .queryTimeoutInMs(9223372036854775807L)
                                  .build()) {
                 // 判断是否和预期符号
@@ -288,6 +294,7 @@ public class TestTableSessionBuilder  {
             // 设置查询结果的提取大小为2147483647
             try (ITableSession session =
                          new TableSessionBuilder()
+                                 .nodeUrls(Collections.singletonList(LOCAL_URL))
                                  .fetchSize(2147483647)
                                  .build()) {
                 // 判断是否和预期符号
@@ -423,6 +430,7 @@ public class TestTableSessionBuilder  {
             // 设置时区为 America/New_York
             try (ITableSession session =
                          new TableSessionBuilder()
+                                 .nodeUrls(Collections.singletonList(LOCAL_URL))
                                  .zoneId(ZoneId.of("America/New_York"))
                                  .build()) {
                 // 判断是否和预期符号
@@ -484,7 +492,6 @@ public class TestTableSessionBuilder  {
 
     /**
      * 测试 thriftDefaultBufferSize 方法
-     * TODO：目前可以设置无效值，和开发讨论，说之后会确定
      */
     @Test(priority = 60)
     public void testThriftDefaultBufferSize() {
@@ -492,6 +499,7 @@ public class TestTableSessionBuilder  {
             // 设置缓冲区大小为 2147483647
             try (ITableSession session =
                          new TableSessionBuilder()
+                                 .nodeUrls(Collections.singletonList(LOCAL_URL))
                                  .thriftDefaultBufferSize(1024)
                                  .build()) {
                 // 判断是否和预期符号
@@ -524,7 +532,6 @@ public class TestTableSessionBuilder  {
 
     /**
      * 测试 thriftMaxFrameSize 方法
-     * TODO：目前可以设置无效值，和开发讨论，说之后会确定
      */
     @Test(priority = 70)
     public void testThriftMaxFrameSize() {
@@ -532,6 +539,7 @@ public class TestTableSessionBuilder  {
             // 设置最大帧大小为 2147483647
             try (ITableSession session =
                          new TableSessionBuilder()
+                                 .nodeUrls(Collections.singletonList(LOCAL_URL))
                                  .thriftMaxFrameSize(2147483647)
                                  .build()) {
                 // 判断是否和预期符号
@@ -569,6 +577,7 @@ public class TestTableSessionBuilder  {
             // 单机启用重定向
             try (ITableSession session =
                          new TableSessionBuilder()
+                                 .nodeUrls(Collections.singletonList(LOCAL_URL))
                                  .enableRedirection(true)
                                  .build()) {
                 // 判断是否和预期符号
@@ -610,6 +619,7 @@ public class TestTableSessionBuilder  {
             // 启用自动获取可用数据节点
             try (ITableSession session =
                          new TableSessionBuilder()
+                                 .nodeUrls(Collections.singletonList(LOCAL_URL))
                                  .enableAutoFetch(true)
                                  .build()) {
                 // 判断是否和预期符号
@@ -652,6 +662,7 @@ public class TestTableSessionBuilder  {
             // 设置连接尝试的最大重试次数为2147483647
             try (ITableSession session =
                          new TableSessionBuilder()
+                                 .nodeUrls(Collections.singletonList(LOCAL_URL))
                                  .maxRetryCount(2147483647)
                                  .build()) {
                 // 判断是否和预期符号
@@ -693,6 +704,7 @@ public class TestTableSessionBuilder  {
             // 设置重试之间的间隔为2147483647
             try (ITableSession session =
                          new TableSessionBuilder()
+                                 .nodeUrls(Collections.singletonList(LOCAL_URL))
                                  .retryIntervalInMs(2147483647)
                                  .build()) {
                 // 判断是否和预期符号
@@ -730,12 +742,14 @@ public class TestTableSessionBuilder  {
      * enable_thrift_ssl=true
      * key_store_path=私钥位置  # 此处为 C:\\projects\\iotdb\\ssl\\aa.keystore
      * key_store_pwd=私钥密码   # 此次为 123456
+     * 常见错误：1. iotdb没有配置SSL；2.生成的密钥库和密钥对不符合要求；3.密钥库路径或密码错误
      */
     //@Test(priority = 120)
     public void testUseSSLAndTrustStoreAndTrustStorePwd() {
         // 启用安全连接的SSL
         try (ITableSession session =
                      new TableSessionBuilder()
+                             .nodeUrls(Collections.singletonList(LOCAL_URL))
                              .useSSL(true)
                              .trustStore("C:\\projects\\iotdb\\ssl\\aa.truststore")
                              .trustStorePwd("123456")
@@ -759,6 +773,7 @@ public class TestTableSessionBuilder  {
         // 启用连接的rpc压缩
         try (ITableSession session =
                      new TableSessionBuilder()
+                             .nodeUrls(Collections.singletonList(LOCAL_URL))
                              .enableCompression(true)
                              .build()) {
             // 判断是否和预期符号
@@ -773,7 +788,6 @@ public class TestTableSessionBuilder  {
 
     /**
      * 测试 connectionTimeoutInMs 方法
-     * TODO：测试点1，感觉方法没有效果？
      */
     @Test(priority = 140)
     public void testConnectionTimeoutInMs() {
@@ -781,6 +795,7 @@ public class TestTableSessionBuilder  {
             // 设置连接超时时间（毫秒）为最大取值
             try (ITableSession session =
                          new TableSessionBuilder()
+                                 .nodeUrls(Collections.singletonList(LOCAL_URL))
                                  .connectionTimeoutInMs(Integer.MAX_VALUE)
                                  .build()) {
                 // 判断是否和预期符号
@@ -840,7 +855,7 @@ public class TestTableSessionBuilder  {
     }
 
     /**
-     * 测试接口中方法的默认值
+     * 测试接口中方法的默认值（TODO：若使用非默认配置需要屏蔽该测试）
      */
     @Test(priority = 150)
     public void testDefault() {
@@ -875,4 +890,102 @@ public class TestTableSessionBuilder  {
 
     }
 
+    /**
+     * 测试全部的参数
+     */
+    @Test(priority = 160)
+    public void testAll() {
+        if (config.getValue("is_cluster").equals("false")) {
+            // 单机下所有的默认情况
+            try (ITableSession session =
+                         new TableSessionBuilder()
+                                 .nodeUrls(Collections.singletonList(LOCAL_URL))
+                                 .username(config.getValue("user"))
+                                 .password(config.getValue("password"))
+                                 .database(null)
+                                 .queryTimeoutInMs(SessionConfig.DEFAULT_QUERY_TIME_OUT)
+                                 .fetchSize(SessionConfig.DEFAULT_FETCH_SIZE)
+                                 .zoneId(null)
+                                 .thriftDefaultBufferSize(SessionConfig.DEFAULT_INITIAL_BUFFER_CAPACITY)
+                                 .thriftMaxFrameSize(SessionConfig.DEFAULT_MAX_FRAME_SIZE)
+                                 .enableRedirection(SessionConfig.DEFAULT_REDIRECTION_MODE)
+                                 .enableAutoFetch(SessionConfig.DEFAULT_ENABLE_AUTO_FETCH)
+                                 .maxRetryCount(SessionConfig.MAX_RETRY_COUNT)
+                                 .retryIntervalInMs(SessionConfig.RETRY_INTERVAL_IN_MS)
+                                 .useSSL(false)
+                                 .trustStore("")
+                                 .trustStorePwd("")
+                                 .enableCompression(true)
+                                 .enableCompaction(false)
+                                 .withTimeStampEncoding(TSEncoding.PLAIN)
+                                 .withBooleanEncoding(TSEncoding.PLAIN)
+                                 .withInt32Encoding(TSEncoding.PLAIN)
+                                 .withInt64Encoding(TSEncoding.PLAIN)
+                                 .withFloatEncoding(TSEncoding.PLAIN)
+                                 .withDoubleEncoding(TSEncoding.PLAIN)
+                                 .withStringEncoding(TSEncoding.PLAIN)
+                                 .withTextEncoding(TSEncoding.PLAIN)
+                                 .withBlobEncoding(TSEncoding.PLAIN)
+                                 .withDateEncoding(TSEncoding.PLAIN)
+                                 .tabletCompressionMinRowSize(10)
+                                 .build()) {
+                // 判断是否和预期符号
+                String result = session.executeQueryStatement("show cluster").next().getFields().get(3).getStringValue();
+                String expect = config.getValue("host");
+                assert result.equals(expect) : result + " != " + expect + " 结果和预期不符合，结果为：" + result + " 预期为：" + expect;
+
+            } catch (IoTDBConnectionException | StatementExecutionException e) {
+                throw new RuntimeException(e);
+            }
+        } else {
+            // 集群下所有默认情况
+            try (ITableSession session =
+                         new TableSessionBuilder()
+                                 .nodeUrls(Arrays.asList(LOCAL_URLS.split(",")))
+                                 .username(config.getValue("user"))
+                                 .password(config.getValue("password"))
+                                 .database(null)
+                                 .queryTimeoutInMs(SessionConfig.DEFAULT_QUERY_TIME_OUT)
+                                 .fetchSize(SessionConfig.DEFAULT_FETCH_SIZE)
+                                 .zoneId(null)
+                                 .thriftDefaultBufferSize(SessionConfig.DEFAULT_INITIAL_BUFFER_CAPACITY)
+                                 .thriftMaxFrameSize(SessionConfig.DEFAULT_MAX_FRAME_SIZE)
+                                 .enableRedirection(SessionConfig.DEFAULT_REDIRECTION_MODE)
+                                 .enableAutoFetch(SessionConfig.DEFAULT_ENABLE_AUTO_FETCH)
+                                 .maxRetryCount(SessionConfig.MAX_RETRY_COUNT)
+                                 .retryIntervalInMs(SessionConfig.RETRY_INTERVAL_IN_MS)
+                                 .useSSL(false)
+                                 .trustStore("")
+                                 .trustStorePwd("")
+                                 .enableCompression(true)
+                                 .enableCompaction(false)
+                                 .withTimeStampEncoding(TSEncoding.PLAIN)
+                                 .withBooleanEncoding(TSEncoding.PLAIN)
+                                 .withInt32Encoding(TSEncoding.PLAIN)
+                                 .withInt64Encoding(TSEncoding.PLAIN)
+                                 .withFloatEncoding(TSEncoding.PLAIN)
+                                 .withDoubleEncoding(TSEncoding.PLAIN)
+                                 .withStringEncoding(TSEncoding.PLAIN)
+                                 .withTextEncoding(TSEncoding.PLAIN)
+                                 .withBlobEncoding(TSEncoding.PLAIN)
+                                 .withDateEncoding(TSEncoding.PLAIN)
+                                 .tabletCompressionMinRowSize(10)
+                                 .build()) {
+                // 判断是否符合预期
+                String result = session.executeQueryStatement("show cluster").next().getFields().get(3).getStringValue();
+                String expect = config.getValue("hosts");
+                assert result.equals(expect) : result + " != " + expect + " 结果和预期不符合，结果为：" + result + " 预期为：" + expect;
+            } catch (IoTDBConnectionException | StatementExecutionException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    /**
+     * 测试数据类型编码 TODO: 待完善
+     */
+//    @Test(priority = 170)
+//    public void testWithDateTypeEncoding() {
+//
+//    }
 }

@@ -1,6 +1,6 @@
 package org.apache.iotdb.api.test.tree.template.dynamic;
 
-import org.apache.iotdb.api.test.BaseTestSuite_TreeModel;
+import org.apache.iotdb.api.test.BaseTestSuiteTreeModel;
 import org.apache.iotdb.api.test.utils.CustomDataProvider;
 import org.apache.iotdb.isession.template.Template;
 import org.apache.iotdb.rpc.IoTDBConnectionException;
@@ -25,7 +25,7 @@ import java.util.Map;
 /**
  * 单模版，多database
  */
-public class TestDynamicTemplateMin extends BaseTestSuite_TreeModel {
+public class TestDynamicTemplateMin extends BaseTestSuiteTreeModel {
     private List<List<Object>> structures;
     private Map<String, Object[]> structureInfo = new LinkedHashMap<>(6);
     private List<IMeasurementSchema> schemaList_org = new ArrayList<>(6);

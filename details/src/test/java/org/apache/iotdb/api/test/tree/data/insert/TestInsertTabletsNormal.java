@@ -1,6 +1,6 @@
 package org.apache.iotdb.api.test.tree.data.insert;
 
-import org.apache.iotdb.api.test.BaseTestSuite_TreeModel;
+import org.apache.iotdb.api.test.BaseTestSuiteTreeModel;
 import org.apache.iotdb.api.test.utils.CustomDataProvider;
 import org.apache.iotdb.rpc.IoTDBConnectionException;
 import org.apache.iotdb.rpc.StatementExecutionException;
@@ -27,7 +27,7 @@ import java.util.*;
  * <p>Author：肖林捷<p/>
  * <p>Date：2024/12/29<p/>
  */
-public class TestInsertTabletsNormal extends BaseTestSuite_TreeModel {
+public class TestInsertTabletsNormal extends BaseTestSuiteTreeModel {
     // 数据库名称
     private static final String database = "root.testInsertTables";
     // 设备名称

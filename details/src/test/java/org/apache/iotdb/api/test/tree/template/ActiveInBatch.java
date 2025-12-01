@@ -1,11 +1,10 @@
 package org.apache.iotdb.api.test.tree.template;
 
-import org.apache.iotdb.api.test.BaseTestSuite_TreeModel;
+import org.apache.iotdb.api.test.BaseTestSuiteTreeModel;
 import org.apache.iotdb.api.test.utils.CustomDataProvider;
 import org.apache.iotdb.api.test.utils.PrepareConnection;
 import org.apache.iotdb.api.test.utils.ReadConfig;
 import org.apache.iotdb.api.test.utils.Tools;
-import org.apache.iotdb.isession.SessionDataSet;
 import org.apache.iotdb.isession.template.Template;
 import org.apache.iotdb.rpc.IoTDBConnectionException;
 import org.apache.iotdb.rpc.StatementExecutionException;
@@ -30,7 +29,7 @@ import java.util.*;
  * Author：肖林捷
  * LastDate：2025/1/14
  */
-public class ActiveInBatch extends BaseTestSuite_TreeModel {
+public class ActiveInBatch extends BaseTestSuiteTreeModel {
     private List<String> paths = new ArrayList<>();
     private List<List<Object>> structures;
     private List<List<Object>> errStructures;
@@ -80,7 +79,7 @@ public class ActiveInBatch extends BaseTestSuite_TreeModel {
     @Test(priority = 1, dataProvider = "getNormalNames")
     public void testNormalOne(String name, String comment, String index) throws StatementExecutionException, IoTDBConnectionException, IOException {
         // 获取session
-        Session session = PrepareConnection.getSession();
+        Session session = PrepareConnection.getSessionTreeModel();
         // 设置数据库和模板名
         String database = databasePrefix + index;
         String templateName = templateNamePrefix + index;

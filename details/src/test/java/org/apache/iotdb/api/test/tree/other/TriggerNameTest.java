@@ -1,6 +1,6 @@
 package org.apache.iotdb.api.test.tree.other;
 
-import org.apache.iotdb.api.test.BaseTestSuite_TreeModel;
+import org.apache.iotdb.api.test.BaseTestSuiteTreeModel;
 import org.apache.iotdb.api.test.utils.CustomDataProvider;
 import org.apache.iotdb.api.test.utils.PrepareConnection;
 import org.apache.iotdb.isession.SessionDataSet;
@@ -16,7 +16,7 @@ import org.testng.annotations.Test;
 import java.io.IOException;
 import java.util.Iterator;
 
-public class TriggerNameTest extends BaseTestSuite_TreeModel {
+public class TriggerNameTest extends BaseTestSuiteTreeModel {
 
     @BeforeClass
     public void beforeClass() throws IoTDBConnectionException, StatementExecutionException {
@@ -67,7 +67,7 @@ public class TriggerNameTest extends BaseTestSuite_TreeModel {
     public void testTriggerName_normal(String name, String comment, String Index) throws IoTDBConnectionException, StatementExecutionException, IOException {
         String sql = "CREATE STATELESS TRIGGER " +name+
                 " AFTER INSERT ON root.triggertest.d1.* AS 'org.example.DoubleValueMonitor' WITH ( 'remote_ip'='127.0.0.1',  'lo' = '10',  'hi' = '15.5');";
-        Session s = PrepareConnection.getSession();
+        Session s = PrepareConnection.getSessionTreeModel();
         s.executeNonQueryStatement(sql);
         s.executeNonQueryStatement("drop trigger "+name);
         s.close();
@@ -77,7 +77,7 @@ public class TriggerNameTest extends BaseTestSuite_TreeModel {
         String sql = "CREATE STATELESS TRIGGER " +name+
                 " AFTER INSERT ON root.triggertest.d1.* AS 'org.example.DoubleValueMonitor' WITH ( 'remote_ip'='127.0.0.1',  'lo' = '10',  'hi' = '15.5');";
 //        System.out.println(sql);
-        Session s = PrepareConnection.getSession();
+        Session s = PrepareConnection.getSessionTreeModel();
         s.executeNonQueryStatement(sql);
         s.close();
     }

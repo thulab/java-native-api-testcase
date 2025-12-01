@@ -1,6 +1,6 @@
 package org.apache.iotdb.api.test.tree.data.insert;
 
-import org.apache.iotdb.api.test.BaseTestSuite_TreeModel;
+import org.apache.iotdb.api.test.BaseTestSuiteTreeModel;
 import org.apache.iotdb.api.test.utils.CustomDataProvider;
 import org.apache.iotdb.rpc.IoTDBConnectionException;
 import org.apache.iotdb.rpc.StatementExecutionException;
@@ -29,7 +29,7 @@ import static java.lang.System.out;
  * 5. 测试数值超限情况
  * 6. 测试时间戳各种格式
  */
-public class TestInsert extends BaseTestSuite_TreeModel {
+public class TestInsert extends BaseTestSuiteTreeModel {
     private static final String database = "root.testInsert";
     private static final String device = database + ".d1";
     private static final String alignedDevice = database + ".d2";

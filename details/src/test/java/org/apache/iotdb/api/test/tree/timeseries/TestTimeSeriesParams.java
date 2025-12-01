@@ -1,6 +1,6 @@
 package org.apache.iotdb.api.test.tree.timeseries;
 
-import org.apache.iotdb.api.test.BaseTestSuite_TreeModel;
+import org.apache.iotdb.api.test.BaseTestSuiteTreeModel;
 import org.apache.iotdb.rpc.IoTDBConnectionException;
 import org.apache.iotdb.rpc.StatementExecutionException;
 import org.apache.tsfile.enums.TSDataType;
@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class TestTimeSeriesParams extends BaseTestSuite_TreeModel {
+public class TestTimeSeriesParams extends BaseTestSuiteTreeModel {
     private String database = "root.params.ts";
     @BeforeClass
     public void beforeClass() throws IoTDBConnectionException, StatementExecutionException {

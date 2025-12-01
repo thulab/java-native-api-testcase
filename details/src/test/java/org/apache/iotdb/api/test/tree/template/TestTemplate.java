@@ -1,6 +1,6 @@
 package org.apache.iotdb.api.test.tree.template;
 
-import org.apache.iotdb.api.test.BaseTestSuite_TreeModel;
+import org.apache.iotdb.api.test.BaseTestSuiteTreeModel;
 import org.apache.iotdb.api.test.utils.CustomDataProvider;
 import org.apache.iotdb.api.test.utils.PrepareConnection;
 import org.apache.iotdb.api.test.utils.Tools;
@@ -28,7 +28,7 @@ import java.util.*;
  * Author：肖林捷
  * LastDate：2025/1/14
  */
-public class TestTemplate extends BaseTestSuite_TreeModel {
+public class TestTemplate extends BaseTestSuiteTreeModel {
     private final String templatePrefix = "template";
     private final String tName = templatePrefix + "0";
     private final String databasePrefix = "root.template";
@@ -162,7 +162,7 @@ public class TestTemplate extends BaseTestSuite_TreeModel {
         final String tName = templatePrefix + "Err_" + index;
         Template template = new Template(tName, isAligned);
         template.addToTemplate(new MeasurementNode("err_struct_" + index, tsDataType, encoding, compressionType));
-        Session session = PrepareConnection.getSession();
+        Session session = PrepareConnection.getSessionTreeModel();
         session.createSchemaTemplate(template);
         session.close();
     }
@@ -267,7 +267,7 @@ public class TestTemplate extends BaseTestSuite_TreeModel {
     // IOTDB-5233  TIMECHODB-137
     @Test(enabled = false, priority = 32, dataProvider = "getErrorNames", expectedExceptions = StatementExecutionException.class)
     public void testCreateTemplate_nameError(String templateName, String comment, String index) throws IoTDBConnectionException, IOException, StatementExecutionException {
-        createTemplate(templateName, "", isAligned, PrepareConnection.getSession());
+        createTemplate(templateName, "", isAligned, PrepareConnection.getSessionTreeModel());
     }
 
     /**

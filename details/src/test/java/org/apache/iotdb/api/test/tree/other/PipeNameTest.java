@@ -1,6 +1,6 @@
 package org.apache.iotdb.api.test.tree.other;
 
-import org.apache.iotdb.api.test.BaseTestSuite_TreeModel;
+import org.apache.iotdb.api.test.BaseTestSuiteTreeModel;
 import org.apache.iotdb.api.test.utils.CustomDataProvider;
 import org.apache.iotdb.api.test.utils.PrepareConnection;
 import org.apache.iotdb.isession.SessionDataSet;
@@ -14,7 +14,7 @@ import org.testng.annotations.Test;
 import java.io.IOException;
 import java.util.Iterator;
 
-public class PipeNameTest extends BaseTestSuite_TreeModel {
+public class PipeNameTest extends BaseTestSuiteTreeModel {
 
 //    @BeforeClass
     public void beforeClass() throws IoTDBConnectionException, StatementExecutionException {
@@ -65,7 +65,7 @@ public class PipeNameTest extends BaseTestSuite_TreeModel {
         String sql = "create pipe " +name+
                 " with connector ('connector'='iotdb-thrift-connector', 'connector.ip'='127.0.0.1', 'connector.port'='6667');";
 //        String sql = "CREATE PIPEPLUGIN "+name+" AS 'org.pipe.plugin.connector.TestConnector' USING URI \"file:///Users/changxue/work/pipe测试/pipe-plugin/target/pipe-plugin-1.jar\";";
-        Session s = PrepareConnection.getSession();
+        Session s = PrepareConnection.getSessionTreeModel();
         s.executeNonQueryStatement(sql);
         check_pipe_status(name, "STOPPED");
         s.executeNonQueryStatement("start pipe "+name);
@@ -79,7 +79,7 @@ public class PipeNameTest extends BaseTestSuite_TreeModel {
                 " with connector ('connector'='iotdb-thrift-connector', 'connector.ip'='127.0.0.1', 'connector.port'='6667');";
 //        String sql = "CREATE PIPEPLUGIN "+ name +" AS 'org.pipe.plugin.connector.TestConnector' USING URI \"file:///Users/changxue/work/pipe测试/pipe-plugin/target/pipe-plugin-1.jar\";";
         System.out.println(sql);
-        Session s = PrepareConnection.getSession();
+        Session s = PrepareConnection.getSessionTreeModel();
         s.executeNonQueryStatement(sql);
         s.executeNonQueryStatement("drop pipe "+name);
         s.close();
@@ -90,7 +90,7 @@ public class PipeNameTest extends BaseTestSuite_TreeModel {
         String sql = "create pipe " +name+
                 " with connector ('connector'='iotdb-thrift-connector', 'connector.ip'='127.0.0.1', 'connector.port'='6667');";
 //        String sql = "CREATE PIPEPLUGIN log AS 'org.pipe.plugin.connector.TestConnector' USING URI \"file:///Users/changxue/work/pipe测试/pipe-plugin/target/pipe-plugin-1.jar\";";
-        Session s = PrepareConnection.getSession();
+        Session s = PrepareConnection.getSessionTreeModel();
         s.executeNonQueryStatement(sql);
 //        check_pipe_status(name, "STOPPED");
 //        s.executeNonQueryStatement("start pipe "+name);

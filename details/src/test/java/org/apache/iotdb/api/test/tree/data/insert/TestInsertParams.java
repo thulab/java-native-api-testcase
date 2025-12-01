@@ -1,6 +1,6 @@
 package org.apache.iotdb.api.test.tree.data.insert;
 
-import org.apache.iotdb.api.test.BaseTestSuite_TreeModel;
+import org.apache.iotdb.api.test.BaseTestSuiteTreeModel;
 import org.apache.iotdb.api.test.utils.GenerateValues;
 import org.apache.iotdb.api.test.utils.PrepareConnection;
 import org.apache.iotdb.rpc.IoTDBConnectionException;
@@ -22,7 +22,7 @@ import java.util.List;
  * insert params test cases
  * 各个参数的null,空值check
  */
-public class TestInsertParams extends BaseTestSuite_TreeModel {
+public class TestInsertParams extends BaseTestSuiteTreeModel {
     private final String database = "root.params";
     private final String device = database + ".d1";
     private final String deviceAligned = database + ".d_aligned";
@@ -127,7 +127,7 @@ public class TestInsertParams extends BaseTestSuite_TreeModel {
             }
             rowIndex++;
         }
-        PrepareConnection.getSession().insertTablet(tablet);
+        PrepareConnection.getSessionTreeModel().insertTablet(tablet);
     }
 
     @Test(priority = 14)
@@ -404,7 +404,7 @@ public class TestInsertParams extends BaseTestSuite_TreeModel {
             }
             rowIndex++;
         }
-        PrepareConnection.getSession().insertTablet(tablet);
+        PrepareConnection.getSessionTreeModel().insertTablet(tablet);
     }
 
     @Test(priority = 51, expectedExceptions = StatementExecutionException.class)
@@ -421,7 +421,7 @@ public class TestInsertParams extends BaseTestSuite_TreeModel {
         values.add(true);
         values.add(32);
         values.add(64);
-        PrepareConnection.getSession().insertRecord(device, 1635232143960L, paths, schemas, values);
+        PrepareConnection.getSessionTreeModel().insertRecord(device, 1635232143960L, paths, schemas, values);
     }
 
     @Test(priority = 52, expectedExceptions = StatementExecutionException.class)
@@ -448,7 +448,7 @@ public class TestInsertParams extends BaseTestSuite_TreeModel {
         value.add(32);
         value.add(64);
         values.add(value);
-        PrepareConnection.getSession().insertRecords(devices, timestamps, measurements, schemas, values);
+        PrepareConnection.getSessionTreeModel().insertRecords(devices, timestamps, measurements, schemas, values);
     }
 
 }

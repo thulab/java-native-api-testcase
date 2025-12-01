@@ -1,6 +1,6 @@
 package org.apache.iotdb.api.test.tree.other;
 
-import org.apache.iotdb.api.test.BaseTestSuite_TreeModel;
+import org.apache.iotdb.api.test.BaseTestSuiteTreeModel;
 import org.apache.tsfile.enums.TSDataType;
 import org.apache.tsfile.file.metadata.enums.CompressionType;
 import org.apache.tsfile.file.metadata.enums.TSEncoding;
@@ -8,7 +8,7 @@ import org.apache.tsfile.file.metadata.enums.TSEncoding;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TimeSeriesBaseTestSuite extends BaseTestSuite_TreeModel {
+public class TimeSeriesBaseTestSuite extends BaseTestSuiteTreeModel {
 
     public List<Object> translateString2Type(String datatypeStr, String encodingStr, String compressStr) {
         datatypeStr = datatypeStr.toLowerCase();

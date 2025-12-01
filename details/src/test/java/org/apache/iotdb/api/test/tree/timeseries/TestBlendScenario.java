@@ -1,6 +1,6 @@
 package org.apache.iotdb.api.test.tree.timeseries;
 
-import org.apache.iotdb.api.test.BaseTestSuite_TreeModel;
+import org.apache.iotdb.api.test.BaseTestSuiteTreeModel;
 import org.apache.iotdb.api.test.utils.CustomDataProvider;
 import org.apache.iotdb.isession.template.Template;
 import org.apache.iotdb.rpc.IoTDBConnectionException;
@@ -18,7 +18,7 @@ import org.testng.annotations.Test;
 import java.io.IOException;
 import java.util.*;
 
-public class TestBlendScenario extends BaseTestSuite_TreeModel {
+public class TestBlendScenario extends BaseTestSuiteTreeModel {
     private String database = "root.blend";
     private String[] devices = new String[]{database + ".alignedUsingTemp", database + ".nonAlignedUsingTemp", database + ".aligned", database + ".nonAligned"};
     private String[] templateNames = new String[]{"aligned_template", "nonAligned_template"};

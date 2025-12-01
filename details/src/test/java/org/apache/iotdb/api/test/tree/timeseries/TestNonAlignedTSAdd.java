@@ -1,6 +1,6 @@
 package org.apache.iotdb.api.test.tree.timeseries;
 
-import org.apache.iotdb.api.test.BaseTestSuite_TreeModel;
+import org.apache.iotdb.api.test.BaseTestSuiteTreeModel;
 import org.apache.iotdb.api.test.utils.CustomDataProvider;
 import org.apache.iotdb.rpc.IoTDBConnectionException;
 import org.apache.iotdb.rpc.StatementExecutionException;
@@ -22,7 +22,7 @@ import java.util.*;
  * 创建unaligned Device(6 sensor), 插入数据，查询数据，增加TS，插入数据，查询数据，更新数据，删除数据，删除Device
  * 2022-12-28
  */
-public class TestNonAlignedTSAdd extends BaseTestSuite_TreeModel {
+public class TestNonAlignedTSAdd extends BaseTestSuiteTreeModel {
     private String device = "root.business.nonAlignedTSAdd";
     private String database = device.substring(0, device.lastIndexOf('.'));
     private int expectCount = 17;

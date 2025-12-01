@@ -1,6 +1,6 @@
 package org.apache.iotdb.api.test.tree.template;
 
-import org.apache.iotdb.api.test.BaseTestSuite_TreeModel;
+import org.apache.iotdb.api.test.BaseTestSuiteTreeModel;
 import org.apache.iotdb.api.test.utils.CustomDataProvider;
 import org.apache.iotdb.isession.template.Template;
 import org.apache.iotdb.rpc.IoTDBConnectionException;
@@ -24,7 +24,7 @@ import java.util.*;
  * 创建aligned template(6 sensor),插入数据，查询数据，删除数据，插入数据，删除template, 查询
  * 2022-12-29
  */
-public class TestTemplateAligned extends BaseTestSuite_TreeModel {
+public class TestTemplateAligned extends BaseTestSuiteTreeModel {
     private String templateName = "aligned_template";
     private String loadNode = "root.business.aligned";
     private String device = loadNode + ".d1";

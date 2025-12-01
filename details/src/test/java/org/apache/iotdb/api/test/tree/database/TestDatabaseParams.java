@@ -1,6 +1,6 @@
 package org.apache.iotdb.api.test.tree.database;
 
-import org.apache.iotdb.api.test.BaseTestSuite_TreeModel;
+import org.apache.iotdb.api.test.BaseTestSuiteTreeModel;
 import org.apache.iotdb.rpc.IoTDBConnectionException;
 import org.apache.iotdb.rpc.StatementExecutionException;
 import org.testng.annotations.AfterClass;
@@ -10,7 +10,7 @@ import org.testng.annotations.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TestDatabaseParams extends BaseTestSuite_TreeModel {
+public class TestDatabaseParams extends BaseTestSuiteTreeModel {
     private String database = "root.c";
     private String database1 = "root.nonExistedPath";
 

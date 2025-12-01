@@ -105,7 +105,7 @@ public class TestTimeSeries extends TimeSeriesBaseTestSuite {
     @Test(priority = 10, dataProvider = "createSingleTimeSeriesNormal")
     public void testCreateSingleTimeSeries_normal(String device, String tsName, String datatypeStr, String encodingStr, String compressStr, Map<String, String> props, Map<String, String> tags, Map<String, String> attrs, String alias, String msg) throws IoTDBConnectionException, StatementExecutionException, IOException {
         List<Object> result = translateString2Type(datatypeStr, encodingStr, compressStr);
-        Session s = PrepareConnection.getSession();
+        Session s = PrepareConnection.getSessionTreeModel();
         s.createTimeseries(device+"."+tsName, (TSDataType) result.get(0),
                 (TSEncoding)result.get(1) , (CompressionType) result.get(2), props, tags, attrs, alias);
         insertRecordSingle(device+"."+tsName,  (TSDataType) result.get(0), false, alias);
@@ -113,7 +113,7 @@ public class TestTimeSeries extends TimeSeriesBaseTestSuite {
     }
     @Test(priority = 20, dataProvider = "createSingleTimeSeriesNormal")
     public void testDeleteSingleTimeSeries_normal(String device, String tsName, String datatypeStr, String encodingStr, String compressStr, Map<String, String> props, Map<String, String> tags, Map<String, String> attrs, String alias, String msg) throws IoTDBConnectionException, StatementExecutionException, IOException {
-        Session s = PrepareConnection.getSession();
+        Session s = PrepareConnection.getSessionTreeModel();
         s.deleteTimeseries(device+"."+tsName);
         s.close();
     }
@@ -123,7 +123,7 @@ public class TestTimeSeries extends TimeSeriesBaseTestSuite {
     }
     @Test(priority = 21, dataProvider = "createSingleTimeSeriesError", expectedExceptions = StatementExecutionException.class)
     public void testDeleteSingleTimeSeries_error(String path, String datatypeStr, String encodingStr, String compressStr, Map<String, String> props, Map<String, String> tags, Map<String, String> attrs, String alias, String msg) throws IoTDBConnectionException, StatementExecutionException, IOException {
-        Session s = PrepareConnection.getSession();
+        Session s = PrepareConnection.getSessionTreeModel();
         try {
             s.deleteTimeseries(path);
         } finally {
@@ -154,7 +154,7 @@ public class TestTimeSeries extends TimeSeriesBaseTestSuite {
     @Test(priority = 30, dataProvider = "createSingleTimeSeriesError", expectedExceptions = StatementExecutionException.class)
     public void testCreateSingleTimeSeries_error(String path, String datatypeStr, String encodingStr, String compressStr, Map<String, String> props, Map<String, String> tags, Map<String, String> attrs, String alias, String msg) throws IoTDBConnectionException, StatementExecutionException, IOException {
         List<Object> result = translateString2Type(datatypeStr, encodingStr, compressStr);
-        Session s = PrepareConnection.getSession();
+        Session s = PrepareConnection.getSessionTreeModel();
         s.createTimeseries(path, (TSDataType) result.get(0), (TSEncoding) result.get(1),
                 (CompressionType) result.get(2), props, tags, attrs, alias);
         s.close();
@@ -173,7 +173,7 @@ public class TestTimeSeries extends TimeSeriesBaseTestSuite {
         tsList.add(tsName);
         aliasList.add(alias);
 //        out.println(device+"."+tsName+" datatype:"+tsDataTypes +" encoding:"+tsEncodings+ " compress:"+compressionTypes +" props:"+props+" tags:"+ tags+" attrs:"+ attrs+" alias:"+ aliasList);
-        Session s = PrepareConnection.getSession();
+        Session s = PrepareConnection.getSessionTreeModel();
         s.createAlignedTimeseries(device, tsList, tsDataTypes, tsEncodings, compressionTypes, aliasList);
         s.close();
     }
@@ -235,7 +235,7 @@ public class TestTimeSeries extends TimeSeriesBaseTestSuite {
     }
     @Test(priority = 60, dataProvider = "deleteTimeSeriesError", expectedExceptions = StatementExecutionException.class)
     public void testDeleteError(String path, String msg) throws IoTDBConnectionException, StatementExecutionException, IOException {
-        Session s = PrepareConnection.getSession();
+        Session s = PrepareConnection.getSessionTreeModel();
         try {
             s.deleteTimeseries(path);
         } finally {

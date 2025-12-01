@@ -1,6 +1,6 @@
 package org.apache.iotdb.api.test.tree.database;
 
-import org.apache.iotdb.api.test.BaseTestSuite_TreeModel;
+import org.apache.iotdb.api.test.BaseTestSuiteTreeModel;
 import org.apache.iotdb.api.test.utils.CustomDataProvider;
 import org.apache.iotdb.api.test.utils.PrepareConnection;
 import org.apache.iotdb.rpc.IoTDBConnectionException;
@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class TestDataBase extends BaseTestSuite_TreeModel {
+public class TestDataBase extends BaseTestSuiteTreeModel {
     private static List<String> normalSGs = new ArrayList<>();
     private static List<String> deleteSGs = new ArrayList<>();
 
@@ -62,7 +62,7 @@ public class TestDataBase extends BaseTestSuite_TreeModel {
 
     @Test(priority = 10, dataProvider = "storageGroupNormal")
     public void testSetStorageGroup_normal(String storageGroupId, String msg) throws IoTDBConnectionException, StatementExecutionException, IOException {
-        Session s = PrepareConnection.getSession();
+        Session s = PrepareConnection.getSessionTreeModel();
         s.setStorageGroup(storageGroupId);
         assert checkStroageGroupExists(storageGroupId) == true : storageGroupId + " , " + msg;
         s.close();
@@ -71,7 +71,7 @@ public class TestDataBase extends BaseTestSuite_TreeModel {
     @Test(priority = 11, dataProvider = "normalNames")
     public void testSetStorageGroup_keyword_normal(String name, String msg, String index) throws IoTDBConnectionException, StatementExecutionException, IOException {
         String storageGroupId = "root." + name;
-        Session s = PrepareConnection.getSession();
+        Session s = PrepareConnection.getSessionTreeModel();
         s.setStorageGroup(storageGroupId);
         assert checkStroageGroupExists(storageGroupId) == true : storageGroupId + " , " + msg;
         s.deleteStorageGroup(storageGroupId);
@@ -81,7 +81,7 @@ public class TestDataBase extends BaseTestSuite_TreeModel {
     // TIMECHODB-84  TIMECHODB-123
     @Test(priority = 20, dataProvider = "storageGroupError", expectedExceptions = StatementExecutionException.class)
     public void testSetStorageGroup_error(String storageGroupId, String msg) throws IoTDBConnectionException, StatementExecutionException, IOException {
-        Session s = PrepareConnection.getSession();
+        Session s = PrepareConnection.getSessionTreeModel();
         try {
             s.setStorageGroup(storageGroupId);
         } finally {
@@ -108,7 +108,7 @@ public class TestDataBase extends BaseTestSuite_TreeModel {
 
     @Test(priority = 50, dataProvider = "deleteStorageGroupError", expectedExceptions = StatementExecutionException.class)
     public void testDeleteStorageGroup_error(String storageGroupId, String msg) throws IoTDBConnectionException, StatementExecutionException, IOException {
-        Session s = PrepareConnection.getSession();
+        Session s = PrepareConnection.getSessionTreeModel();
         if (verbose)
             logger.info(storageGroupId + " ," + msg);
 //        try {

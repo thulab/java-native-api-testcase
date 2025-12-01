@@ -1,6 +1,6 @@
 package org.apache.iotdb.api.test.tree.template.dynamic;
 
-import org.apache.iotdb.api.test.BaseTestSuite_TreeModel;
+import org.apache.iotdb.api.test.BaseTestSuiteTreeModel;
 import org.apache.iotdb.api.test.utils.CustomDataProvider;
 import org.apache.iotdb.api.test.utils.PrepareConnection;
 import org.apache.iotdb.isession.template.Template;
@@ -25,7 +25,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
-public class TestOrdinary extends BaseTestSuite_TreeModel {
+public class TestOrdinary extends BaseTestSuiteTreeModel {
     private Logger logger = Logger.getLogger(TestOrdinary.class);
     private List<List<Object>> structures;
     private Vector<IMeasurementSchema> schemaList = new Vector<>();
@@ -239,7 +239,7 @@ public class TestOrdinary extends BaseTestSuite_TreeModel {
     public void testTemplateAndTS() throws IoTDBConnectionException, StatementExecutionException, IOException {
         List<String> paths = new ArrayList<>(1);
         String databaseTmp = this.database + "_b11";
-        Session session = PrepareConnection.getSession();
+        Session session = PrepareConnection.getSessionTreeModel();
         if (!checkStroageGroupExists(databaseTmp)) {
             session.createDatabase(databaseTmp);
             session.setSchemaTemplate(templateName, databaseTmp);

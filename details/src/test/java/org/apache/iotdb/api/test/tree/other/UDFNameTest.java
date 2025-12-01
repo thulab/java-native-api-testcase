@@ -1,6 +1,6 @@
 package org.apache.iotdb.api.test.tree.other;
 
-import org.apache.iotdb.api.test.BaseTestSuite_TreeModel;
+import org.apache.iotdb.api.test.BaseTestSuiteTreeModel;
 import org.apache.iotdb.api.test.utils.CustomDataProvider;
 import org.apache.iotdb.api.test.utils.PrepareConnection;
 import org.apache.iotdb.isession.SessionDataSet;
@@ -16,7 +16,7 @@ import org.testng.annotations.Test;
 import java.io.IOException;
 import java.util.Iterator;
 
-public class UDFNameTest extends BaseTestSuite_TreeModel {
+public class UDFNameTest extends BaseTestSuiteTreeModel {
 
     @BeforeClass
     public void beforeClass() throws IoTDBConnectionException, StatementExecutionException {
@@ -65,7 +65,7 @@ public class UDFNameTest extends BaseTestSuite_TreeModel {
     @Test(priority = 10, dataProvider = "normalNames")
     public void testUDFName_normal(String name, String comment, String Index) throws IoTDBConnectionException, StatementExecutionException, IOException {
         String sql = "create function "+ name +" as 'com.timecho.udf.normal.TwoVariables'";
-        Session s = PrepareConnection.getSession();
+        Session s = PrepareConnection.getSessionTreeModel();
         s.executeNonQueryStatement(sql);
         s.executeNonQueryStatement("drop function "+name);
         s.close();
@@ -75,7 +75,7 @@ public class UDFNameTest extends BaseTestSuite_TreeModel {
         String sql = "create pipe " +name+
                 " with connector ('connector'='iotdb-thrift-connector', 'connector.ip'='127.0.0.1', 'connector.port'='6667');";
         System.out.println(sql);
-        Session s = PrepareConnection.getSession();
+        Session s = PrepareConnection.getSessionTreeModel();
         s.executeNonQueryStatement(sql);
         s.close();
     }

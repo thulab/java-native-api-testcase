@@ -2,7 +2,6 @@ package org.apache.iotdb.api.test.utils;
 
 import org.apache.iotdb.isession.pool.ITableSessionPool;
 import org.apache.iotdb.rpc.IoTDBConnectionException;
-import org.apache.iotdb.rpc.StatementExecutionException;
 import org.apache.iotdb.session.Session;
 import org.apache.iotdb.session.TableSessionBuilder;
 import org.apache.iotdb.session.pool.SessionPool;
@@ -31,7 +30,7 @@ public class PrepareConnection {
     /**
      * 用于获取Session对象（表模型）
      */
-    public static ITableSession getSession_TableModel() throws IoTDBConnectionException {
+    public static ITableSession getSessionTableModel() throws IoTDBConnectionException {
         ITableSession session = null;
         // 判断是否是集群
         if (config.getValue("is_cluster").equals("true")) {
@@ -39,13 +38,13 @@ public class PrepareConnection {
             session = new TableSessionBuilder()
                     .nodeUrls(Arrays.asList(host_nodes_str.split(",")))
                     .username(config.getValue("user"))
-//                    .password(config.getValue("password")) TODO：需要确定最终默认密码之后测试
+                    .password(config.getValue("password"))
                     .build();
         } else {
             session = new TableSessionBuilder()
                     .nodeUrls(Collections.singletonList(config.getValue("url")))
                     .username(config.getValue("user"))
-//                    .password(config.getValue("password")) TODO：需要确定最终默认密码之后测试
+                    .password(config.getValue("password"))
                     .build();
         }
         return session;
@@ -54,7 +53,7 @@ public class PrepareConnection {
     /**
      * 用于获取Session对象（树模型）
      */
-    public static Session getSession() throws IoTDBConnectionException {
+    public static Session getSessionTreeModel() throws IoTDBConnectionException {
         Session session = null;
         // 判断是否是集群
         if (config.getValue("is_cluster").equals("true")) {
@@ -62,14 +61,14 @@ public class PrepareConnection {
             session = new Session.Builder()
                     .nodeUrls(Arrays.asList(host_nodes_str.split(",")))
                     .username(config.getValue("user"))
-//                    .password(config.getValue("password")) TODO：需要确定最终默认密码之后测试
+                    .password(config.getValue("password"))
                     .build();
         } else {
             session = new Session.Builder()
                     .host(config.getValue("host"))
                     .port(Integer.parseInt(config.getValue("port")))
                     .username(config.getValue("user"))
-//                    .password(config.getValue("password")) TODO：需要确定最终默认密码之后测试
+                    .password(config.getValue("password"))
                     .build();
         }
         session.open(false);
@@ -81,21 +80,21 @@ public class PrepareConnection {
     /**
      * 从sessionPool中获取Session对象（树模型）
      */
-    public static SessionPool getSessionPool() {
+    public static SessionPool getSessionPoolTreeModel() {
         SessionPool sessionPool = null;
         if (config.getValue("is_cluster").equals("true")) {
             String host_nodes_str = config.getValue("host_nodes");
             sessionPool = new SessionPool.Builder()
                     .nodeUrls(Arrays.asList(host_nodes_str.split(",")))
                     .user(config.getValue("user"))
-//                    .password(config.getValue("password")) TODO：需要确定最终默认密码之后测试
+                    .password(config.getValue("password"))
                     .build();
         } else {
             sessionPool = new SessionPool.Builder()
                     .host(config.getValue("host"))
                     .port(Integer.parseInt(config.getValue("port")))
                     .user(config.getValue("user"))
-//                    .password(config.getValue("password")) TODO：需要确定最终默认密码之后测试
+                    .password(config.getValue("password"))
                     .build();
         }
         return sessionPool;
@@ -104,7 +103,7 @@ public class PrepareConnection {
     /**
      * 从sessionPool中获取Session对象（表模型）
      */
-    public static ITableSessionPool getSessionPool_TableModel() throws IoTDBConnectionException {
+    public static ITableSessionPool getSessionPoolTableModel() throws IoTDBConnectionException {
         ITableSessionPool sessionPool = null;
         // 判断是否是集群
         if (config.getValue("is_cluster").equals("true")) {
@@ -112,22 +111,15 @@ public class PrepareConnection {
             sessionPool = new TableSessionPoolBuilder()
                     .nodeUrls(Arrays.asList(host_nodes_str.split(",")))
                     .user(config.getValue("user"))
-//                    .password(config.getValue("password")) TODO：需要确定最终默认密码之后测试
+                    .password(config.getValue("password"))
                     .build();
         } else {
             sessionPool = new TableSessionPoolBuilder()
                     .nodeUrls(Collections.singletonList(config.getValue("url")))
                     .user(config.getValue("user"))
-//                    .password(config.getValue("password")) TODO：需要确定最终默认密码之后测试
+                    .password(config.getValue("password"))
                     .build();
         }
         return sessionPool;
-    }
-
-    public static void main(String[] args) throws IOException, IoTDBConnectionException, StatementExecutionException {
-        String ROOT_SG1_D1 = "root.multi.d1";
-        String host = "172.20.70.45";
-        long timestamp = 601L;
-
     }
 }

@@ -1,6 +1,6 @@
 package org.apache.iotdb.api.test.table.data_manage;
 
-import org.apache.iotdb.api.test.BaseTestSuite_TableModel;
+import org.apache.iotdb.api.test.BaseTestSuiteTableModel;
 import org.apache.iotdb.api.test.utils.CustomDataProvider;
 import org.apache.iotdb.isession.SessionDataSet;
 import org.apache.iotdb.rpc.IoTDBConnectionException;
@@ -26,7 +26,7 @@ import java.util.List;
  * Author：肖林捷
  * Date：2024/12/29
  */
-public class TestInsertNormal extends BaseTestSuite_TableModel {
+public class TestInsertNormal extends BaseTestSuiteTableModel {
     /**
      * 创建测试环境
      */

@@ -1,6 +1,6 @@
 package org.apache.iotdb.api.test.tree.template.dynamic;
 
-import org.apache.iotdb.api.test.BaseTestSuite_TreeModel;
+import org.apache.iotdb.api.test.BaseTestSuiteTreeModel;
 import org.apache.iotdb.api.test.utils.PrepareConnection;
 import org.apache.iotdb.isession.template.Template;
 import org.apache.iotdb.rpc.IoTDBConnectionException;
@@ -19,7 +19,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TestDynamicTemplateMulti extends BaseTestSuite_TreeModel {
+public class TestDynamicTemplateMulti extends BaseTestSuiteTreeModel {
     private Logger logger = Logger.getLogger(TestDynamicTemplateMulti.class);
 
     private List<IMeasurementSchema> schemaList = new ArrayList<>();
@@ -32,7 +32,7 @@ public class TestDynamicTemplateMulti extends BaseTestSuite_TreeModel {
 
     @BeforeClass
     public void BeforeClass() throws IOException, IoTDBConnectionException, StatementExecutionException {
-        session = PrepareConnection.getSession();
+        session = PrepareConnection.getSessionTreeModel();
         cleanDatabases(verbose);
         cleanTemplates(verbose);
     }

@@ -16,7 +16,7 @@ import java.io.IOException;
  * Author：肖林捷
  * Date：2024/8/9
  */
-public class BaseTestSuite_TableModel {
+public class BaseTestSuiteTableModel {
     // 表模型session会话
     public static ITableSession session = null;
     public static ITableSessionPool sessionPool = null;
@@ -30,10 +30,10 @@ public class BaseTestSuite_TableModel {
         // 判断是否使用sessionPool
         if (ReadConfig.getInstance().getValue("is_sessionPool").equals("false")) {
             // 获取表模型的session
-            session = PrepareConnection.getSession_TableModel();
+            session = PrepareConnection.getSessionTableModel();
         } else {
             // 从sessionPool中获取
-            sessionPool = PrepareConnection.getSessionPool_TableModel();
+            sessionPool = PrepareConnection.getSessionPoolTableModel();
             session = sessionPool.getSession();
         }
 
@@ -50,7 +50,7 @@ public class BaseTestSuite_TableModel {
             session.close();
         } else {
             // 关闭表模型的session
-            sessionPool = PrepareConnection.getSessionPool_TableModel();
+            sessionPool = PrepareConnection.getSessionPoolTableModel();
             session = sessionPool.getSession();
             session.close();
             sessionPool.close();

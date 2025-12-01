@@ -191,7 +191,7 @@ public class TestTimeSeriesMulti extends TimeSeriesBaseTestSuite {
         attrList.add(attrs);
         tagList.add(tags);
         aliasList.add(alias);
-        Session s = PrepareConnection.getSession();
+        Session s = PrepareConnection.getSessionTreeModel();
         try {
             s.createMultiTimeseries(
                     paths, tsDataTypes, tsEncodings, compressionTypes, null, tagList, attrList, aliasList);
@@ -212,7 +212,7 @@ public class TestTimeSeriesMulti extends TimeSeriesBaseTestSuite {
             tsEncodings.add((TSEncoding) result.get(1));
             compressionTypes.add((CompressionType) result.get(2));
         }
-        try (Session s = PrepareConnection.getSession()) {
+        try (Session s = PrepareConnection.getSessionTreeModel()) {
             s.createMultiTimeseries(
                     paths, tsDataTypes, tsEncodings, compressionTypes, null, tags, attrs, alias);
         }

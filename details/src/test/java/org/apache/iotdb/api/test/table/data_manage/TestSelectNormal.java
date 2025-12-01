@@ -1,6 +1,6 @@
 package org.apache.iotdb.api.test.table.data_manage;
 
-import org.apache.iotdb.api.test.BaseTestSuite_TableModel;
+import org.apache.iotdb.api.test.BaseTestSuiteTableModel;
 import org.apache.iotdb.api.test.utils.CustomDataProvider;
 
 import org.apache.iotdb.isession.ITableSession;
@@ -10,7 +10,6 @@ import org.apache.iotdb.rpc.StatementExecutionException;
 import org.apache.iotdb.session.TableSessionBuilder;
 import org.apache.tsfile.enums.ColumnCategory;
 import org.apache.tsfile.enums.TSDataType;
-import org.apache.tsfile.read.common.RowRecord;
 import org.apache.tsfile.utils.Binary;
 import org.apache.tsfile.write.record.Tablet;
 
@@ -33,7 +32,7 @@ import java.util.List;
  * Author：肖林捷
  * Date：2024/12/29
  */
-public class TestSelectNormal extends BaseTestSuite_TableModel {
+public class TestSelectNormal extends BaseTestSuiteTableModel {
 
     private final List<String> measurementList = new ArrayList<>();
     private final List<TSDataType> dataTypeList = new ArrayList<>();
@@ -622,8 +621,8 @@ public class TestSelectNormal extends BaseTestSuite_TableModel {
             actualNum1++;
         }
         dataSet1.next();
-        assert expectNum2 == actualNum1 : "期待：" + expectNum2 + "，实际：" + actualNum1;
-        // 2、测试查询不输出第一行
+        assert expectNum2 == actualNum1 : "期待查询结果行数：" + expectNum2 + "，实际查询结果行数：" + actualNum1;
+        // 2、测试查询不输出第一行，输出第二行及以后的数据，所以实际查询结果行数应该比期待结果行数少一行，需要加1
         int actualNum2 = 0;
         SessionDataSet dataSet2 = session.executeQueryStatement("select * from Table1 order by time");
         dataSet2.next();
@@ -631,7 +630,15 @@ public class TestSelectNormal extends BaseTestSuite_TableModel {
             dataSet2.next();
             actualNum2++;
         }
-        assert expectNum1 == (actualNum2 + 1) : "期待：" + expectNum1 + "，实际：" + (actualNum2 + 1);
+        assert expectNum1 == (actualNum2 + 1) : "期待查询结果行数：" + expectNum1 + "，实际查询结果行数：" + (actualNum2 + 1);
+        // 3、executeQueryStatement 方法第二种构造方式，timeoutInMs 为-1代表不设置超时时间
+        int actualNum3 = 0;
+        SessionDataSet dataSet3 = session.executeQueryStatement("select * from Table1 order by time", 6000);
+        while (dataSet3.hasNext()) {
+            dataSet3.next();
+            actualNum3++;
+        }
+        assert expectNum1 == actualNum3 : "期待查询结果行数：" + expectNum1 + "，实际查询结果行数：" + actualNum3;
     }
 
     /**
