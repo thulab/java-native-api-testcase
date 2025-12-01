@@ -2,15 +2,7 @@ package org.apache.iotdb.api.test.tree.session;
 
 
 import org.apache.iotdb.api.test.utils.ReadConfig;
-import org.apache.iotdb.isession.SessionDataSet;
-import org.apache.iotdb.isession.util.Version;
-import org.apache.iotdb.rpc.IoTDBConnectionException;
-import org.apache.iotdb.rpc.StatementExecutionException;
 import org.apache.iotdb.session.Session;
-import org.apache.tsfile.enums.TSDataType;
-import org.apache.tsfile.file.metadata.enums.CompressionType;
-import org.apache.tsfile.file.metadata.enums.TSEncoding;
-import org.apache.tsfile.read.common.RowRecord;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
