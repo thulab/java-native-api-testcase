@@ -1,44 +1,6 @@
 <!--<?xml version="1.0" encoding="UTF-8"?>-->
 <!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd" >
 <suite name="DetailSuite" verbose="1" parallel="false" preserve-order="true" data-provider-thread-count="10">
-    <test name="template-ActiveInBatch" preserve-order="true">
-        <classes>
-            <class name="org.apache.iotdb.api.test.tree.template.ActiveInBatch"/>
-        </classes>
-    </test>
-    <test name="BusinessTest" preserve-order="true">
-        <classes>
-            <class name="org.apache.iotdb.api.test.tree.business.TestAlignedTS"/>
-            <class name="org.apache.iotdb.api.test.tree.business.TestAlignedTSAdd"/>
-            <class name="org.apache.iotdb.api.test.tree.business.TestAlignedTSMinus"/>
-            <class name="org.apache.iotdb.api.test.tree.business.TestBlendScenario"/>
-            <class name="org.apache.iotdb.api.test.tree.business.TestBlendScenarioAddTS"/>
-            <class name="org.apache.iotdb.api.test.tree.business.TestNonAlignedTS"/>
-            <class name="org.apache.iotdb.api.test.tree.business.TestNonAlignedTSAdd"/>
-            <class name="org.apache.iotdb.api.test.tree.business.TestNonAlignedTSMinus"/>
-            <class name="org.apache.iotdb.api.test.tree.business.TestTemplateAligned"/>
-            <class name="org.apache.iotdb.api.test.tree.business.TestTemplateAlignedAddTS"/>
-            <class name="org.apache.iotdb.api.test.tree.business.TestTemplateNonAligned"/>
-            <class name="org.apache.iotdb.api.test.tree.business.TestTemplateNonAlignedAddTS"/>
-            <class name="org.apache.iotdb.api.test.tree.business.TestCleanUp"/>
-        </classes>
-    </test>
-
-    <test name="InsertTest" preserve-order="true">
-        <classes>
-            <class name="org.apache.iotdb.api.test.tree.insert.TestInsertError"/>
-            <class name="org.apache.iotdb.api.test.tree.insert.TestInsertAlignedRecordNormal"/>
-            <class name="org.apache.iotdb.api.test.tree.insert.TestInsertAlignedRecordsNormal"/>
-            <class name="org.apache.iotdb.api.test.tree.insert.TestInsertAlignedRecordsOfOneDeviceNormal"/>
-            <class name="org.apache.iotdb.api.test.tree.insert.TestInsertAlignedTabletNormal"/>
-            <class name="org.apache.iotdb.api.test.tree.insert.TestInsertAlignedTabletsNormal"/>
-            <class name="org.apache.iotdb.api.test.tree.insert.TestInsertRecordNormal"/>
-            <class name="org.apache.iotdb.api.test.tree.insert.TestInsertRecordsNormal"/>
-            <class name="org.apache.iotdb.api.test.tree.insert.TestInsertRecordsOfOneDeviceNormal"/>
-            <class name="org.apache.iotdb.api.test.tree.insert.TestInsertTabletNormal"/>
-            <class name="org.apache.iotdb.api.test.tree.insert.TestInsertTabletsNormal"/>
-        </classes>
-    </test>
 
     <test name="tableModel" preserve-order="true">
         <classes>
@@ -53,59 +15,46 @@
         </classes>
     </test>
 
-    <test name="TestDataBase" preserve-order="true">
+    <test name="treeModel" preserve-order="true">
         <classes>
-            <class name="org.apache.iotdb.api.test.tree.detail.TestDataBase"/>
-        </classes>
-    </test>
-    <test name="TestTimeSeries" preserve-order="true">
-        <classes>
-            <class name="org.apache.iotdb.api.test.tree.detail.TestTimeSeries"/>
-        </classes>
-    </test>
-    <test name="TestTimeSeriesMulti" preserve-order="true">
-        <classes>
-            <class name="org.apache.iotdb.api.test.tree.detail.TestTimeSeriesMulti"/>
-        </classes>
-    </test>
-    <test name="TestOrdinary" preserve-order="true">
-        <classes>
-            <class name="org.apache.iotdb.api.test.tree.dynamic.TestOrdinary"/>
-        </classes>
-    </test>
-    <test name="TestDynamicTemplateMin" preserve-order="true">
-        <classes>
-            <class name="org.apache.iotdb.api.test.tree.dynamic.TestDynamicTemplateMin"/>
-        </classes>
-    </test>
-    <test name="TestDynamicTemplateMulti" preserve-order="true">
-        <classes>
-            <class name="org.apache.iotdb.api.test.tree.dynamic.TestDynamicTemplateMulti"/>
-        </classes>
-    </test>
-    <test name="TestDatabaseParams" preserve-order="true">
-        <classes>
-            <class name="org.apache.iotdb.api.test.tree.detail.TestDatabaseParams"/>
-        </classes>
-    </test>
-    <test name="TestTimeSeriesParams" preserve-order="true">
-        <classes>
-            <class name="org.apache.iotdb.api.test.tree.detail.TestTimeSeriesParams"/>
-        </classes>
-    </test>
-    <test name="TestInsertParams" preserve-order="true">
-        <classes>
-            <class name="org.apache.iotdb.api.test.tree.detail.TestInsertParams"/>
-        </classes>
-    </test>
-    <test name="TestTemplate" preserve-order="true">
-        <classes>
+            <class name="org.apache.iotdb.api.test.tree.session.TestSessionBuilderNormal"/>
+            <class name="org.apache.iotdb.api.test.tree.session.TestSessionBuilderException"/>
+            <class name="org.apache.iotdb.api.test.tree.database.TestDataBase"/>
+            <class name="org.apache.iotdb.api.test.tree.database.TestDatabaseParams"/>
+            <class name="org.apache.iotdb.api.test.tree.timeseries.TestTimeSeries"/>
+            <class name="org.apache.iotdb.api.test.tree.timeseries.TestTimeSeriesMulti"/>
+            <class name="org.apache.iotdb.api.test.tree.timeseries.TestTimeSeriesParams"/>
+            <class name="org.apache.iotdb.api.test.tree.timeseries.TestAlignedTS"/>
+            <class name="org.apache.iotdb.api.test.tree.timeseries.TestAlignedTSAdd"/>
+            <class name="org.apache.iotdb.api.test.tree.timeseries.TestAlignedTSMinus"/>
+            <class name="org.apache.iotdb.api.test.tree.timeseries.TestBlendScenario"/>
+            <class name="org.apache.iotdb.api.test.tree.timeseries.TestBlendScenarioAddTS"/>
+            <class name="org.apache.iotdb.api.test.tree.timeseries.TestNonAlignedTS"/>
+            <class name="org.apache.iotdb.api.test.tree.timeseries.TestNonAlignedTSAdd"/>
+            <class name="org.apache.iotdb.api.test.tree.timeseries.TestNonAlignedTSMinus"/>
+            <class name="org.apache.iotdb.api.test.tree.timeseries.TestCleanUp"/>
+            <class name="org.apache.iotdb.api.test.tree.template.ActiveInBatch"/>
+            <class name="org.apache.iotdb.api.test.tree.template.dynamic.TestOrdinary"/>
+            <class name="org.apache.iotdb.api.test.tree.template.dynamic.TestDynamicTemplateMin"/>
+            <class name="org.apache.iotdb.api.test.tree.template.dynamic.TestDynamicTemplateMulti"/>
             <class name="org.apache.iotdb.api.test.tree.template.TestTemplate"/>
-        </classes>
-    </test>
-    <test name="TestTemplateParams" preserve-order="true">
-        <classes>
             <class name="org.apache.iotdb.api.test.tree.template.TestTemplateParams"/>
+            <class name="org.apache.iotdb.api.test.tree.template.TestTemplateAligned"/>
+            <class name="org.apache.iotdb.api.test.tree.template.TestTemplateAlignedAddTS"/>
+            <class name="org.apache.iotdb.api.test.tree.template.TestTemplateNonAligned"/>
+            <class name="org.apache.iotdb.api.test.tree.template.TestTemplateNonAlignedAddTS"/>
+            <class name="org.apache.iotdb.api.test.tree.data.insert.TestInsertParams"/>
+            <class name="org.apache.iotdb.api.test.tree.data.insert.TestInsertError"/>
+            <class name="org.apache.iotdb.api.test.tree.data.insert.TestInsertAlignedRecordNormal"/>
+            <class name="org.apache.iotdb.api.test.tree.data.insert.TestInsertAlignedRecordsNormal"/>
+            <class name="org.apache.iotdb.api.test.tree.data.insert.TestInsertAlignedRecordsOfOneDeviceNormal"/>
+            <class name="org.apache.iotdb.api.test.tree.data.insert.TestInsertAlignedTabletNormal"/>
+            <class name="org.apache.iotdb.api.test.tree.data.insert.TestInsertAlignedTabletsNormal"/>
+            <class name="org.apache.iotdb.api.test.tree.data.insert.TestInsertRecordNormal"/>
+            <class name="org.apache.iotdb.api.test.tree.data.insert.TestInsertRecordsNormal"/>
+            <class name="org.apache.iotdb.api.test.tree.data.insert.TestInsertRecordsOfOneDeviceNormal"/>
+            <class name="org.apache.iotdb.api.test.tree.data.insert.TestInsertTabletNormal"/>
+            <class name="org.apache.iotdb.api.test.tree.data.insert.TestInsertTabletsNormal"/>
         </classes>
     </test>
 
@@ -115,8 +64,6 @@
     <!--            <class name="org.apache.iotdb.api.test.sql.TestSQL"/>-->
     <!--        </classes>-->
     <!--    </test>-->
-
-
 
 
     <!--测试场景特殊，需要手动开启测试-->
