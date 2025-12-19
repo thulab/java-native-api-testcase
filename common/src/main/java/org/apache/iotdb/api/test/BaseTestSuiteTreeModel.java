@@ -279,7 +279,7 @@ public class BaseTestSuiteTreeModel {
         List<TSDataType> tsDataTypeList = new ArrayList<>(1);
         List<String> tsNames = new ArrayList<>(1);
 
-        int index = 0;
+        int index;
         if (path.endsWith("`")) {
             int endIndex = path.length() - 2;
             while (true) {
@@ -312,8 +312,7 @@ public class BaseTestSuiteTreeModel {
 
     public void insertRecordMulti(String device, List<String> tsNames, List<TSDataType> tsDataTypeList, long timestamp, boolean isAligned, List<String> aliasList) throws IoTDBConnectionException, StatementExecutionException {
         List<Object> values = new ArrayList<>(tsDataTypeList.size());
-        for (int i = 0; i < tsDataTypeList.size(); i++) {
-            TSDataType tsDataType = tsDataTypeList.get(i);
+        for (TSDataType tsDataType : tsDataTypeList) {
             switch (tsDataType) {
                 case BOOLEAN:
                     values.add(GenerateValues.getBoolean());
@@ -385,37 +384,37 @@ public class BaseTestSuiteTreeModel {
         for (int row = 0; row < insertCount; row++) {
             timestamp += 3600000; //+1小时
             tablet.addTimestamp(rowIndex, timestamp);
-            for (int i = 0; i < schemaList.size(); i++) {
-                switch (schemaList.get(i).getType()) {
+            for (IMeasurementSchema iMeasurementSchema : schemaList) {
+                switch (iMeasurementSchema.getType()) {
                     case BOOLEAN:
-                        tablet.addValue(schemaList.get(i).getMeasurementName(), rowIndex, GenerateValues.getBoolean());
+                        tablet.addValue(iMeasurementSchema.getMeasurementName(), rowIndex, GenerateValues.getBoolean());
                         break;
                     case INT32:
-                        tablet.addValue(schemaList.get(i).getMeasurementName(), rowIndex, GenerateValues.getInt());
+                        tablet.addValue(iMeasurementSchema.getMeasurementName(), rowIndex, GenerateValues.getInt());
                         break;
                     case INT64:
-                        tablet.addValue(schemaList.get(i).getMeasurementName(), rowIndex, GenerateValues.getLong(10));
+                        tablet.addValue(iMeasurementSchema.getMeasurementName(), rowIndex, GenerateValues.getLong(10));
                         break;
                     case FLOAT:
-                        tablet.addValue(schemaList.get(i).getMeasurementName(), rowIndex, GenerateValues.getFloat(2, 100, 200));
+                        tablet.addValue(iMeasurementSchema.getMeasurementName(), rowIndex, GenerateValues.getFloat(2, 100, 200));
                         break;
                     case DOUBLE:
-                        tablet.addValue(schemaList.get(i).getMeasurementName(), rowIndex, GenerateValues.getDouble(2, 500, 1000));
+                        tablet.addValue(iMeasurementSchema.getMeasurementName(), rowIndex, GenerateValues.getDouble(2, 500, 1000));
                         break;
                     case TEXT:
-                        tablet.addValue(schemaList.get(i).getMeasurementName(), rowIndex, GenerateValues.getChinese());
+                        tablet.addValue(iMeasurementSchema.getMeasurementName(), rowIndex, GenerateValues.getChinese());
                         break;
                     case STRING:
-                        tablet.addValue(schemaList.get(i).getMeasurementName(), rowIndex, GenerateValues.getChinese());
+                        tablet.addValue(iMeasurementSchema.getMeasurementName(), rowIndex, GenerateValues.getChinese());
                         break;
                     case DATE:
-                        tablet.addValue(schemaList.get(i).getMeasurementName(), rowIndex, LocalDate.of(1970, 1, 1));
+                        tablet.addValue(iMeasurementSchema.getMeasurementName(), rowIndex, LocalDate.of(1970, 1, 1));
                         break;
                     case TIMESTAMP:
-                        tablet.addValue(schemaList.get(i).getMeasurementName(), rowIndex, GenerateValues.getLong(10));
+                        tablet.addValue(iMeasurementSchema.getMeasurementName(), rowIndex, GenerateValues.getLong(10));
                         break;
                     case BLOB:
-                        tablet.addValue(schemaList.get(i).getMeasurementName(), rowIndex, new Binary(GenerateValues.getChinese(), Charset.defaultCharset()));
+                        tablet.addValue(iMeasurementSchema.getMeasurementName(), rowIndex, new Binary(GenerateValues.getChinese(), Charset.defaultCharset()));
                         break;
                 }
             }
@@ -466,9 +465,7 @@ public class BaseTestSuiteTreeModel {
                 }
                 logger.info("");
             }
-            if (expectValues != null && !expectValues.isEmpty()) {
-                assert expectValues.get(i).equals(records.getString(1)) : paths.get(i) + " :" + expectValues.get(i) + " == " + records.getString(1);
-            }
+            assert expectValues == null || expectValues.isEmpty() || expectValues.get(i).equals(records.getString(1)) : paths.get(i) + " :" + expectValues.get(i) + " == " + records.getString(1);
             i++;
         }
         session.close();
@@ -507,9 +504,9 @@ public class BaseTestSuiteTreeModel {
     public void deactivateTemplate(String templateName, @NotNull List<String> paths) throws IoTDBConnectionException, StatementExecutionException {
         int count = getActivePathsCount(templateName, verbose);
         count -= paths.size();
-        for (int i = 0; i < paths.size(); i++) {
-            checkUsingTemplate(paths.get(i), true);
-            String sql = "deactivate schema template " + templateName + " from " + paths.get(i);
+        for (String path : paths) {
+            checkUsingTemplate(path, true);
+            String sql = "deactivate schema template " + templateName + " from " + path;
             logger.debug(sql);
             session.executeNonQueryStatement(sql);
         }
