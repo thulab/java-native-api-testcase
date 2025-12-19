@@ -17,8 +17,11 @@
 
     <test name="treeModel">
         <classes>
+            <class name="org.apache.iotdb.api.test.tree.session.TestSessionNormal"/>
             <class name="org.apache.iotdb.api.test.tree.session.TestSessionBuilderNormal"/>
             <class name="org.apache.iotdb.api.test.tree.session.TestSessionBuilderException"/>
+            <class name="org.apache.iotdb.api.test.tree.session.TestSessionPoolNormal"/>
+            <class name="org.apache.iotdb.api.test.tree.session.TestSessionPoolBuilderNormal"/>
             <class name="org.apache.iotdb.api.test.tree.database.TestDataBase"/>
             <class name="org.apache.iotdb.api.test.tree.database.TestDatabaseParams"/>
             <class name="org.apache.iotdb.api.test.tree.timeseries.TestTimeSeries"/>
