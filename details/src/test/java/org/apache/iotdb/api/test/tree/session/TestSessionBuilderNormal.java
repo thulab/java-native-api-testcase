@@ -65,7 +65,7 @@ public class TestSessionBuilderNormal {
      * 测试使用全部参数构建Session（通过Builder）
      */
     @Test(priority = 10)
-    public void testSessionBuilderAllParam() throws IoTDBConnectionException, StatementExecutionException {
+    public void testSessionBuilderAllParam() throws IoTDBConnectionException {
         // 1、nodeUrls 为空时，使用host和port构建
         try (Session session1 = new Session.Builder()
                 .host(config.getValue("host"))
@@ -128,7 +128,7 @@ public class TestSessionBuilderNormal {
      * 测试使用各种参数构建Session TODO：待完善
      */
     @Test(priority = 20)
-    public void testSessionBuilderPartParam() throws IoTDBConnectionException, StatementExecutionException {
+    public void testSessionBuilderPartParam() throws IoTDBConnectionException {
         // 1、enableAutoFetch为false
         try (Session session1 = new Session.Builder()
                 .enableAutoFetch(false)
