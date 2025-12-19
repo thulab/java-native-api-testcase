@@ -37,7 +37,7 @@ public class TestSessionPoolBuilderNormal {
     /**
      * 测试 SessionPool 会话是否构建正常
      */
-    private void testValidity(SessionPool sessionPool, String databaseNameSuffix) throws IoTDBConnectionException, StatementExecutionException {
+    private void testValidity(SessionPool sessionPool, String databaseNameSuffix) {
         String databaseName = "root.testSessionPoolBuilderNormal" + "." + databaseNameSuffix;
         String deviceId = databaseName + "." + "fdq";
         String measurementName = "s_boolean";
