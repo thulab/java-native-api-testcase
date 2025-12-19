@@ -32,18 +32,14 @@ public class TestInsertTabletNormal extends BaseTestSuiteTreeModel {
     private static final String database = "root.testInsertTable";
     // 设备名称
     private static final String device = database + ".fdq";
-
     // 存储路径
     private final List<String> paths = new ArrayList<>();
     // 存储数据类型
     private final List<TSDataType> dataTypes = new ArrayList<>();
     // 物理量的Schema
     private final List<IMeasurementSchema> schemaList = new ArrayList<>();
-
     // 物理量类型信息
     private final Map<String, TSDataType> measureTSTypeInfos = new LinkedHashMap<>(10);
-    // 预期的记录条数
-    private int expectCount = 0;
 
     /**
      * 在测试类之前准备好环境（数据库、时间序列）
@@ -86,15 +82,16 @@ public class TestInsertTabletNormal extends BaseTestSuiteTreeModel {
     }
 
     /**
-     * 测试 insertTable 方法接口
+     * 测试 insertTable 方法接口（使用Session）
      */
-    @Test(priority = 10) // 测试执行的优先级为10
-    public void insertTable() throws IOException, IoTDBConnectionException, StatementExecutionException {
+    @Test(priority = 10)
+    public void testSessionInsertTable() throws IOException, IoTDBConnectionException, StatementExecutionException {
         // 1、创建一个新的tablet实例
-        Tablet tablet = new Tablet(device, schemaList, 10);
+        Tablet tablet = new Tablet(device, schemaList, 10000);
 
-        // 2、行索引初始化为0
+        // 2、初始化
         int rowIndex = 0;
+        int expectCount = 0;
 
         // 3、遍历获取的单行数据，进行数据处理
         for (Iterator<Object[]> it = getSingleNormal(); it.hasNext(); ) {
@@ -148,6 +145,72 @@ public class TestInsertTabletNormal extends BaseTestSuiteTreeModel {
         // 对比是否操作成功
         compare(expectCount);
     }
+
+    /**
+     * 测试 insertTable 方法接口（使用SessionPool）
+     */
+    @Test(priority = 20)
+    public void testSessionPoolInsertTable() throws IOException, IoTDBConnectionException, StatementExecutionException {
+        // 1、创建一个新的tablet实例
+        Tablet tablet = new Tablet(device, schemaList, 10000);
+
+        // 2、初始化
+        int rowIndex = 0;
+        int expectCount = 0;
+
+        // 3、遍历获取的单行数据，进行数据处理
+        for (Iterator<Object[]> it = getSingleNormal(); it.hasNext();) {
+            // 获取每行数据
+            Object[] line = it.next();
+            // 统计预期数量
+            expectCount++;
+            // 添加时间戳
+            tablet.addTimestamp(rowIndex, Long.parseLong((String) line[0]));
+            // 添加数据
+            for (int i = 0; i < schemaList.size(); i++) {
+                if (line[i + 1] != null) {
+                    // 根据数据类型添加值到tablet
+                    switch (schemaList.get(i).getType()) {
+                        case BOOLEAN:
+                            tablet.addValue(schemaList.get(i).getMeasurementName(), rowIndex, Boolean.valueOf((String) line[i + 1]));
+                            break;
+                        case INT32:
+                            tablet.addValue(schemaList.get(i).getMeasurementName(), rowIndex, Integer.valueOf((String) line[i + 1]));
+                            break;
+                        case INT64:
+                        case TIMESTAMP:
+                            tablet.addValue(schemaList.get(i).getMeasurementName(), rowIndex, Long.valueOf((String) line[i + 1]));
+                            break;
+                        case FLOAT:
+                            tablet.addValue(schemaList.get(i).getMeasurementName(), rowIndex, Float.valueOf((String) line[i + 1]));
+                            break;
+                        case DOUBLE:
+                            tablet.addValue(schemaList.get(i).getMeasurementName(), rowIndex, Double.valueOf((String) line[i + 1]));
+                            break;
+                        case TEXT:
+                        case STRING:
+                            tablet.addValue(schemaList.get(i).getMeasurementName(), rowIndex, line[i + 1]);
+                            break;
+                        case BLOB:
+                            tablet.addValue(schemaList.get(i).getMeasurementName(), rowIndex, new Binary((String) line[i + 1], Charset.defaultCharset()));
+                            break;
+                        case DATE:
+                            tablet.addValue(schemaList.get(i).getMeasurementName(), rowIndex, LocalDate.parse((CharSequence) line[i + 1]));
+                            break;
+                    }
+                }
+            }
+            rowIndex++;
+        }
+        // 对tablet进行排序
+        sessionPool.sortTablet(tablet);
+        // 将tablet数据插入
+        sessionPool.insertTablet(tablet);
+
+        // 对比是否操作成功
+        compare(expectCount);
+    }
+
 
     /**
      * 用于查询比较插入条数看是否和预期相同

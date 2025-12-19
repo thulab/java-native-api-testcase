@@ -26,15 +26,12 @@ public class BaseTestSuiteTableModel {
      */
     @BeforeClass
     public void beforeSuite() throws IoTDBConnectionException, IOException {
-
         // 判断是否使用sessionPool
         if (ReadConfig.getInstance().getValue("is_sessionPool").equals("false")) {
-            // 获取表模型的session
             session = PrepareConnection.getSessionTableModel();
         } else {
-            // 从sessionPool中获取
+            session = PrepareConnection.getSessionTableModel();
             sessionPool = PrepareConnection.getSessionPoolTableModel();
-            session = sessionPool.getSession();
         }
 
     }
@@ -46,12 +43,8 @@ public class BaseTestSuiteTableModel {
     public void afterSuite() throws IoTDBConnectionException, IOException {
         // 判断是否使用sessionPool
         if (ReadConfig.getInstance().getValue("is_sessionPool").equals("false")) {
-            // 关闭表模型的session
             session.close();
         } else {
-            // 关闭表模型的session
-            sessionPool = PrepareConnection.getSessionPoolTableModel();
-            session = sessionPool.getSession();
             session.close();
             sessionPool.close();
         }

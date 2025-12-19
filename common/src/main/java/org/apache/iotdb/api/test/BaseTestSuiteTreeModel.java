@@ -50,9 +50,9 @@ public class BaseTestSuiteTreeModel {
         if (ReadConfig.getInstance().getValue("is_sessionPool").equals("false")) {
             session = PrepareConnection.getSessionTreeModel();
         } else {
+            session = PrepareConnection.getSessionTreeModel();
             sessionPool = PrepareConnection.getSessionPoolTreeModel();
         }
-//        logger.warn("############ BaseTestSuiteTreeModel BeforeClass ##########" );
         verbose = Boolean.parseBoolean(ReadConfig.getInstance().getValue("verbose"));
         isAligned = Boolean.parseBoolean(ReadConfig.getInstance().getValue("isAligned"));
         auto_create_schema = Boolean.parseBoolean(ReadConfig.getInstance().getValue("auto_create_schema"));
@@ -61,12 +61,12 @@ public class BaseTestSuiteTreeModel {
 
     @AfterClass
     public void afterSuie() throws IoTDBConnectionException, StatementExecutionException, IOException {
-//        logger.warn("############ BaseTestSuiteTreeModel AfterClass ##########" );
         cleanDatabases(verbose);
         cleanTemplates(verbose);
         if (ReadConfig.getInstance().getValue("is_sessionPool").equals("false")) {
             session.close();
         } else {
+            session.close();
             sessionPool.close();
         }
     }
