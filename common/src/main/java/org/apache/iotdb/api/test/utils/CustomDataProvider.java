@@ -6,6 +6,7 @@ import org.apache.tsfile.enums.TSDataType;
 import org.apache.tsfile.file.metadata.enums.CompressionType;
 import org.apache.tsfile.file.metadata.enums.TSEncoding;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.testng.log4testng.Logger;
 
 import java.io.*;
@@ -101,11 +102,12 @@ public class CustomDataProvider {
     /**
      * 处理list
      */
-    private @NotNull List processListField(@NotNull String cols) {
+    // list 字段可能显式表达 null，同时兼容字符串列表和 map 列表两种结构。
+    private @Nullable List<?> processListField(@NotNull String cols) {
         if (cols.equals("null")) {
             return null;
         } else if (cols.startsWith("m:")) {
-            List<Map<String, String>> result = new ArrayList<Map<String, String>>();
+            List<Map<String, String>> result = new ArrayList<>();
             for (String item_l : cols.split(",")) {
                 item_l = item_l.substring(2);
                 Map<String, String> cols_map = new HashMap<>();
@@ -207,30 +209,6 @@ public class CustomDataProvider {
     }
 
     /**
-     * 加载csv,直接返回String类型
-     */
-    public List<List<String>> loadString(String filepath, char delimiter) throws IOException {
-        Iterable<CSVRecord> records = this.readCSV_tree(filepath, delimiter);
-        List<List<String>> result = new ArrayList<>();
-        for (CSVRecord record : records) {
-            // 解析每一行
-            List<String> eachLine = new ArrayList<>();
-            Iterator<String> recordIter = record.iterator();
-            // 如果以#开头，那么跳过
-            String firstCols = recordIter.next();
-            if (!firstCols.startsWith("#")) {
-                eachLine.add(firstCols);
-                while (recordIter.hasNext()) {
-                    eachLine.add(recordIter.next());
-                }
-                result.add(eachLine);
-            }
-        }
-        this.reader.close();
-        return result;
-    }
-
-    /**
      * 固定解析 ts-structures-plain.csv
      * 第一列 TSDataType
      * 第二列 TSEncoding
@@ -263,93 +241,62 @@ public class CustomDataProvider {
      * 解析数据类型
      */
     public TSDataType parseDataType(String datatypeStr) {
-        switch (datatypeStr.toLowerCase()) {
-            case "boolean":
-                return TSDataType.BOOLEAN;
-            case "int":
-                return TSDataType.INT32;
-            case "long":
-                return TSDataType.INT64;
-            case "float":
-                return TSDataType.FLOAT;
-            case "double":
-                return TSDataType.DOUBLE;
-            case "vector":
-                return TSDataType.VECTOR;
-            case "text":
-                return TSDataType.TEXT;
-            case "string":
-                return TSDataType.STRING;
-            case "timestamp":
-                return TSDataType.TIMESTAMP;
-            case "blob":
-                return TSDataType.BLOB;
-            case "date":
-                return TSDataType.DATE;
-            case "null":
-                return null;
-            default:
-                throw new RuntimeException("bad input DataType: " + datatypeStr);
-        }
+        return switch (datatypeStr.toLowerCase(Locale.ROOT)) {
+            case "boolean" -> TSDataType.BOOLEAN;
+            case "int" -> TSDataType.INT32;
+            case "long" -> TSDataType.INT64;
+            case "float" -> TSDataType.FLOAT;
+            case "double" -> TSDataType.DOUBLE;
+            case "vector" -> TSDataType.VECTOR;
+            case "text" -> TSDataType.TEXT;
+            case "string" -> TSDataType.STRING;
+            case "timestamp" -> TSDataType.TIMESTAMP;
+            case "blob" -> TSDataType.BLOB;
+            case "date" -> TSDataType.DATE;
+            case "null" -> null;
+            default -> throw new RuntimeException("bad input DataType: " + datatypeStr);
+        };
     }
 
     /**
      * 解析编码方式
      */
+    // 保留 FREQ 兼容，避免旧 csv 数据集在升级后失效。
+    @SuppressWarnings("deprecation")
     public TSEncoding parseEncoding(String encodingStr) {
-        switch (encodingStr.toUpperCase()) {
-            case "PLAIN":
-                return TSEncoding.PLAIN;
-            case "DICTIONARY":
-                return TSEncoding.DICTIONARY;
-            case "RLE":
-                return TSEncoding.RLE;
-            case "DIFF":
-                return TSEncoding.DIFF;
-            case "TS_2DIFF":
-                return TSEncoding.TS_2DIFF;
-            case "BITMAP":
-                return TSEncoding.BITMAP;
-            case "GORILLA_V1":
-                return TSEncoding.GORILLA_V1;
-            case "REGULAR":
-                return TSEncoding.REGULAR;
-            case "GORILLA":
-                return TSEncoding.GORILLA;
-            case "ZIGZAG":
-                return TSEncoding.ZIGZAG;
-            case "FREQ":
-                return TSEncoding.FREQ;
-            case "SPRINTZ":
-                return TSEncoding.SPRINTZ;
-            case "RLBE":
-                return TSEncoding.RLBE;
-            default:
-                throw new RuntimeException("bad input Encoding: " + encodingStr);
-        }
+        return switch (encodingStr.toUpperCase(Locale.ROOT)) {
+            case "PLAIN" -> TSEncoding.PLAIN;
+            case "DICTIONARY" -> TSEncoding.DICTIONARY;
+            case "RLE" -> TSEncoding.RLE;
+            case "DIFF" -> TSEncoding.DIFF;
+            case "TS_2DIFF" -> TSEncoding.TS_2DIFF;
+            case "BITMAP" -> TSEncoding.BITMAP;
+            case "GORILLA_V1" -> TSEncoding.GORILLA_V1;
+            case "REGULAR" -> TSEncoding.REGULAR;
+            case "GORILLA" -> TSEncoding.GORILLA;
+            case "ZIGZAG" -> TSEncoding.ZIGZAG;
+            case "FREQ" -> TSEncoding.FREQ;
+            case "SPRINTZ" -> TSEncoding.SPRINTZ;
+            case "RLBE" -> TSEncoding.RLBE;
+            default -> throw new RuntimeException("bad input Encoding: " + encodingStr);
+        };
     }
 
     /**
      * 解析压缩方式
      */
     public CompressionType parseCompressionType(String compressStr) {
-        compressStr.toUpperCase();
-        switch (compressStr) {
-            case "UNCOMPRESSED":
-                return CompressionType.UNCOMPRESSED;
-            case "SNAPPY":
-                return CompressionType.SNAPPY;
-            case "GZIP":
-                return CompressionType.GZIP;
-            case "LZ4":
-                return CompressionType.LZ4;
-            case "ZSTD":
-                return CompressionType.ZSTD;
-            case "LZMA2":
-                return CompressionType.LZMA2;
-            default:
-                throw new RuntimeException("bad input CompressionType：" + compressStr);
-        }
+        // 统一转大写后再分支，避免忽略 toUpperCase() 返回值导致大小写解析不一致。
+        String normalizedCompress = compressStr.toUpperCase(Locale.ROOT);
+        return switch (normalizedCompress) {
+            case "UNCOMPRESSED" -> CompressionType.UNCOMPRESSED;
+            case "SNAPPY" -> CompressionType.SNAPPY;
+            case "GZIP" -> CompressionType.GZIP;
+            case "LZ4" -> CompressionType.LZ4;
+            case "ZSTD" -> CompressionType.ZSTD;
+            case "LZMA2" -> CompressionType.LZMA2;
+            default -> throw new RuntimeException("bad input CompressionType：" + compressStr);
+        };
     }
 
     /**
@@ -392,27 +339,6 @@ public class CustomDataProvider {
 
     public List<String> getFirstColumns(String filepath) throws IOException {
         return getFirstColumns(filepath, ',');
-    }
-
-    /**
-     * 加载 props, attributes and tags 格式csv
-     */
-    public List<Map<String, String>> loadProps(String filepath) throws IOException {
-        Iterable<CSVRecord> records = this.readCSV_tree(filepath, ',');
-        List<Map<String, String>> result = new ArrayList<>();
-        for (CSVRecord record : records) {
-            // 解析每一行
-            Iterator<String> recordIter = record.iterator();
-            // 如果以#开头，那么跳过
-            String first_cols = recordIter.next();
-            if (!first_cols.startsWith("#")) {
-                if (first_cols.startsWith("m:")) {
-                    first_cols = first_cols.substring(2);
-                }
-                result.add(processMapField(first_cols));
-            }
-        }
-        return result;
     }
 
     public CustomDataProvider load(String filepath) throws IOException {
