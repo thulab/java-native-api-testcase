@@ -71,7 +71,7 @@ mvn surefire-report:report
 ## 覆盖率测试
 
 覆盖率测试通过 JaCoCo 采集 IoTDB 相关类的执行覆盖率。
-
+ 
 1. 将 `common/src/main/resources/config.properties` 中的 `is_coverage` 设置为 `true`。
 2. 准备覆盖率所需源码文件：
    `code/src/`：放置待分析源码
