@@ -106,23 +106,24 @@ public class BaseTestSuiteTreeModel {
     }
 
     public int getCount(String sql, boolean verbose) throws IoTDBConnectionException, StatementExecutionException {
-        SessionDataSet records = session.executeQueryStatement(sql);
-        SessionDataSet.DataIterator recordsIter = records.iterator();
-        int count = 0;
-        if (verbose) {
-            logger.info(sql);
-            logger.info("******** start ********");
-        }
-        while (recordsIter.next()) {
-            count = recordsIter.getInt(1);
+        try (SessionDataSet records = session.executeQueryStatement(sql)) {
+            SessionDataSet.DataIterator recordsIter = records.iterator();
+            int count = 0;
             if (verbose) {
-                logger.info(count);
+                logger.info(sql);
+                logger.info("******** start ********");
             }
+            while (recordsIter.next()) {
+                count = recordsIter.getInt(1);
+                if (verbose) {
+                    logger.info(count);
+                }
+            }
+            if (verbose) {
+                logger.info("******** end ********");
+            }
+            return count;
         }
-        if (verbose) {
-            logger.info("******** end ********");
-        }
-        return count;
     }
 
     public int getStorageGroupCount(String storageGroupId) throws IoTDBConnectionException, StatementExecutionException {
@@ -136,6 +137,7 @@ public class BaseTestSuiteTreeModel {
     public void assertTSExists(String path, boolean verbose) throws IoTDBConnectionException, StatementExecutionException {
         try (SessionDataSet dataSet = session.executeQueryStatement("show timeseries " + path)) {
             SessionDataSet.DataIterator recordsIter = dataSet.iterator();
+            boolean found = false;
             while (recordsIter.next()) {
                 if (verbose) {
                     logger.info(recordsIter.getString(1));
@@ -144,7 +146,10 @@ public class BaseTestSuiteTreeModel {
                     logger.info(recordsIter.getString(6));
                 }
                 assert path.equals(recordsIter.getString(1)) : "Timeseries exists: " + path;
+                found = true;
             }
+            // 序列不存在时 show timeseries 返回空，原先 while 不执行、断言被跳过，方法名声称"断言存在"却什么都没校验。
+            assert found : "Timeseries not exists: " + path;
         }
     }
 
@@ -163,6 +168,9 @@ public class BaseTestSuiteTreeModel {
 
     public void checkQueryResult(String sql, TSDataType tsDataType, Object expectValue) throws IoTDBConnectionException, StatementExecutionException {
         logger.debug("sql=" + sql);
+        // 统计实际校验的行数：调用方都是刚写入数据后立即查询，预期至少返回一行。
+        // 若查询返回 0 行，原先的 while 循环直接跳过、断言不执行，会造成"数据没写进去却测试通过"的静默漏判。
+        int checked = 0;
         try (SessionDataSet dataSet = session.executeQueryStatement(sql)) {
             switch (tsDataType) {
                 case INT32:
@@ -175,6 +183,7 @@ public class BaseTestSuiteTreeModel {
                         RowRecord records = dataSet.next();
                         Double actualValue = Double.valueOf(records.getFields().get(0).toString());
                         assert actualValue.equals(expect) : "确认结果" + dataSet.getColumnTypes().get(1) + "值: expect " + expectValue + ", actual " + records.getFields().get(0).toString();
+                        checked++;
                     }
                     break;
                 case BOOLEAN:
@@ -184,6 +193,7 @@ public class BaseTestSuiteTreeModel {
                         RowRecord records = dataSet.next();
                         String actualValue = records.getFields().get(0).toString();
                         assert actualValue.equals(expectValue.toString()) : "确认结果" + dataSet.getColumnTypes().get(1) + "值: expect " + expectValue + ", actual " + actualValue;
+                        checked++;
                     }
                     break;
                 case BLOB:
@@ -194,6 +204,7 @@ public class BaseTestSuiteTreeModel {
                         byte[] bytes = hexStringToByteArray(actualValue);
                         actualValue = new String(bytes);
                         assert actualValue.equals(expectValue.toString()) : "确认结果" + dataSet.getColumnTypes().get(1) + "值: expect " + expectValue + ", actual " + actualValue;
+                        checked++;
                     }
                     break;
                 case DATE:
@@ -201,10 +212,12 @@ public class BaseTestSuiteTreeModel {
                         RowRecord records = dataSet.next();
                         String actualValue = records.getFields().get(0).toString();
                         assert actualValue.equals(expectValue.toString().replace("-", "")) : "确认结果" + dataSet.getColumnTypes().get(1) + "值: expect " + expectValue + ", actual " + actualValue;
+                        checked++;
                     }
                     break;
             }
         }
+        assert checked > 0 : "查询无结果，期望值未被校验（疑似数据未写入）: sql=" + sql + ", expect=" + expectValue;
     }
 
     // 用于判断模板是否存在
@@ -371,10 +384,9 @@ public class BaseTestSuiteTreeModel {
     }
 
     public void insertTabletMulti(String device, List<IMeasurementSchema> schemaList, int insertCount, boolean isAligned) throws IoTDBConnectionException, StatementExecutionException {
+        // 统一使用测试类共享的 session。原先 insertCount==0 时既新建并丢弃一个连接（泄漏），
+        // 又在结尾 close 共享 session 导致同类后续用例失败，属逻辑错误，已移除该特殊处理。
         Session session = this.session;
-        if (insertCount == 0) {
-            PrepareConnection.getSessionTreeModel();
-        }
         if (verbose) {
             logger.info("insertTabletMulti device=" + device + " schema=" + schemaList.size() + " insertCount=" + insertCount);
         }
@@ -427,9 +439,6 @@ public class BaseTestSuiteTreeModel {
         }
         checkQueryResult("select count(" + schemaList.get(0).getMeasurementName() + ") from "
                 + device + ";", TSDataType.INT32, insertCount);
-        if (insertCount == 0) {
-            session.close();
-        }
     }
 
     public void queryLastData(String tsPath, String expectValue, boolean verbose) throws IoTDBConnectionException, StatementExecutionException {
@@ -445,30 +454,32 @@ public class BaseTestSuiteTreeModel {
     }
 
     public void queryLastData(List<String> paths, List<String> expectValues, boolean verbose, Long gtTime) throws IoTDBConnectionException, StatementExecutionException {
-        SessionDataSet dataSet;
-        Session session = PrepareConnection.getSessionTreeModel();
-        if (gtTime != null) {
-            dataSet = session.executeLastDataQuery(paths, gtTime, 1000L);
-        } else {
-            dataSet = session.executeLastDataQuery(paths);
-        }
-        if (verbose) {
-            logger.info(paths + " expect=" + expectValues);
-            logger.info(dataSet.getColumnNames());
-        }
-        int i = 0;
-        SessionDataSet.DataIterator records = dataSet.iterator();
-        while (records.next()) {
-            if (verbose) {
-                for (int j = 1; j <= dataSet.getColumnNames().size(); j++) {
-                    logger.info(records.getString(j) + ",");
+        // 临时 Session 与 SessionDataSet 都用 try-with-resources，确保查询或断言抛异常时连接仍被关闭，避免连接泄漏。
+        try (Session session = PrepareConnection.getSessionTreeModel()) {
+            try (SessionDataSet dataSet = (gtTime != null)
+                    ? session.executeLastDataQuery(paths, gtTime, 1000L)
+                    : session.executeLastDataQuery(paths)) {
+                if (verbose) {
+                    logger.info(paths + " expect=" + expectValues);
+                    logger.info(dataSet.getColumnNames());
                 }
-                logger.info("");
+                int i = 0;
+                SessionDataSet.DataIterator records = dataSet.iterator();
+                while (records.next()) {
+                    if (verbose) {
+                        for (int j = 1; j <= dataSet.getColumnNames().size(); j++) {
+                            logger.info(records.getString(j) + ",");
+                        }
+                        logger.info("");
+                    }
+                    assert expectValues == null || expectValues.isEmpty() || expectValues.get(i).equals(records.getString(1)) : paths.get(i) + " :" + expectValues.get(i) + " == " + records.getString(1);
+                    i++;
+                }
+                // 期望有值却查不到任何 last 数据时应判定失败，否则空结果会让断言被整段跳过，造成静默漏判。
+                assert expectValues == null || expectValues.isEmpty() || i == expectValues.size()
+                        : "查询 last 数据行数不足: paths=" + paths + " expect " + expectValues.size() + " 行, actual " + i + " 行";
             }
-            assert expectValues == null || expectValues.isEmpty() || expectValues.get(i).equals(records.getString(1)) : paths.get(i) + " :" + expectValues.get(i) + " == " + records.getString(1);
-            i++;
         }
-        session.close();
     }
 
     public int getTemplateCount(boolean verbose) throws IoTDBConnectionException, StatementExecutionException {
@@ -495,9 +506,10 @@ public class BaseTestSuiteTreeModel {
     public void deactivateTemplate(String templateName, String path) throws IoTDBConnectionException, StatementExecutionException {
         String sql = "deactivate schema template " + templateName + " from " + path;
         logger.debug(sql);
-        Session session = PrepareConnection.getSessionTreeModel();  // TODO：过多的会话会导致TestOrdinary连接不上服务端，但是去除无法执行语句，需要优化
-        session.executeNonQueryStatement(sql);
-        session.close();
+        // 用 try-with-resources 确保 executeNonQueryStatement 抛异常时临时连接仍被关闭，避免连接泄漏。
+        try (Session session = PrepareConnection.getSessionTreeModel()) {
+            session.executeNonQueryStatement(sql);
+        }
     }
 
     // 解除多个设备模板
@@ -563,24 +575,25 @@ public class BaseTestSuiteTreeModel {
     }
 
     public void cleanTemplateNodes(String templateName, String prefix) throws IoTDBConnectionException, StatementExecutionException {
-        String sql = "show paths using schema template " + templateName;
-//        Session session = PrepareConnection.getSession(); // TODO：多次创建session容易导致超出rpc最大数量
-        SessionDataSet records = session.executeQueryStatement(sql);
-        SessionDataSet.DataIterator recordsIter = records.iterator();
-        while (recordsIter.next()) {
-            if (recordsIter.getString(1).startsWith(prefix)) {
-                deactivateTemplate(templateName, recordsIter.getString(1));
+        // 两个查询结果集都用 try-with-resources 关闭，避免 SessionDataSet 泄漏。
+        String usingSql = "show paths using schema template " + templateName;
+        try (SessionDataSet records = session.executeQueryStatement(usingSql)) {
+            SessionDataSet.DataIterator recordsIter = records.iterator();
+            while (recordsIter.next()) {
+                if (recordsIter.getString(1).startsWith(prefix)) {
+                    deactivateTemplate(templateName, recordsIter.getString(1));
+                }
             }
         }
-        sql = "show paths set schema template " + templateName;
-        records = session.executeQueryStatement(sql);
-        recordsIter = records.iterator();
-        while (recordsIter.next()) {
-            if (recordsIter.getString(1).startsWith(prefix)) {
-                session.unsetSchemaTemplate(recordsIter.getString(1), templateName);
+        String setSql = "show paths set schema template " + templateName;
+        try (SessionDataSet records = session.executeQueryStatement(setSql)) {
+            SessionDataSet.DataIterator recordsIter = records.iterator();
+            while (recordsIter.next()) {
+                if (recordsIter.getString(1).startsWith(prefix)) {
+                    session.unsetSchemaTemplate(recordsIter.getString(1), templateName);
+                }
             }
         }
-//        session.close();
     }
 
 }

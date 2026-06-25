@@ -105,17 +105,17 @@ public class TestTimeSeries extends TimeSeriesBaseTestSuite {
     @Test(priority = 10, dataProvider = "createSingleTimeSeriesNormal")
     public void testCreateSingleTimeSeries_normal(String device, String tsName, String datatypeStr, String encodingStr, String compressStr, Map<String, String> props, Map<String, String> tags, Map<String, String> attrs, String alias, String msg) throws IoTDBConnectionException, StatementExecutionException, IOException {
         List<Object> result = translateString2Type(datatypeStr, encodingStr, compressStr);
-        Session s = PrepareConnection.getSessionTreeModel();
-        s.createTimeseries(device+"."+tsName, (TSDataType) result.get(0),
-                (TSEncoding)result.get(1) , (CompressionType) result.get(2), props, tags, attrs, alias);
-        insertRecordSingle(device+"."+tsName,  (TSDataType) result.get(0), false, alias);
-        s.close();
+        try (Session s = PrepareConnection.getSessionTreeModel()) {
+            s.createTimeseries(device+"."+tsName, (TSDataType) result.get(0),
+                    (TSEncoding)result.get(1) , (CompressionType) result.get(2), props, tags, attrs, alias);
+            insertRecordSingle(device+"."+tsName,  (TSDataType) result.get(0), false, alias);
+        }
     }
     @Test(priority = 20, dataProvider = "createSingleTimeSeriesNormal")
     public void testDeleteSingleTimeSeries_normal(String device, String tsName, String datatypeStr, String encodingStr, String compressStr, Map<String, String> props, Map<String, String> tags, Map<String, String> attrs, String alias, String msg) throws IoTDBConnectionException, StatementExecutionException, IOException {
-        Session s = PrepareConnection.getSessionTreeModel();
-        s.deleteTimeseries(device+"."+tsName);
-        s.close();
+        try (Session s = PrepareConnection.getSessionTreeModel()) {
+            s.deleteTimeseries(device+"."+tsName);
+        }
     }
     @DataProvider(name = "createSingleTimeSeriesError", parallel = true)
     private Iterator<Object[]> getSingleTimeSeriesError() throws IOException {
@@ -154,10 +154,11 @@ public class TestTimeSeries extends TimeSeriesBaseTestSuite {
     @Test(priority = 30, dataProvider = "createSingleTimeSeriesError", expectedExceptions = StatementExecutionException.class)
     public void testCreateSingleTimeSeries_error(String path, String datatypeStr, String encodingStr, String compressStr, Map<String, String> props, Map<String, String> tags, Map<String, String> attrs, String alias, String msg) throws IoTDBConnectionException, StatementExecutionException, IOException {
         List<Object> result = translateString2Type(datatypeStr, encodingStr, compressStr);
-        Session s = PrepareConnection.getSessionTreeModel();
-        s.createTimeseries(path, (TSDataType) result.get(0), (TSEncoding) result.get(1),
-                (CompressionType) result.get(2), props, tags, attrs, alias);
-        s.close();
+        // 该方法标注 expectedExceptions，createTimeseries 抛异常是预期路径，必须用 try-with-resources 否则连接确定性泄漏。
+        try (Session s = PrepareConnection.getSessionTreeModel()) {
+            s.createTimeseries(path, (TSDataType) result.get(0), (TSEncoding) result.get(1),
+                    (CompressionType) result.get(2), props, tags, attrs, alias);
+        }
     }
     @Test(priority = 40, dataProvider = "createSingleTimeSeriesNormal")
     public void testCreateSingleTimeSeriesAligned_normal(String device, String tsName, String datatypeStr, String encodingStr, String compressStr, Map<String, String> props, Map<String, String> tags, Map<String, String> attrs, String alias, String msg) throws IoTDBConnectionException, StatementExecutionException, IOException {
@@ -173,9 +174,9 @@ public class TestTimeSeries extends TimeSeriesBaseTestSuite {
         tsList.add(tsName);
         aliasList.add(alias);
 //        out.println(device+"."+tsName+" datatype:"+tsDataTypes +" encoding:"+tsEncodings+ " compress:"+compressionTypes +" props:"+props+" tags:"+ tags+" attrs:"+ attrs+" alias:"+ aliasList);
-        Session s = PrepareConnection.getSessionTreeModel();
-        s.createAlignedTimeseries(device, tsList, tsDataTypes, tsEncodings, compressionTypes, aliasList);
-        s.close();
+        try (Session s = PrepareConnection.getSessionTreeModel()) {
+            s.createAlignedTimeseries(device, tsList, tsDataTypes, tsEncodings, compressionTypes, aliasList);
+        }
     }
     @DataProvider(name = "deleteNormalWildcard")
     private Iterator<Object[]> deleteNormal_wildcard() throws IOException {

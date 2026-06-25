@@ -5,6 +5,7 @@ import org.apache.iotdb.api.test.utils.GenerateValues;
 import org.apache.iotdb.api.test.utils.PrepareConnection;
 import org.apache.iotdb.rpc.IoTDBConnectionException;
 import org.apache.iotdb.rpc.StatementExecutionException;
+import org.apache.iotdb.session.Session;
 import org.apache.tsfile.enums.TSDataType;
 import org.apache.tsfile.file.metadata.enums.CompressionType;
 import org.apache.tsfile.file.metadata.enums.TSEncoding;
@@ -127,7 +128,9 @@ public class TestInsertParams extends BaseTestSuiteTreeModel {
             }
             rowIndex++;
         }
-        PrepareConnection.getSessionTreeModel().insertTablet(tablet);
+        try (Session s = PrepareConnection.getSessionTreeModel()) {
+            s.insertTablet(tablet);
+        }
     }
 
     @Test(priority = 14)
@@ -404,7 +407,9 @@ public class TestInsertParams extends BaseTestSuiteTreeModel {
             }
             rowIndex++;
         }
-        PrepareConnection.getSessionTreeModel().insertTablet(tablet);
+        try (Session s = PrepareConnection.getSessionTreeModel()) {
+            s.insertTablet(tablet);
+        }
     }
 
     @Test(priority = 51, expectedExceptions = StatementExecutionException.class)
@@ -421,7 +426,9 @@ public class TestInsertParams extends BaseTestSuiteTreeModel {
         values.add(true);
         values.add(32);
         values.add(64);
-        PrepareConnection.getSessionTreeModel().insertRecord(device, 1635232143960L, paths, schemas, values);
+        try (Session s = PrepareConnection.getSessionTreeModel()) {
+            s.insertRecord(device, 1635232143960L, paths, schemas, values);
+        }
     }
 
     @Test(priority = 52, expectedExceptions = StatementExecutionException.class)
@@ -448,7 +455,9 @@ public class TestInsertParams extends BaseTestSuiteTreeModel {
         value.add(32);
         value.add(64);
         values.add(value);
-        PrepareConnection.getSessionTreeModel().insertRecords(devices, timestamps, measurements, schemas, values);
+        try (Session s = PrepareConnection.getSessionTreeModel()) {
+            s.insertRecords(devices, timestamps, measurements, schemas, values);
+        }
     }
 
 }

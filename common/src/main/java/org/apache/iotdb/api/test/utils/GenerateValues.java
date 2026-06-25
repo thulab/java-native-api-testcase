@@ -54,7 +54,13 @@ public class GenerateValues {
     }
 
     public static LocalDate getDateValue() {
-        return LocalDate.of(faker.number().numberBetween(1000, 9999), faker.number().numberBetween(1, 12), faker.number().numberBetween(1, 31));
+        // 注意：javafaker 的 numberBetween 上界是排他的，因此用 +1 保证能取到上界值；
+        // 同时先确定年、月，再按该月实际天数选 day，避免生成 2 月 30 日、4 月 31 日等非法日期导致偶发失败。
+        int year = faker.number().numberBetween(1000, 9999 + 1);
+        int month = faker.number().numberBetween(1, 12 + 1);
+        int maxDay = java.time.YearMonth.of(year, month).lengthOfMonth();
+        int day = faker.number().numberBetween(1, maxDay + 1);
+        return LocalDate.of(year, month, day);
     }
 
     public static String getString(int max) {
