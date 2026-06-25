@@ -41,14 +41,14 @@ public class BaseTestSuiteTableModel {
      */
     @AfterClass
     public void afterSuite() throws IoTDBConnectionException, IOException {
-        // 判断是否使用sessionPool
-        if (ReadConfig.getInstance().getValue("is_sessionPool").equals("false")) {
+        // 加空值检查：若 beforeSuite 在建立 session/sessionPool 过程中抛异常，
+        // 这里直接 close 会 NPE 并掩盖前置失败的真实原因。
+        if (session != null) {
             session.close();
-        } else {
-            session.close();
+        }
+        if (sessionPool != null) {
             sessionPool.close();
         }
-
     }
 
 }

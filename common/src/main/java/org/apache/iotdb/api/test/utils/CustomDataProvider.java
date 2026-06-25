@@ -138,34 +138,41 @@ public class CustomDataProvider {
      * 解析包括map,list在内的自定义格式
      */
     public CustomDataProvider load(String filepath, char delimiter) throws IOException {
-        Iterable<CSVRecord> records = this.readCSV_tree(filepath, delimiter);
-        for (CSVRecord record : records) {
-            // 解析每一行
-            List<Object> columns_arr = new ArrayList<>();
-            Iterator<String> record_iter = record.iterator();
-            // 如果以#开头，那么跳过
-            String cols = record_iter.next();
-            boolean breakFlag = false;
-            if (!cols.startsWith("#")) {
-                do {
-                    if (cols.startsWith("m:")) {
-                        cols = cols.substring(2);
-                        columns_arr.add(processMapField(cols));
-                    } else if (cols.startsWith("l:")) {
-                        cols = cols.substring(2);
-                        columns_arr.add(processListField(cols));
-                    } else if (cols.equals("null")) {
-                        columns_arr.add(null);
-                    } else {
-                        columns_arr.add(cols);
-                    }
-                    if (record_iter.hasNext()) {
-                        cols = record_iter.next();
-                    } else {
-                        breakFlag = true;
-                    }
-                } while (!breakFlag);
-                this.testCases.add(columns_arr.toArray());
+        // 用 try/finally 确保解析结束（或中途异常）后关闭 reader，避免文件句柄泄漏。
+        try {
+            Iterable<CSVRecord> records = this.readCSV_tree(filepath, delimiter);
+            for (CSVRecord record : records) {
+                // 解析每一行
+                List<Object> columns_arr = new ArrayList<>();
+                Iterator<String> record_iter = record.iterator();
+                // 如果以#开头，那么跳过
+                String cols = record_iter.next();
+                boolean breakFlag = false;
+                if (!cols.startsWith("#")) {
+                    do {
+                        if (cols.startsWith("m:")) {
+                            cols = cols.substring(2);
+                            columns_arr.add(processMapField(cols));
+                        } else if (cols.startsWith("l:")) {
+                            cols = cols.substring(2);
+                            columns_arr.add(processListField(cols));
+                        } else if (cols.equals("null")) {
+                            columns_arr.add(null);
+                        } else {
+                            columns_arr.add(cols);
+                        }
+                        if (record_iter.hasNext()) {
+                            cols = record_iter.next();
+                        } else {
+                            breakFlag = true;
+                        }
+                    } while (!breakFlag);
+                    this.testCases.add(columns_arr.toArray());
+                }
+            }
+        } finally {
+            if (this.reader != null) {
+                this.reader.close();
             }
         }
         return this;
@@ -175,34 +182,41 @@ public class CustomDataProvider {
      * 解析sql语句的csv文件
      */
     private CustomDataProvider load_sql(String filepath) throws IOException {
-        Iterable<CSVRecord> records;
-        // 读取并解析csv文件
-        records = this.readCSV_table(filepath);
-        // 获取每条记录
-        for (CSVRecord record : records) {
-            // 创建一个列表，用于存储解析后的列数据
-            List<Object> columns_arr = new ArrayList<>();
-            // 创建一个迭代器，用于遍历CSV记录的每一列
-            Iterator<String> record_iter = record.iterator();
-            // 读取第一列数据
-            String cols = record_iter.next();
-            // 标记是否需要跳出循环
-            boolean breakFlag = false;
-            // 判断是否以"#"开头
-            if (!cols.startsWith("#")) {
-                do {
-                    // 不是则直接添加到列表
-                    columns_arr.add(cols);
-                    // 检查是否还有更多的列数据
-                    if (record_iter.hasNext()) {
-                        cols = record_iter.next(); // 读取下一列数据
-                    } else {
-                        breakFlag = true; // 如果没有更多的列数据，设置标记为true
-                    }
-                    // 如果标记为true，则跳出循环
-                } while (!breakFlag);
-                // 将解析后的列数据转换为数组，并添加到testCases列表中
-                this.testCases.add(columns_arr.toArray());
+        // 用 try/finally 确保解析结束（或中途异常）后关闭 reader，避免文件句柄泄漏。
+        try {
+            Iterable<CSVRecord> records;
+            // 读取并解析csv文件
+            records = this.readCSV_table(filepath);
+            // 获取每条记录
+            for (CSVRecord record : records) {
+                // 创建一个列表，用于存储解析后的列数据
+                List<Object> columns_arr = new ArrayList<>();
+                // 创建一个迭代器，用于遍历CSV记录的每一列
+                Iterator<String> record_iter = record.iterator();
+                // 读取第一列数据
+                String cols = record_iter.next();
+                // 标记是否需要跳出循环
+                boolean breakFlag = false;
+                // 判断是否以"#"开头
+                if (!cols.startsWith("#")) {
+                    do {
+                        // 不是则直接添加到列表
+                        columns_arr.add(cols);
+                        // 检查是否还有更多的列数据
+                        if (record_iter.hasNext()) {
+                            cols = record_iter.next(); // 读取下一列数据
+                        } else {
+                            breakFlag = true; // 如果没有更多的列数据，设置标记为true
+                        }
+                        // 如果标记为true，则跳出循环
+                    } while (!breakFlag);
+                    // 将解析后的列数据转换为数组，并添加到testCases列表中
+                    this.testCases.add(columns_arr.toArray());
+                }
+            }
+        } finally {
+            if (this.reader != null) {
+                this.reader.close();
             }
         }
         return this;

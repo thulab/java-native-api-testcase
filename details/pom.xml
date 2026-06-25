@@ -37,6 +37,8 @@
                     </suiteXmlFiles>
                     <parallel>none</parallel>
                     <threadCount>1</threadCount>
+                    <!-- 显式开启断言，确保大量使用的裸 assert 语句生效，不依赖 surefire 默认值 -->
+                    <enableAssertions>true</enableAssertions>
                 </configuration>
             </plugin>
             <plugin>

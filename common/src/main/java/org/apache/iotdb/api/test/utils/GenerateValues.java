@@ -14,52 +14,62 @@ import java.util.Locale;
  * 用于构造不同类型的数据
  */
 public class GenerateValues {
-    private static final Faker faker = new Faker();
-    private static final Faker fakerChinese = new Faker(new Locale("zh-CN"));
+    // javafaker 的 Faker 非线程安全：在 @DataProvider(parallel=true) 下并发调用可能抛异常或产生重复值。
+    // 改为 ThreadLocal，每个线程持有独立实例，既线程安全又保留随机性。
+    private static final ThreadLocal<Faker> FAKER = ThreadLocal.withInitial(Faker::new);
+    private static final ThreadLocal<Faker> FAKER_CHINESE = ThreadLocal.withInitial(() -> new Faker(new Locale("zh-CN")));
+
+    private static Faker faker() {
+        return FAKER.get();
+    }
+
+    private static Faker fakerChinese() {
+        return FAKER_CHINESE.get();
+    }
 
     public static int getInt() {
-        return faker.number().randomDigit();
+        return faker().number().randomDigit();
     }
 
     public static long getLong(int maxNumberOfDecimals) {
-        return faker.number().randomNumber(maxNumberOfDecimals, false);
+        return faker().number().randomNumber(maxNumberOfDecimals, false);
     }
 
     public static float getFloat(int maxNumberOfDecimals, int min, int max) {
-        return (float) faker.number().randomDouble(maxNumberOfDecimals, min, max);
+        return (float) faker().number().randomDouble(maxNumberOfDecimals, min, max);
     }
 
     public static double getDouble(int maxNumberOfDecimals, int min, int max) {
-        return faker.number().randomDouble(maxNumberOfDecimals, min, max);
+        return faker().number().randomDouble(maxNumberOfDecimals, min, max);
     }
 
     public static boolean getBoolean() {
-        return faker.bool().bool();
+        return faker().bool().bool();
     }
 
     public static String getStringValue() {
-        String zw = faker.name().nameWithMiddle();
-        String alphanumeric = faker.bothify("???????####");
+        String zw = faker().name().nameWithMiddle();
+        String alphanumeric = faker().bothify("???????####");
         return zw + alphanumeric;
     }
 
     public static long getTimeStamp(int maxNumberOfDecimals) {
-        return faker.number().randomNumber(maxNumberOfDecimals, false);
+        return faker().number().randomNumber(maxNumberOfDecimals, false);
     }
 
     public static Binary getBloB() {
-        String zw = faker.name().nameWithMiddle();
-        String alphanumeric = faker.bothify("???????####");
+        String zw = faker().name().nameWithMiddle();
+        String alphanumeric = faker().bothify("???????####");
         return new Binary((zw+alphanumeric).getBytes(StandardCharsets.UTF_8));
     }
 
     public static LocalDate getDateValue() {
         // 注意：javafaker 的 numberBetween 上界是排他的，因此用 +1 保证能取到上界值；
         // 同时先确定年、月，再按该月实际天数选 day，避免生成 2 月 30 日、4 月 31 日等非法日期导致偶发失败。
-        int year = faker.number().numberBetween(1000, 9999 + 1);
-        int month = faker.number().numberBetween(1, 12 + 1);
+        int year = faker().number().numberBetween(1000, 9999 + 1);
+        int month = faker().number().numberBetween(1, 12 + 1);
         int maxDay = java.time.YearMonth.of(year, month).lengthOfMonth();
-        int day = faker.number().numberBetween(1, maxDay + 1);
+        int day = faker().number().numberBetween(1, maxDay + 1);
         return LocalDate.of(year, month, day);
     }
 
@@ -70,15 +80,15 @@ public class GenerateValues {
     }
 
     public static String getCombinedCode() {
-        return faker.code().asin();
+        return faker().code().asin();
     }
 
     public static String getNumberCode() {
-        return faker.code().ean13();
+        return faker().code().ean13();
     }
 
     public static String getChinese() {
-        return fakerChinese.address().city();
+        return fakerChinese().address().city();
     }
 
     public static void main(String[] args) {

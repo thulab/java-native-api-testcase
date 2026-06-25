@@ -48,12 +48,18 @@ public class TestSessionNormal {
             session.createDatabase(databaseName);
             session.createTimeseries(path, TSDataType.BOOLEAN, TSEncoding.PLAIN, CompressionType.LZ4);
             session.insertRecord(deviceId, 1, Collections.singletonList("s_boolean"), Collections.singletonList(TSDataType.BOOLEAN), Collections.singletonList(true));
-            SessionDataSet dataSet = session.executeQueryStatement("select s_boolean from " + deviceId, 60000);
-            while (dataSet.hasNext()) {
-                RowRecord record = dataSet.next();
-                assert record.getTimestamp() == 1 : "期待值和实际不一致，期待：1，实际：" + record.getTimestamp();
-                assert record.getField(0).getBoolV() : "期待值和实际不一致，期待：true，实际：" + record.getField(1).getBoolV();
+            // dataSet 用 try-with-resources 关闭，避免 SessionDataSet 泄漏。
+            boolean found = false;
+            try (SessionDataSet dataSet = session.executeQueryStatement("select s_boolean from " + deviceId, 60000)) {
+                while (dataSet.hasNext()) {
+                    RowRecord record = dataSet.next();
+                    assert record.getTimestamp() == 1 : "期待值和实际不一致，期待：1，实际：" + record.getTimestamp();
+                    assert record.getField(0).getBoolV() : "期待值和实际不一致，期待：true，实际：" + record.getField(1).getBoolV();
+                    found = true;
+                }
             }
+            // 刚写入数据后查询，预期至少一行；空结果说明写入或连接异常，原先 while 不执行会让断言被整段跳过。
+            assert found : "查询无结果，疑似数据未写入: " + deviceId;
             session.deleteData(path, Long.MAX_VALUE);
             session.deleteTimeseries(path);
         } catch (IoTDBConnectionException | StatementExecutionException e) {
