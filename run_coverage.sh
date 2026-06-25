@@ -62,12 +62,15 @@ echo "[INFO] Extracting classes from JAR: $APP_JAR"
 echo "[INFO] ------------------------------------------------------------------------"
 jar -xf "$APP_JAR" org/
 
+# 先创建目标父目录，否则 cp -r src dst/ 在父目录不存在时会报 "cannot create directory"（bat 版用 xcopy /I 不受此影响）。
+mkdir -p "$CLASS_FILES/org/apache"
+
 if [ -d "org/apache/iotdb" ]; then
-    cp -r "org/apache/iotdb" "$CLASS_FILES/org/apache/iotdb/"
+    cp -r "org/apache/iotdb" "$CLASS_FILES/org/apache/"
 fi
 
 if [ -d "org/apache/tsfile" ]; then
-    cp -r "org/apache/tsfile" "$CLASS_FILES/org/apache/tsfile/"
+    cp -r "org/apache/tsfile" "$CLASS_FILES/org/apache/"
 fi
 
 find "$CLASS_FILES" -type d -name "filter" -exec rm -rf {} +
