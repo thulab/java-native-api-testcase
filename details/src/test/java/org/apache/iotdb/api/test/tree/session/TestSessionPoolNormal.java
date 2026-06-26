@@ -189,4 +189,46 @@ public class TestSessionPoolNormal {
         sessionPool1.close();
     }
 
+    @Test(priority = 30, expectedExceptions = IllegalArgumentException.class)
+    public void testSessionPoolRejectsEmptyNodeUrls() {
+        new SessionPool(Collections.emptyList(), config.getValue("user"), config.getValue("password"), 1);
+    }
+
+    @Test(priority = 40)
+    public void testSessionPoolResultSetLifecycle() throws IoTDBConnectionException, StatementExecutionException {
+        SessionPool sessionPool = new SessionPool(config.getValue("host"), Integer.parseInt(config.getValue("port")), config.getValue("user"), config.getValue("password"), 1);
+        String databaseName = "root.testSessionPoolNormal.lifecycle";
+        String deviceId = databaseName + ".d1";
+        String measurementName = "s_int32";
+        String path = deviceId + "." + measurementName;
+        SessionDataSetWrapper dataSet = null;
+        boolean dataSetClosed = false;
+        try {
+            sessionPool.createDatabase(databaseName);
+            sessionPool.createTimeseries(path, TSDataType.INT32, TSEncoding.PLAIN, CompressionType.LZ4);
+            sessionPool.insertRecord(deviceId, 1, Collections.singletonList(measurementName), Collections.singletonList(TSDataType.INT32), Collections.singletonList(1));
+
+            assert sessionPool.currentAvailableSize() == 1 : "期待可用连接数为1，实际：" + sessionPool.currentAvailableSize();
+            assert sessionPool.currentOccupiedSize() == 0 : "期待占用连接数为0，实际：" + sessionPool.currentOccupiedSize();
+
+            dataSet = sessionPool.executeQueryStatement("select " + measurementName + " from " + deviceId);
+            assert sessionPool.currentAvailableSize() == 0 : "查询结果集未关闭时，期待可用连接数为0，实际：" + sessionPool.currentAvailableSize();
+            assert sessionPool.currentOccupiedSize() == 1 : "查询结果集未关闭时，期待占用连接数为1，实际：" + sessionPool.currentOccupiedSize();
+
+            sessionPool.closeResultSet(dataSet);
+            dataSetClosed = true;
+            assert sessionPool.currentAvailableSize() == 1 : "关闭结果集后，期待可用连接数为1，实际：" + sessionPool.currentAvailableSize();
+            assert sessionPool.currentOccupiedSize() == 0 : "关闭结果集后，期待占用连接数为0，实际：" + sessionPool.currentOccupiedSize();
+        } finally {
+            if (dataSet != null && !dataSetClosed) {
+                sessionPool.closeResultSet(dataSet);
+            }
+            try {
+                sessionPool.deleteDatabase(databaseName);
+            } catch (Exception ignored) {
+            }
+            sessionPool.close();
+        }
+    }
+
 }

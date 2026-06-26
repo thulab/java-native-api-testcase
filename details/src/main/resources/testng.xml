@@ -2,6 +2,12 @@
 <!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd" >
 <suite name="DetailSuite" verbose="1" parallel="false">
 
+    <test name="rpcUtils">
+        <classes>
+            <class name="org.apache.iotdb.api.test.rpc.TestRpcUtils"/>
+        </classes>
+    </test>
+
     <test name="tableModel">
         <classes>
             <class name="org.apache.iotdb.api.test.table.database.TestDataBaseNormal"/>

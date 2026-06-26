@@ -71,6 +71,18 @@ mvn surefire-report:report
 ## 覆盖率测试
 
 覆盖率测试通过 JaCoCo 采集 IoTDB 相关类的执行覆盖率。
+
+如覆盖率验证前需要启动本地 IoTDB，可在以下目录执行 `start-standalone.bat`：
+
+```bash
+D:\iotdb-test\iotdb\distribution\target\apache-iotdb-2.0.7-SNAPSHOT-all-bin\apache-iotdb-2.0.7-SNAPSHOT-all-bin\sbin\windows\start-standalone.bat
+```
+
+若该目录不存在，先在 `D:\iotdb-test\iotdb` 下执行以下命令打包生成 distribution：
+
+```bash
+mvn clean package -DskipTests -am -pl distribution
+```
  
 1. 将 `common/src/main/resources/config.properties` 中的 `is_coverage` 设置为 `true`。
 2. 准备覆盖率所需源码文件：
