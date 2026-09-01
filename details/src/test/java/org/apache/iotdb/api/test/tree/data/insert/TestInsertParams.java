@@ -382,7 +382,7 @@ public class TestInsertParams extends BaseTestSuiteTreeModel {
         session.insertRecord(device, 100L, measurements, dataTypes, v);
     }
 
-    @Test(priority = 50, expectedExceptions = StatementExecutionException.class)
+    @Test(priority = 50)
     public void testInsertTablet_sameTS() throws IoTDBConnectionException, StatementExecutionException {
         int insertCount = 1;
         List<IMeasurementSchema> schemas = new ArrayList<>(3);
@@ -410,6 +410,9 @@ public class TestInsertParams extends BaseTestSuiteTreeModel {
         try (Session s = PrepareConnection.getSessionTreeModel()) {
             s.insertTablet(tablet);
         }
+        // 客户端会过滤未写入值的重名 FIELD 列，保留一个 s_1 完成写入。
+        checkQueryResult(
+                "select count(s_1) from " + database + ".d_11", TSDataType.INT32, insertCount);
     }
 
     @Test(priority = 51, expectedExceptions = StatementExecutionException.class)

@@ -9,6 +9,7 @@ import org.apache.tsfile.enums.ColumnCategory;
 import org.apache.tsfile.enums.TSDataType;
 import org.apache.tsfile.utils.Binary;
 import org.apache.tsfile.write.record.Tablet;
+import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -27,6 +28,9 @@ import java.util.List;
  * Date：2024/12/29
  */
 public class TestInsertNormal extends BaseTestSuiteTableModel {
+    private static final String NO_FIELD_COLUMN_ERROR =
+            "507: No Field column present, please check the request";
+
     /**
      * 创建测试环境
      */
@@ -823,7 +827,12 @@ public class TestInsertNormal extends BaseTestSuiteTableModel {
             rowIndex++;
         }
         // 插入数据
-        session.insert(tablet);
+        try {
+            session.insert(tablet);
+            Assert.fail("Insert without FIELD column should fail");
+        } catch (StatementExecutionException e) {
+            Assert.assertEquals(e.getMessage(), NO_FIELD_COLUMN_ERROR);
+        }
 
         // 计算实际数据的行数
         try (SessionDataSet dataSet = session.executeQueryStatement("select * from insertAllNull")) {
@@ -833,7 +842,8 @@ public class TestInsertNormal extends BaseTestSuiteTableModel {
             }
         }
         // 判断是否符合预期
-        assert expect == actual : "TestInsertNormal类的insertAllNull方法实际与期待数量不一致，期待：" + expect + "，实际：" + actual;
+        Assert.assertEquals(
+                actual, 0, "A rejected insert without FIELD columns must not create rows");
     }
 
     /**
@@ -942,7 +952,12 @@ public class TestInsertNormal extends BaseTestSuiteTableModel {
             rowIndex++;
         }
         // 插入数据
-        session.insert(tablet);
+        try {
+            session.insert(tablet);
+            Assert.fail("Insert without FIELD column should fail");
+        } catch (StatementExecutionException e) {
+            Assert.assertEquals(e.getMessage(), NO_FIELD_COLUMN_ERROR);
+        }
 
         // 计算实际数据的行数
         try (SessionDataSet dataSet = session.executeQueryStatement("select * from insertOnlyTag")) {
@@ -952,7 +967,8 @@ public class TestInsertNormal extends BaseTestSuiteTableModel {
             }
         }
         // 判断是否符合预期
-        assert expect == actual : "TestInsertNormal类的insertOnlyTag方法实际与期待数量不一致，期待：" + expect + "，实际：" + actual;
+        Assert.assertEquals(
+                actual, 0, "A rejected insert without FIELD columns must not create rows");
     }
 
     /**
@@ -1061,7 +1077,12 @@ public class TestInsertNormal extends BaseTestSuiteTableModel {
             rowIndex++;
         }
         // 插入数据
-        session.insert(tablet);
+        try {
+            session.insert(tablet);
+            Assert.fail("Insert without FIELD column should fail");
+        } catch (StatementExecutionException e) {
+            Assert.assertEquals(e.getMessage(), NO_FIELD_COLUMN_ERROR);
+        }
 
         // 计算实际数据的行数
         try (SessionDataSet dataSet = session.executeQueryStatement("select * from insertOnlyAttr")) {
@@ -1071,7 +1092,8 @@ public class TestInsertNormal extends BaseTestSuiteTableModel {
             }
         }
         // 判断是否符合预期
-        assert expect == actual : "TestInsertNormal类的insertOnlyAttr方法实际与期待数量不一致，期待：" + expect + "，实际：" + actual;
+        Assert.assertEquals(
+                actual, 0, "A rejected insert without FIELD columns must not create rows");
     }
 
     /**
@@ -1180,7 +1202,12 @@ public class TestInsertNormal extends BaseTestSuiteTableModel {
             rowIndex++;
         }
         // 插入数据
-        session.insert(tablet);
+        try {
+            session.insert(tablet);
+            Assert.fail("Insert without FIELD column should fail");
+        } catch (StatementExecutionException e) {
+            Assert.assertEquals(e.getMessage(), NO_FIELD_COLUMN_ERROR);
+        }
 
         // 计算实际数据的行数
         try (SessionDataSet dataSet = session.executeQueryStatement("select * from insertOnlyTagAndAttr")) {
@@ -1190,7 +1217,8 @@ public class TestInsertNormal extends BaseTestSuiteTableModel {
             }
         }
         // 判断是否符合预期
-        assert expect == actual : "TestInsertNormal类的insertOnlyTagAndAttr方法实际与期待数量不一致，期待：" + expect + "，实际：" + actual;
+        Assert.assertEquals(
+                actual, 0, "A rejected insert without FIELD columns must not create rows");
     }
 
     /**

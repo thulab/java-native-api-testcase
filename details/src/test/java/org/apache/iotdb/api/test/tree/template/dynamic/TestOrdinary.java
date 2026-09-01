@@ -154,12 +154,12 @@ public class TestOrdinary extends BaseTestSuiteTreeModel {
         paths.add(database + ".d_0");
         insertTabletMulti(paths.get(0), schemaList, 10, isAligned);
         schemaList.add(schemaList.get(schemaList.size() - 1));
-//        insertTabletMulti(paths.get(0), schemaList, 10, isAligned);
-        // 写入两列同样的失败
-        Assert.assertThrows(StatementExecutionException.class, () -> {
+        // 客户端会过滤未写入值的重名 FIELD 列，并使用保留下来的列完成写入。
+        try {
             insertTabletMulti(paths.get(0), schemaList, 10, isAligned);
-        });
-        schemaList.remove(schemaList.size() - 1);
+        } finally {
+            schemaList.remove(schemaList.size() - 1);
+        }
     }
 
     @Test(priority = 22)
