@@ -331,7 +331,8 @@ public class TestInsertParams extends BaseTestSuiteTreeModel {
         session.insertRecord(device, 100L, measurements, dataTypes, (Object) null);
     }
 
-    @Test(priority = 40, expectedExceptions = StatementExecutionException.class)
+    // 客户端在参数个数不匹配时直接抛 IndexOutOfBoundsException，不再由服务端校验（SessionUtils.calculateLength）
+    @Test(priority = 40, expectedExceptions = IndexOutOfBoundsException.class)
     public void testInsertRecord_valuesEmpty() throws IoTDBConnectionException, StatementExecutionException {
         session.insertRecord(device, 100L, measurements, dataTypes, new ArrayList<>(0));
     }
@@ -366,7 +367,8 @@ public class TestInsertParams extends BaseTestSuiteTreeModel {
         session.insertRecord(device, 100L, tsNames, dataTypes, values.get(0));
     }
 
-    @Test(priority = 45)
+    // 同上：dataTypes 多于 values，客户端抛 ArrayIndexOutOfBoundsException
+    @Test(priority = 45, expectedExceptions = ArrayIndexOutOfBoundsException.class)
     public void testInsertRecord_sizedatatypeDup() throws IoTDBConnectionException, StatementExecutionException {
         List<TSDataType> dataTypesTmp = new ArrayList<>(2);
         dataTypesTmp.add(TSDataType.FLOAT);
