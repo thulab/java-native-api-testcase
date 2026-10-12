@@ -531,10 +531,10 @@ public class TestTableSessionBuilder {
     @Test(priority = 70)
     public void testThriftMaxFrameSize() {
         if (config.getValue("is_cluster").equals("false")) {
-            // 设置最大帧大小为 2147483647
+            // 设置最大帧大小为 2147483643（Integer.MAX_VALUE - 4）
             try (ITableSession session =
                          new TableSessionBuilder()
-                                 .thriftMaxFrameSize(2147483647)
+                                 .thriftMaxFrameSize(2147483643)
                                  .build()) {
                 // 判断是否和预期符号
                 String result = session.executeQueryStatement("show cluster").next().getFields().get(3).getStringValue();
@@ -545,10 +545,10 @@ public class TestTableSessionBuilder {
                 throw new RuntimeException(e);
             }
         } else {
-            // 多个节点的url集群 2147483647
+            // 多个节点的url集群 2147483643（Integer.MAX_VALUE - 4）
             try (ITableSession session =
                          new TableSessionBuilder()
-                                 .thriftMaxFrameSize(2147483647)
+                                 .thriftMaxFrameSize(2147483643)
                                  .nodeUrls(Arrays.asList(LOCAL_URLS.split(",")))
                                  .build()) {
                 // 判断是否和预期符号

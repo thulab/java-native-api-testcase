@@ -570,10 +570,10 @@ public class TestTableSessionPoolBuilder {
     @Test(priority = 80)
     public void testThriftMaxFrameSize() {
         if (config.getValue("is_cluster").equals("false")) {
-            // 设置最大帧大小为 2147483647
+            // 设置最大帧大小为 2147483643（Integer.MAX_VALUE - 4）
             try (ITableSessionPool sessionPool =
                          new TableSessionPoolBuilder()
-                                 .thriftMaxFrameSize(2147483647)
+                                 .thriftMaxFrameSize(2147483643)
                                  .build()) {
                 // 从sessionPool中获取一个session
                 ITableSession session = sessionPool.getSession();
@@ -588,7 +588,7 @@ public class TestTableSessionPoolBuilder {
             // 多个节点的url集群
             try (ITableSessionPool sessionPool =
                          new TableSessionPoolBuilder()
-                                 .thriftMaxFrameSize(2147483647)
+                                 .thriftMaxFrameSize(2147483643)
                                  .nodeUrls(Arrays.asList(LOCAL_URLS.split(",")))
                                  .build()) {
                 // 从sessionPool中获取一个session
