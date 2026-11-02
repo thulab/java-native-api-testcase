@@ -33,3 +33,10 @@ coverage-current-*/
 
 # TestNG output
 test-output/
+
+# PLM execution reports (start.sh)
+reports/
+
+# Python caches for PLM helper scripts
+__pycache__/
+*.pyc
