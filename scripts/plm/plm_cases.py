@@ -18,6 +18,7 @@ DEFAULT_AUTOMATION_TYPE = "native-java"
 
 TEST_SOURCE_DIR = Path("details/src/test/java")
 TESTNG_XML = Path("details/src/main/resources/testng.xml")
+CASE_MAP = Path(".plm-case-id-map.json")
 
 
 def repo_root() -> Path:
@@ -113,6 +114,29 @@ def bounded_case_id(raw: str) -> str:
     return raw[: MAX_CASE_ID - 17] + "." + suffix
 
 
+def load_case_map(root: Path) -> dict:
+    """读取 PLM 编号映射（扁平 JSON：程序自然 ID -> PLM 公开编号）。
+
+    文件由 import_to_plm.py 在导入后生成；不存在时返回空映射，此时
+    list-cases 输出自然 ID，兼容尚未导入 PLM 的使用方式。
+    """
+    path = root / CASE_MAP
+    if not path.is_file():
+        return {}
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, ValueError) as exc:
+        raise SystemExit(f"[plm] 读取 {CASE_MAP} 失败: {exc}")
+    if not isinstance(data, dict):
+        raise SystemExit(f"[plm] {CASE_MAP} 必须是 JSON 对象")
+    mapping = {}
+    for raw_id, plm_id in data.items():
+        if not isinstance(plm_id, str) or not plm_id.strip():
+            continue
+        mapping[str(raw_id).strip().upper()] = plm_id.strip()
+    return mapping
+
+
 def scan_cases(root: Path, automation_type: str) -> list:
     test_dir = root / TEST_SOURCE_DIR
     if not test_dir.is_dir():
@@ -148,6 +172,7 @@ def scan_cases(root: Path, automation_type: str) -> list:
                 )
             by_id[key] = {
                 "caseId": case_id,
+                "_rawCaseId": case_id,
                 "automationType": automation_type,
                 "nodeId": raw_id,
                 "sourceFile": str(path.relative_to(root)).replace(os.sep, "/"),
@@ -155,6 +180,18 @@ def scan_cases(root: Path, automation_type: str) -> list:
                 "_fqcn": fqcn,
                 "_method": method,
             }
+    case_map = load_case_map(root)
+    if case_map:
+        remapped = {}
+        for item in by_id.values():
+            mapped = case_map.get(item["_rawCaseId"].upper())
+            if mapped:
+                item["caseId"] = mapped
+            key = item["caseId"].upper()
+            if key in remapped:
+                raise SystemExit(f"[plm] 映射后 CASE_ID 冲突（大小写归一后重复）: {item['caseId']}")
+            remapped[key] = item
+        return sorted(remapped.values(), key=lambda item: item["caseId"].lower())
     return sorted(by_id.values(), key=lambda item: item["caseId"].lower())
 
 
@@ -177,8 +214,13 @@ def cmd_list(root: Path, automation_type: str) -> int:
 
 def find_case(root: Path, case_id: str) -> dict:
     normalized = case_id.strip().upper()
-    for item in scan_cases(root, DEFAULT_AUTOMATION_TYPE):
+    items = scan_cases(root, DEFAULT_AUTOMATION_TYPE)
+    for item in items:
         if item["caseId"].upper() == normalized:
+            return item
+    # 兼容尚未生成映射时直接使用程序自然 ID 的调用方式。
+    for item in items:
+        if item["_rawCaseId"].upper() == normalized:
             return item
     raise SystemExit(f"[plm] CASE_ID 未找到: {case_id}")
 
