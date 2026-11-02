@@ -14,7 +14,7 @@ from pathlib import Path
 from xml.sax.saxutils import escape
 
 MAX_CASE_ID = 100
-DEFAULT_AUTOMATION_TYPE = "native-java"
+DEFAULT_AUTOMATION_TYPE = "session-java"
 
 TEST_SOURCE_DIR = Path("details/src/test/java")
 TESTNG_XML = Path("details/src/main/resources/testng.xml")

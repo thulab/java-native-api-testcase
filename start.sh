@@ -16,7 +16,7 @@ REPO_ROOT=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd) || exit 1
 cd "$REPO_ROOT" || exit 1
 
 REPORTS_DIR="${PLM_REPORT_DIR:-reports}"
-AUTOMATION_TYPE="${PLM_AUTOMATION_TYPE:-native-java}"
+AUTOMATION_TYPE="${PLM_AUTOMATION_TYPE:-session-java}"
 PYTHON="${PYTHON:-python3}"
 SUREFIRE_DIR="details/target/surefire-reports-plm"
 TESTNG_TMP_DIR="details/target/plm-testng"

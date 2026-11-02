@@ -29,7 +29,7 @@ from pathlib import Path
 
 from plm_cases import CASE_MAP, repo_root, scan_cases
 
-DEFAULT_AUTOMATION_TYPE = "native-java"
+DEFAULT_AUTOMATION_TYPE = "session-java"
 
 
 def log(message: str) -> None:
@@ -93,6 +93,7 @@ def main() -> int:
     parser.add_argument("--owner", default=None)
     parser.add_argument("--case-type", default="功能测试")
     parser.add_argument("--model", default="通用")
+    parser.add_argument("--automation-type", default=DEFAULT_AUTOMATION_TYPE)
     parser.add_argument("--limit", type=int, default=0)
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--map", default=str(repo_root() / CASE_MAP))
@@ -125,7 +126,7 @@ def main() -> int:
             "name": item["_method"],
             "caseType": args.case_type,
             "executeMethod": "自动",
-            "automationType": DEFAULT_AUTOMATION_TYPE,
+            "automationType": args.automation_type,
             "model": args.model,
             "productId": args.product_id,
             "featureIds": args.feature_id,
