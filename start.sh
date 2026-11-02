@@ -45,8 +45,28 @@ ensure_built() {
     mvn -q -DskipTests -pl common install || return 1
 }
 
+BUILD_MARKER="$REPO_ROOT/details/target/.plm-build-ok"
+
+needs_build() {
+    [ -f "$BUILD_MARKER" ] || return 0
+    [ -d "$REPO_ROOT/common/target/classes" ] || return 0
+    [ -d "$REPO_ROOT/details/target/test-classes" ] || return 0
+    [ "$REPO_ROOT/pom.xml" -nt "$BUILD_MARKER" ] && return 0
+    [ "$REPO_ROOT/common/pom.xml" -nt "$BUILD_MARKER" ] && return 0
+    [ "$REPO_ROOT/details/pom.xml" -nt "$BUILD_MARKER" ] && return 0
+    find "$REPO_ROOT/common/src" "$REPO_ROOT/details/src" -type f -newer "$BUILD_MARKER" 2>/dev/null | grep -q . && return 0
+    return 1
+}
+
+ensure_built_cached() {
+    needs_build || return 0
+    ensure_built || return 1
+    mvn -q -DskipTests -pl details test-compile || return 1
+    touch "$BUILD_MARKER"
+}
+
 prepare() {
-    ensure_built && mvn -q -DskipTests -pl details test-compile
+    ensure_built_cached
 }
 
 list_cases() {
@@ -82,14 +102,14 @@ case_one() {
     xml="$TESTNG_TMP_DIR/single.xml"
     "$PYTHON" scripts/plm/plm_cases.py testng-xml "$normalized" "$xml" || return 1
 
-    # 每次执行都做增量 install：保证 common 变更（含 ReadConfig 环境变量支持）进入
-    # 本地仓库；只检查 details/target/test-classes 会让 common 更新被静默跳过。
-    ensure_built || {
+    # 构建结果按源码时间戳缓存：PLM 逐条派发时只做一次 install/test-compile，
+    # 后续用例只跑 mvn test，避免 379 条用例重复 Maven install 把批次拖过总时限。
+    ensure_built_cached || {
         echo "[plm] 测试程序编译失败" >&2
         return 1
     }
 
-    mvn -q -pl details test \
+    mvn -o -q -pl details test \
         -Dsurefire.suiteXmlFiles="$REPO_ROOT/$xml" \
         -DfailIfNoTests=false
     rc=$?

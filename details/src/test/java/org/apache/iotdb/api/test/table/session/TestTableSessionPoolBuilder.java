@@ -59,8 +59,8 @@ public class TestTableSessionPoolBuilder {
                 // 从sessionPool中获取一个session
                 ITableSession session = sessionPool.getSession();
                 // 判断是否符合预期
-                String result = session.executeQueryStatement("show cluster").next().getFields().get(3).getStringValue();
-                String expect = config.getValue("host");
+                String result = session.executeQueryStatement("SHOW CURRENT_USER").next().getFields().get(0).getStringValue();
+                String expect = config.getValue("user");
                 assert result.equals(expect) : result + " != " + expect + " 结果和预期不符合，结果为：" + result + " 预期为：" + expect;
             } catch (IoTDBConnectionException | StatementExecutionException e) {
                 throw new RuntimeException(e);
@@ -74,8 +74,8 @@ public class TestTableSessionPoolBuilder {
                 // 从sessionPool中获取一个session
                 ITableSession session = sessionPool.getSession();
                 // 判断是否符合预期
-                String result = session.executeQueryStatement("show cluster").next().getFields().get(3).getStringValue();
-                String expect = config.getValue("hosts");
+                String result = session.executeQueryStatement("SHOW CURRENT_USER").next().getFields().get(0).getStringValue();
+                String expect = config.getValue("user");
                 assert result.equals(expect) : result + " != " + expect + " 结果和预期不符合，结果为：" + result + " 预期为：" + expect;
             } catch (IoTDBConnectionException | StatementExecutionException e) {
                 throw new RuntimeException(e);
@@ -95,6 +95,7 @@ public class TestTableSessionPoolBuilder {
                          new TableSessionPoolBuilder()
                                  .user(config.getValue("user"))
                                  .password(config.getValue("password"))
+                                 .nodeUrls(Collections.singletonList(LOCAL_URL))
                                  .build()) {
                 // 从sessionPool中获取一个session
                 ITableSession session = sessionPool.getSession();
@@ -135,6 +136,7 @@ public class TestTableSessionPoolBuilder {
             try (ITableSessionPool sessionPool =
                          new TableSessionPoolBuilder()
                                  .database("testDataBase1")
+                                 .nodeUrls(Collections.singletonList(LOCAL_URL))
                                  .build()) {
                 // 从sessionPool中获取一个session
                 ITableSession session = sessionPool.getSession();
@@ -176,6 +178,7 @@ public class TestTableSessionPoolBuilder {
             try (ITableSessionPool sessionPool =
                          new TableSessionPoolBuilder()
                                  .database("testDataBase2")
+                                 .nodeUrls(Collections.singletonList(LOCAL_URL))
                                  .build()) {
                 // 从sessionPool中获取一个session
                 ITableSession session = sessionPool.getSession();
@@ -199,6 +202,7 @@ public class TestTableSessionPoolBuilder {
             try (ITableSessionPool sessionPool =
                          new TableSessionPoolBuilder()
                                  .database("没问题testDataBase1234__")
+                                 .nodeUrls(Collections.singletonList(LOCAL_URL))
                                  .build()) {
                 // 从sessionPool中获取一个session
                 ITableSession session = sessionPool.getSession();
@@ -269,12 +273,13 @@ public class TestTableSessionPoolBuilder {
             try (ITableSessionPool sessionPool =
                          new TableSessionPoolBuilder()
                                  .queryTimeoutInMs(9223372036854775807L)
+                                 .nodeUrls(Collections.singletonList(LOCAL_URL))
                                  .build()) {
                 // 从sessionPool中获取一个session
                 ITableSession session = sessionPool.getSession();
                 // 判断是否符合预期
-                String result = session.executeQueryStatement("show cluster").next().getFields().get(3).getStringValue();
-                String expect = config.getValue("host");
+                String result = session.executeQueryStatement("SHOW CURRENT_USER").next().getFields().get(0).getStringValue();
+                String expect = config.getValue("user");
                 assert result.equals(expect) : result + " != " + expect + " 结果和预期不符合，结果为：" + result + " 预期为：" + expect;
             } catch (IoTDBConnectionException | StatementExecutionException e) {
                 throw new RuntimeException(e);
@@ -289,8 +294,8 @@ public class TestTableSessionPoolBuilder {
                 // 从sessionPool中获取一个session
                 ITableSession session = sessionPool.getSession();
                 // 判断是否符合预期
-                String result = session.executeQueryStatement("show cluster").next().getFields().get(3).getStringValue();
-                String expect = config.getValue("hosts");
+                String result = session.executeQueryStatement("SHOW CURRENT_USER").next().getFields().get(0).getStringValue();
+                String expect = config.getValue("user");
                 assert result.equals(expect) : result + " != " + expect + " 结果和预期不符合，结果为：" + result + " 预期为：" + expect;
             } catch (IoTDBConnectionException | StatementExecutionException e) {
                 throw new RuntimeException(e);
@@ -310,12 +315,13 @@ public class TestTableSessionPoolBuilder {
             try (ITableSessionPool sessionPool =
                          new TableSessionPoolBuilder()
                                  .fetchSize(2147483647)
+                                 .nodeUrls(Collections.singletonList(LOCAL_URL))
                                  .build()) {
                 // 从sessionPool中获取一个session
                 ITableSession session = sessionPool.getSession();
                 // 判断是否符合预期
-                String result = session.executeQueryStatement("show cluster").next().getFields().get(3).getStringValue();
-                String expect = config.getValue("host");
+                String result = session.executeQueryStatement("SHOW CURRENT_USER").next().getFields().get(0).getStringValue();
+                String expect = config.getValue("user");
                 assert result.equals(expect) : result + " != " + expect + " 结果和预期不符合，结果为：" + result + " 预期为：" + expect;
             } catch (IoTDBConnectionException | StatementExecutionException e) {
                 throw new RuntimeException(e);
@@ -325,6 +331,7 @@ public class TestTableSessionPoolBuilder {
             try (ITableSessionPool sessionPool =
                          new TableSessionPoolBuilder()
                                  .fetchSize(0)
+                                 .nodeUrls(Collections.singletonList(LOCAL_URL))
                                  .build()) {
                 // 从sessionPool中获取一个session
                 ITableSession session = sessionPool.getSession();
@@ -352,6 +359,7 @@ public class TestTableSessionPoolBuilder {
             try (ITableSessionPool sessionPool =
                          new TableSessionPoolBuilder()
                                  .fetchSize(-100)
+                                 .nodeUrls(Collections.singletonList(LOCAL_URL))
                                  .build()) {
                 // 从sessionPool中获取一个session
                 ITableSession session = sessionPool.getSession();
@@ -385,8 +393,8 @@ public class TestTableSessionPoolBuilder {
                 // 从sessionPool中获取一个session
                 ITableSession session = sessionPool.getSession();
                 // 判断是否符合预期
-                String result = session.executeQueryStatement("show cluster").next().getFields().get(3).getStringValue();
-                String expect = config.getValue("hosts");
+                String result = session.executeQueryStatement("SHOW CURRENT_USER").next().getFields().get(0).getStringValue();
+                String expect = config.getValue("user");
                 assert result.equals(expect) : result + " != " + expect + " 结果和预期不符合，结果为：" + result + " 预期为：" + expect;
             } catch (IoTDBConnectionException | StatementExecutionException e) {
                 throw new RuntimeException(e);
@@ -462,12 +470,13 @@ public class TestTableSessionPoolBuilder {
             try (ITableSessionPool sessionPool =
                          new TableSessionPoolBuilder()
                                  .zoneId(ZoneId.of("America/New_York"))
+                                 .nodeUrls(Collections.singletonList(LOCAL_URL))
                                  .build()) {
                 // 从sessionPool中获取一个session
                 ITableSession session = sessionPool.getSession();
                 // 判断是否符合预期
-                String result = session.executeQueryStatement("show cluster").next().getFields().get(3).getStringValue();
-                String expect = config.getValue("host");
+                String result = session.executeQueryStatement("SHOW CURRENT_USER").next().getFields().get(0).getStringValue();
+                String expect = config.getValue("user");
                 assert result.equals(expect) : result + " != " + expect + " 结果和预期不符合，结果为：" + result + " 预期为：" + expect;
             } catch (IoTDBConnectionException | StatementExecutionException e) {
                 throw new RuntimeException(e);
@@ -477,12 +486,13 @@ public class TestTableSessionPoolBuilder {
             try (ITableSessionPool sessionPool =
                          new TableSessionPoolBuilder()
                                  .zoneId(ZoneId.of("UTC+8"))
+                                 .nodeUrls(Collections.singletonList(LOCAL_URL))
                                  .build()) {
                 // 从sessionPool中获取一个session
                 ITableSession session = sessionPool.getSession();
                 // 判断是否符合预期
-                String result = session.executeQueryStatement("show cluster").next().getFields().get(3).getStringValue();
-                String expect = config.getValue("host");
+                String result = session.executeQueryStatement("SHOW CURRENT_USER").next().getFields().get(0).getStringValue();
+                String expect = config.getValue("user");
                 assert result.equals(expect) : result + " != " + expect + " 结果和预期不符合，结果为：" + result + " 预期为：" + expect;
             } catch (IoTDBConnectionException | StatementExecutionException e) {
                 throw new RuntimeException(e);
@@ -497,8 +507,8 @@ public class TestTableSessionPoolBuilder {
                 // 从sessionPool中获取一个session
                 ITableSession session = sessionPool.getSession();
                 // 判断是否符合预期
-                String result = session.executeQueryStatement("show cluster").next().getFields().get(3).getStringValue();
-                String expect = config.getValue("hosts");
+                String result = session.executeQueryStatement("SHOW CURRENT_USER").next().getFields().get(0).getStringValue();
+                String expect = config.getValue("user");
                 assert result.equals(expect) : result + " != " + expect + " 结果和预期不符合，结果为：" + result + " 预期为：" + expect;
             } catch (IoTDBConnectionException | StatementExecutionException e) {
                 throw new RuntimeException(e);
@@ -513,8 +523,8 @@ public class TestTableSessionPoolBuilder {
                 // 从sessionPool中获取一个session
                 ITableSession session = sessionPool.getSession();
                 // 判断是否符合预期
-                String result = session.executeQueryStatement("show cluster").next().getFields().get(3).getStringValue();
-                String expect = config.getValue("hosts");
+                String result = session.executeQueryStatement("SHOW CURRENT_USER").next().getFields().get(0).getStringValue();
+                String expect = config.getValue("user");
                 assert result.equals(expect) : result + " != " + expect + " 结果和预期不符合，结果为：" + result + " 预期为：" + expect;
             } catch (IoTDBConnectionException | StatementExecutionException e) {
                 throw new RuntimeException(e);
@@ -533,12 +543,13 @@ public class TestTableSessionPoolBuilder {
             try (ITableSessionPool sessionPool =
                          new TableSessionPoolBuilder()
                                  .thriftDefaultBufferSize(483647)
+                                 .nodeUrls(Collections.singletonList(LOCAL_URL))
                                  .build()) {
                 // 从sessionPool中获取一个session
                 ITableSession session = sessionPool.getSession();
                 // 判断是否符合预期
-                String result = session.executeQueryStatement("show cluster").next().getFields().get(3).getStringValue();
-                String expect = config.getValue("host");
+                String result = session.executeQueryStatement("SHOW CURRENT_USER").next().getFields().get(0).getStringValue();
+                String expect = config.getValue("user");
                 assert result.equals(expect) : result + " != " + expect + " 结果和预期不符合，结果为：" + result + " 预期为：" + expect;
             } catch (IoTDBConnectionException | StatementExecutionException e) {
                 throw new RuntimeException(e);
@@ -553,8 +564,8 @@ public class TestTableSessionPoolBuilder {
                 // 从sessionPool中获取一个session
                 ITableSession session = sessionPool.getSession();
                 // 判断是否符合预期
-                String result = session.executeQueryStatement("show cluster").next().getFields().get(3).getStringValue();
-                String expect = config.getValue("hosts");
+                String result = session.executeQueryStatement("SHOW CURRENT_USER").next().getFields().get(0).getStringValue();
+                String expect = config.getValue("user");
                 assert result.equals(expect) : result + " != " + expect + " 结果和预期不符合，结果为：" + result + " 预期为：" + expect;
             } catch (IoTDBConnectionException | StatementExecutionException e) {
                 throw new RuntimeException(e);
@@ -574,12 +585,13 @@ public class TestTableSessionPoolBuilder {
             try (ITableSessionPool sessionPool =
                          new TableSessionPoolBuilder()
                                  .thriftMaxFrameSize(2147483647)
+                                 .nodeUrls(Collections.singletonList(LOCAL_URL))
                                  .build()) {
                 // 从sessionPool中获取一个session
                 ITableSession session = sessionPool.getSession();
                 // 判断是否符合预期
-                String result = session.executeQueryStatement("show cluster").next().getFields().get(3).getStringValue();
-                String expect = config.getValue("host");
+                String result = session.executeQueryStatement("SHOW CURRENT_USER").next().getFields().get(0).getStringValue();
+                String expect = config.getValue("user");
                 assert result.equals(expect) : result + " != " + expect + " 结果和预期不符合，结果为：" + result + " 预期为：" + expect;
             } catch (IoTDBConnectionException | StatementExecutionException e) {
                 throw new RuntimeException(e);
@@ -594,8 +606,8 @@ public class TestTableSessionPoolBuilder {
                 // 从sessionPool中获取一个session
                 ITableSession session = sessionPool.getSession();
                 // 判断是否符合预期
-                String result = session.executeQueryStatement("show cluster").next().getFields().get(3).getStringValue();
-                String expect = config.getValue("hosts");
+                String result = session.executeQueryStatement("SHOW CURRENT_USER").next().getFields().get(0).getStringValue();
+                String expect = config.getValue("user");
                 assert result.equals(expect) : result + " != " + expect + " 结果和预期不符合，结果为：" + result + " 预期为：" + expect;
             } catch (IoTDBConnectionException | StatementExecutionException e) {
                 throw new RuntimeException(e);
@@ -615,12 +627,13 @@ public class TestTableSessionPoolBuilder {
             try (ITableSessionPool sessionPool =
                          new TableSessionPoolBuilder()
                                  .enableRedirection(true)
+                                 .nodeUrls(Collections.singletonList(LOCAL_URL))
                                  .build()) {
                 // 从sessionPool中获取一个session
                 ITableSession session = sessionPool.getSession();
                 // 判断是否符合预期
-                String result = session.executeQueryStatement("show cluster").next().getFields().get(3).getStringValue();
-                String expect = config.getValue("host");
+                String result = session.executeQueryStatement("SHOW CURRENT_USER").next().getFields().get(0).getStringValue();
+                String expect = config.getValue("user");
                 assert result.equals(expect) : result + " != " + expect + " 结果和预期不符合，结果为：" + result + " 预期为：" + expect;
             } catch (IoTDBConnectionException | StatementExecutionException e) {
                 throw new RuntimeException(e);
@@ -635,8 +648,8 @@ public class TestTableSessionPoolBuilder {
                 // 从sessionPool中获取一个session
                 ITableSession session = sessionPool.getSession();
                 // 判断是否符合预期
-                String result = session.executeQueryStatement("show cluster").next().getFields().get(3).getStringValue();
-                String expect = config.getValue("hosts");
+                String result = session.executeQueryStatement("SHOW CURRENT_USER").next().getFields().get(0).getStringValue();
+                String expect = config.getValue("user");
                 assert result.equals(expect) : result + " != " + expect + " 结果和预期不符合，结果为：" + result + " 预期为：" + expect;
             } catch (IoTDBConnectionException | StatementExecutionException e) {
                 throw new RuntimeException(e);
@@ -657,12 +670,13 @@ public class TestTableSessionPoolBuilder {
             try (ITableSessionPool sessionPool =
                          new TableSessionPoolBuilder()
                                  .enableAutoFetch(true)
+                                 .nodeUrls(Collections.singletonList(LOCAL_URL))
                                  .build()) {
                 // 从sessionPool中获取一个session
                 ITableSession session = sessionPool.getSession();
                 // 判断是否符合预期
-                String result = session.executeQueryStatement("show cluster").next().getFields().get(3).getStringValue();
-                String expect = config.getValue("host");
+                String result = session.executeQueryStatement("SHOW CURRENT_USER").next().getFields().get(0).getStringValue();
+                String expect = config.getValue("user");
                 assert result.equals(expect) : result + " != " + expect + " 结果和预期不符合，结果为：" + result + " 预期为：" + expect;
             } catch (IoTDBConnectionException | StatementExecutionException e) {
                 throw new RuntimeException(e);
@@ -677,8 +691,8 @@ public class TestTableSessionPoolBuilder {
                 // 从sessionPool中获取一个session
                 ITableSession session = sessionPool.getSession();
                 // 判断是否符合预期
-                String result = session.executeQueryStatement("show cluster").next().getFields().get(3).getStringValue();
-                String expect = config.getValue("hosts");
+                String result = session.executeQueryStatement("SHOW CURRENT_USER").next().getFields().get(0).getStringValue();
+                String expect = config.getValue("user");
                 assert result.equals(expect) : result + " != " + expect + " 结果和预期不符合，结果为：" + result + " 预期为：" + expect;
             } catch (IoTDBConnectionException | StatementExecutionException e) {
                 throw new RuntimeException(e);
@@ -700,12 +714,13 @@ public class TestTableSessionPoolBuilder {
             try (ITableSessionPool sessionPool =
                          new TableSessionPoolBuilder()
                                  .maxRetryCount(2147483647)
+                                 .nodeUrls(Collections.singletonList(LOCAL_URL))
                                  .build()) {
                 // 从sessionPool中获取一个session
                 ITableSession session = sessionPool.getSession();
                 // 判断是否符合预期
-                String result = session.executeQueryStatement("show cluster").next().getFields().get(3).getStringValue();
-                String expect = config.getValue("host");
+                String result = session.executeQueryStatement("SHOW CURRENT_USER").next().getFields().get(0).getStringValue();
+                String expect = config.getValue("user");
                 assert result.equals(expect) : result + " != " + expect + " 结果和预期不符合，结果为：" + result + " 预期为：" + expect;
             } catch (IoTDBConnectionException | StatementExecutionException e) {
                 throw new RuntimeException(e);
@@ -720,8 +735,8 @@ public class TestTableSessionPoolBuilder {
                 // 从sessionPool中获取一个session
                 ITableSession session = sessionPool.getSession();
                 // 判断是否符合预期
-                String result = session.executeQueryStatement("show cluster").next().getFields().get(3).getStringValue();
-                String expect = config.getValue("hosts");
+                String result = session.executeQueryStatement("SHOW CURRENT_USER").next().getFields().get(0).getStringValue();
+                String expect = config.getValue("user");
                 assert result.equals(expect) : result + " != " + expect + " 结果和预期不符合，结果为：" + result + " 预期为：" + expect;
             } catch (IoTDBConnectionException | StatementExecutionException e) {
                 throw new RuntimeException(e);
@@ -743,12 +758,13 @@ public class TestTableSessionPoolBuilder {
             try (ITableSessionPool sessionPool =
                          new TableSessionPoolBuilder()
                                  .retryIntervalInMs(2147483647)
+                                 .nodeUrls(Collections.singletonList(LOCAL_URL))
                                  .build()) {
                 // 从sessionPool中获取一个session
                 ITableSession session = sessionPool.getSession();
                 // 判断是否符合预期
-                String result = session.executeQueryStatement("show cluster").next().getFields().get(3).getStringValue();
-                String expect = config.getValue("host");
+                String result = session.executeQueryStatement("SHOW CURRENT_USER").next().getFields().get(0).getStringValue();
+                String expect = config.getValue("user");
                 assert result.equals(expect) : result + " != " + expect + " 结果和预期不符合，结果为：" + result + " 预期为：" + expect;
             } catch (IoTDBConnectionException | StatementExecutionException e) {
                 throw new RuntimeException(e);
@@ -763,8 +779,8 @@ public class TestTableSessionPoolBuilder {
                 // 从sessionPool中获取一个session
                 ITableSession session = sessionPool.getSession();
                 // 判断是否符合预期
-                String result = session.executeQueryStatement("show cluster").next().getFields().get(3).getStringValue();
-                String expect = config.getValue("hosts");
+                String result = session.executeQueryStatement("SHOW CURRENT_USER").next().getFields().get(0).getStringValue();
+                String expect = config.getValue("user");
                 assert result.equals(expect) : result + " != " + expect + " 结果和预期不符合，结果为：" + result + " 预期为：" + expect;
             } catch (IoTDBConnectionException | StatementExecutionException e) {
                 throw new RuntimeException(e);
@@ -791,12 +807,13 @@ public class TestTableSessionPoolBuilder {
                              .useSSL(true)
                              .trustStore("C:\\projects\\iotdb\\ssl\\aa.truststore")
                              .trustStorePwd("123456")
+                             .nodeUrls(Collections.singletonList(LOCAL_URL))
                              .build()) {
             // 从sessionPool中获取一个session
             ITableSession session = sessionPool.getSession();
             // 判断是否符合预期
-            String result = session.executeQueryStatement("show cluster").next().getFields().get(3).getStringValue();
-            String expect = config.getValue("host");
+            String result = session.executeQueryStatement("SHOW CURRENT_USER").next().getFields().get(0).getStringValue();
+            String expect = config.getValue("user");
             assert result.equals(expect) : result + " != " + expect + " 结果和预期不符合，结果为：" + result + " 预期为：" + expect;
         } catch (IoTDBConnectionException | StatementExecutionException e) {
             throw new RuntimeException(e);
@@ -813,12 +830,13 @@ public class TestTableSessionPoolBuilder {
         try (ITableSessionPool sessionPool =
                      new TableSessionPoolBuilder()
                              .enableIoTDBRpcCompression(true)
+                             .nodeUrls(Collections.singletonList(LOCAL_URL))
                              .build()) {
             // 从sessionPool中获取一个session
             ITableSession session = sessionPool.getSession();
             // 判断是否符合预期
-            String result = session.executeQueryStatement("show cluster").next().getFields().get(3).getStringValue();
-            String expect = config.getValue("host");
+            String result = session.executeQueryStatement("SHOW CURRENT_USER").next().getFields().get(0).getStringValue();
+            String expect = config.getValue("user");
             assert result.equals(expect) : result + " != " + expect + " 结果和预期不符合，结果为：" + result + " 预期为：" + expect;
         } catch (IoTDBConnectionException | StatementExecutionException e) {
             throw new RuntimeException(e);
@@ -835,12 +853,13 @@ public class TestTableSessionPoolBuilder {
             try (ITableSessionPool sessionPool =
                          new TableSessionPoolBuilder()
                                  .connectionTimeoutInMs(Integer.MAX_VALUE)
+                                 .nodeUrls(Collections.singletonList(LOCAL_URL))
                                  .build()) {
                 // 从sessionPool中获取一个session
                 ITableSession session = sessionPool.getSession();
                 // 判断是否符合预期
-                String result = session.executeQueryStatement("show cluster").next().getFields().get(3).getStringValue();
-                String expect = config.getValue("host");
+                String result = session.executeQueryStatement("SHOW CURRENT_USER").next().getFields().get(0).getStringValue();
+                String expect = config.getValue("user");
                 assert result.equals(expect) : result + " != " + expect + " 结果和预期不符合，结果为：" + result + " 预期为：" + expect;
             } catch (IoTDBConnectionException | StatementExecutionException e) {
                 throw new RuntimeException(e);
@@ -850,12 +869,13 @@ public class TestTableSessionPoolBuilder {
             try (ITableSessionPool sessionPool =
                          new TableSessionPoolBuilder()
                                  .connectionTimeoutInMs(0)
+                                 .nodeUrls(Collections.singletonList(LOCAL_URL))
                                  .build()) {
                 // 从sessionPool中获取一个session
                 ITableSession session = sessionPool.getSession();
                 // 判断是否符合预期
-                String result = session.executeQueryStatement("show cluster").next().getFields().get(3).getStringValue();
-                String expect = config.getValue("host");
+                String result = session.executeQueryStatement("SHOW CURRENT_USER").next().getFields().get(0).getStringValue();
+                String expect = config.getValue("user");
                 assert result.equals(expect) : result + " != " + expect + " 结果和预期不符合，结果为：" + result + " 预期为：" + expect;
             } catch (IoTDBConnectionException | StatementExecutionException e) {
                 throw new RuntimeException(e);
@@ -870,8 +890,8 @@ public class TestTableSessionPoolBuilder {
                 // 从sessionPool中获取一个session
                 ITableSession session = sessionPool.getSession();
                 // 判断是否符合预期
-                String result = session.executeQueryStatement("show cluster").next().getFields().get(3).getStringValue();
-                String expect = config.getValue("hosts");
+                String result = session.executeQueryStatement("SHOW CURRENT_USER").next().getFields().get(0).getStringValue();
+                String expect = config.getValue("user");
                 assert result.equals(expect) : result + " != " + expect + " 结果和预期不符合，结果为：" + result + " 预期为：" + expect;
             } catch (IoTDBConnectionException | StatementExecutionException e) {
                 throw new RuntimeException(e);
@@ -886,8 +906,8 @@ public class TestTableSessionPoolBuilder {
                 // 从sessionPool中获取一个session
                 ITableSession session = sessionPool.getSession();
                 // 判断是否符合预期
-                String result = session.executeQueryStatement("show cluster").next().getFields().get(3).getStringValue();
-                String expect = config.getValue("hosts");
+                String result = session.executeQueryStatement("SHOW CURRENT_USER").next().getFields().get(0).getStringValue();
+                String expect = config.getValue("user");
                 assert result.equals(expect) : result + " != " + expect + " 结果和预期不符合，结果为：" + result + " 预期为：" + expect;
             } catch (IoTDBConnectionException | StatementExecutionException e) {
                 throw new RuntimeException(e);
@@ -905,12 +925,13 @@ public class TestTableSessionPoolBuilder {
             // 单机下所有的默认情况
             try (ITableSessionPool sessionPool =
                          new TableSessionPoolBuilder()
+                                 .nodeUrls(Collections.singletonList(LOCAL_URL))
                                  .build()) {
                 // 从sessionPool中获取一个session
                 ITableSession session = sessionPool.getSession();
                 // 判断是否符合预期
-                String result = session.executeQueryStatement("show cluster").next().getFields().get(3).getStringValue();
-                String expect = config.getValue("host");
+                String result = session.executeQueryStatement("SHOW CURRENT_USER").next().getFields().get(0).getStringValue();
+                String expect = config.getValue("user");
                 assert result.equals(expect) : result + " != " + expect + " 结果和预期不符合，结果为：" + result + " 预期为：" + expect;
             } catch (IoTDBConnectionException | StatementExecutionException e) {
                 throw new RuntimeException(e);
@@ -924,8 +945,8 @@ public class TestTableSessionPoolBuilder {
                 // 从sessionPool中获取一个session
                 ITableSession session = sessionPool.getSession();
                 // 判断是否符合预期
-                String result = session.executeQueryStatement("show cluster").next().getFields().get(3).getStringValue();
-                String expect = config.getValue("hosts");
+                String result = session.executeQueryStatement("SHOW CURRENT_USER").next().getFields().get(0).getStringValue();
+                String expect = config.getValue("user");
                 assert result.equals(expect) : result + " != " + expect + " 结果和预期不符合，结果为：" + result + " 预期为：" + expect;
             } catch (IoTDBConnectionException | StatementExecutionException e) {
                 throw new RuntimeException(e);
@@ -948,8 +969,8 @@ public class TestTableSessionPoolBuilder {
                 // 从sessionPool中获取一个session
                 ITableSession session = sessionPool.getSession();
                 // 判断是否符合预期
-                String result = session.executeQueryStatement("show cluster").next().getFields().get(3).getStringValue();
-                String expect = config.getValue("host");
+                String result = session.executeQueryStatement("SHOW CURRENT_USER").next().getFields().get(0).getStringValue();
+                String expect = config.getValue("user");
                 assert result.equals(expect) : result + " != " + expect + " 结果和预期不符合，结果为：" + result + " 预期为：" + expect;
             } catch (IoTDBConnectionException | StatementExecutionException e) {
                 throw new RuntimeException(e);
@@ -959,6 +980,7 @@ public class TestTableSessionPoolBuilder {
             try (ITableSessionPool sessionPool =
                          new TableSessionPoolBuilder()
                                  .maxSize(1)
+                                 .nodeUrls(Collections.singletonList(LOCAL_URL))
                                  .build()) {
                 // 从sessionPool中获取session1
                 ITableSession session1 = sessionPool.getSession();
@@ -1058,8 +1080,8 @@ public class TestTableSessionPoolBuilder {
                 // 从sessionPool中获取一个session
                 ITableSession session = sessionPool.getSession();
                 // 判断是否符合预期
-                String result = session.executeQueryStatement("show cluster").next().getFields().get(3).getStringValue();
-                String expect = config.getValue("host");
+                String result = session.executeQueryStatement("SHOW CURRENT_USER").next().getFields().get(0).getStringValue();
+                String expect = config.getValue("user");
                 assert result.equals(expect) : result + " != " + expect + " 结果和预期不符合，结果为：" + result + " 预期为：" + expect;
             } catch (IoTDBConnectionException | StatementExecutionException e) {
                 throw new RuntimeException(e);
@@ -1091,8 +1113,8 @@ public class TestTableSessionPoolBuilder {
                 // 从sessionPool中获取一个session
                 ITableSession session = sessionPool.getSession();
                 // 判断是否符合预期
-                String result = session.executeQueryStatement("show cluster").next().getFields().get(3).getStringValue();
-                String expect = config.getValue("hosts");
+                String result = session.executeQueryStatement("SHOW CURRENT_USER").next().getFields().get(0).getStringValue();
+                String expect = config.getValue("user");
                 assert result.equals(expect) : result + " != " + expect + " 结果和预期不符合，结果为：" + result + " 预期为：" + expect;
             } catch (IoTDBConnectionException | StatementExecutionException e) {
                 throw new RuntimeException(e);
