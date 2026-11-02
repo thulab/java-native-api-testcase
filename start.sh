@@ -39,12 +39,13 @@ safe_name() {
 }
 
 ensure_built() {
-    # 每次 install 都是增量的；同时保证 common 已进入本地仓库，details 可单模块运行。
-    mvn -q -DskipTests -pl details -am install || return 1
+    # 只安装 common，保证 details 解析到最新公共模块；details 本身由 mvn test 编译，
+    # 避免每条用例都触发 details 的 package/shade（检查 common 变更是必须的）。
+    mvn -q -DskipTests -pl common install || return 1
 }
 
 prepare() {
-    ensure_built
+    ensure_built && mvn -q -DskipTests -pl details test-compile
 }
 
 list_cases() {
