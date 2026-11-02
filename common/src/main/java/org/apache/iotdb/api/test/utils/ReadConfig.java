@@ -40,8 +40,18 @@ public class ReadConfig {
      * 不设置任何环境变量时，行为与原先完全一致（全部取自 config.properties）。
      */
     private void applyEnvironmentOverrides() {
+        String plmType = env("PLM_AUTOMATION_TYPE");
         String host = env("IOTDB_HOST");
         String port = env("IOTDB_PORT");
+        // PLM 执行时必须使用平台从 K8s 实例解析出的连接地址，绝不回退到 config.properties
+        // 里的 127.0.0.1。缺少地址时直接失败，避免测试悄悄连到执行机本地数据库。
+        if (plmType != null && (host == null || port == null)) {
+            throw new IllegalStateException(
+                    "PLM 执行必须提供 K8s 实例连接地址 IOTDB_HOST/IOTDB_PORT（当前 host="
+                            + (host == null ? "<未设置>" : host)
+                            + ", port=" + (port == null ? "<未设置>" : port)
+                            + "），不会使用 config.properties 的默认地址");
+        }
         if (host != null || port != null) {
             String effectiveHost = host != null ? host : properties.getProperty("host");
             String effectivePort = port != null ? port : properties.getProperty("port");
@@ -52,6 +62,9 @@ public class ReadConfig {
                 properties.setProperty("url", effectiveHost + ":" + effectivePort);
                 properties.setProperty("hosts", effectiveHost + ":" + effectivePort);
                 properties.setProperty("host_nodes", effectiveHost + ":" + effectivePort);
+                if (plmType != null) {
+                    System.err.println("[plm] 使用 K8s 实例地址 " + effectiveHost + ":" + effectivePort);
+                }
             }
         }
         String hostNodes = env("IOTDB_HOST_NODES");

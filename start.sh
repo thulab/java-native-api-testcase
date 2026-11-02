@@ -53,8 +53,21 @@ list_cases() {
     "$PYTHON" scripts/plm/plm_cases.py list --automation-type "$AUTOMATION_TYPE"
 }
 
+require_plm_iotdb_endpoint() {
+    # PLM 执行时必须使用平台从 K8s 实例解析出的地址；不要回退到 config.properties
+    # 的 127.0.0.1，否则测试会悄悄连到执行机本地数据库。
+    if [ -n "${PLM_AUTOMATION_TYPE:-}" ]; then
+        if [ -z "${IOTDB_HOST:-}" ] || [ -z "${IOTDB_PORT:-}" ]; then
+            echo "[plm] PLM 执行必须提供 K8s 实例连接地址 IOTDB_HOST/IOTDB_PORT" >&2
+            return 2
+        fi
+    fi
+    return 0
+}
+
 case_one() {
     [ -z "${1:-}" ] && { usage; return 2; }
+    require_plm_iotdb_endpoint || return 2
     normalized=$(printf '%s' "$1" | tr '[:lower:]' '[:upper:]')
     lookup=$("$PYTHON" scripts/plm/plm_cases.py lookup "$normalized") || return 5
     fqcn=$(printf '%s' "$lookup" | cut -f1)
