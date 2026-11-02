@@ -81,6 +81,7 @@ sh start.sh case <CASE_ID>          # 单条用例，产物写 $PLM_REPORT_DIR
 - `PLM_AUTOMATION_TYPE`：PLM 绑定的仓库类型（默认 `session-java`）。
 - `PLM_REPORT_DIR`：JUnit XML 输出目录（相对仓库根，默认 `reports/`）。
 - `IOTDB_HOST` / `IOTDB_PORT` / `IOTDB_USER` / `IOTDB_PASSWORD`：可选覆盖 `config.properties` 的连接参数；PLM 执行时只注入 `IOTDB_HOST/IOTDB_PORT`，数据库账号/口令由本仓库 `config.properties` 的 `user/password` 提供（默认 `root/TimechoDB@2021`，开源版可改为 `root/root`）。
+- 执行机依赖：本地 Maven 仓库需有 `iotdb.version`（当前 `2.0.11-SNAPSHOT`）对应的 `iotdb-session`、`iotdb-jdbc`、`isession`、`service-rpc`；可由执行机上的 TimechoDB 源码 `mvn -DskipTests -pl iotdb-client/session,iotdb-client/jdbc,iotdb-client/isession -am install` 构建，或复用已有的同版本快照 jar。切换目标数据库版本时同步修改根 `pom.xml` 的 `iotdb.version`。
 - 导入用例后由 `.plm-case-id-map.json` 维护 PLM 编号与 TestNG 目标（`FQCN::method`）的映射；同时支持扁平 `{自然ID: PLM编号}` 与 `{nmap, revmap}` 两种格式。
 - 导入脚本：`python3 scripts/plm/import_to_plm.py --product-id <id> --feature-id <id>`（PAT 只从环境变量读取；`--dry-run` 可先预览）。
 
