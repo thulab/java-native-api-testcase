@@ -99,12 +99,29 @@ def strip_comments(text: str) -> str:
 
 
 def enabled_classes(root: Path) -> set:
-    """testng.xml 中启用的测试类；文件缺失时返回空集合（表示不限制）。"""
+    """testng.xml 中启用的测试类；文件缺失时返回空集合（表示不限制）。
+
+    先剥离 XML 注释：被注释掉的 <class> 是项目刻意关闭的套件（如 TestSQL/Trigger/UDF），
+    不能进入清单，否则 PLM 会派发并真正执行它们。
+    """
     path = root / TESTNG_XML
     if not path.is_file():
         return set()
-    text = read_text(path)
+    text = re.sub(r"<!--.*?-->", "", read_text(path), flags=re.DOTALL)
     return set(re.findall(r'<class\s+name="([^"]+)"', text))
+
+
+def _load_map_data(root: Path) -> dict:
+    path = root / CASE_MAP
+    if not path.is_file():
+        return {}
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, ValueError) as exc:
+        raise SystemExit(f"[plm] 读取 {CASE_MAP} 失败: {exc}")
+    if not isinstance(data, dict):
+        raise SystemExit(f"[plm] {CASE_MAP} 必须是 JSON 对象")
+    return data
 
 
 def bounded_case_id(raw: str) -> str:
@@ -115,23 +132,13 @@ def bounded_case_id(raw: str) -> str:
 
 
 def load_case_map(root: Path) -> dict:
-    """读取 PLM 编号映射，兼容两种格式：
+    """读取 PLM 编号映射，返回 target(大写) -> 当前 PLM 编号。
 
+    兼容两种格式：
     - 扁平 JSON（手工/旧格式）：{程序自然 ID: PLM 公开编号}
-    - 导入 skill 生成的 {nmap: {PLM编号: [target...]}, revmap: {target: PLM编号}}
-
-    文件由 import_to_plm.py 或 timecho-plm-test-program-import skill 在导入后生成；
-    不存在时返回空映射，此时 list-cases 输出自然 ID，兼容尚未导入 PLM 的使用方式。
+    - 导入 skill 生成的 {nmap: {PLM编号: [target...]}, revmap: {target: PLM编号}, aliases}
     """
-    path = root / CASE_MAP
-    if not path.is_file():
-        return {}
-    try:
-        data = json.loads(path.read_text(encoding="utf-8"))
-    except (OSError, ValueError) as exc:
-        raise SystemExit(f"[plm] 读取 {CASE_MAP} 失败: {exc}")
-    if not isinstance(data, dict):
-        raise SystemExit(f"[plm] {CASE_MAP} 必须是 JSON 对象")
+    data = _load_map_data(root)
     mapping = {}
 
     # skill 格式：revmap 直接是自然 ID -> PLM 编号
@@ -165,6 +172,29 @@ def load_case_map(root: Path) -> dict:
     return mapping
 
 
+def load_alias_map(root: Path) -> dict:
+    """aliases 段（旧 PLM 编号 -> target），用于恢复 remap 后仍下发旧编号的场景。
+
+    与 nmap 同构；不并入 load_case_map，避免破坏 1:1 与同步检查语义。
+    """
+    data = _load_map_data(root)
+    aliases = data.get("aliases")
+    result = {}
+    if not isinstance(aliases, dict):
+        return result
+    for old_id, targets in aliases.items():
+        if not isinstance(old_id, str) or not old_id.strip():
+            continue
+        if isinstance(targets, str):
+            targets = [targets]
+        if not isinstance(targets, list):
+            continue
+        for target in targets:
+            if isinstance(target, str) and target.strip():
+                result[old_id.strip().upper()] = target.strip()
+    return result
+
+
 def scan_cases(root: Path, automation_type: str) -> list:
     test_dir = root / TEST_SOURCE_DIR
     if not test_dir.is_dir():
@@ -188,19 +218,25 @@ def scan_cases(root: Path, automation_type: str) -> list:
             )
             if not decl:
                 continue
+            # @Test(enabled = false) 的方法不会被 TestNG 执行：不登记、不导入。
+            if re.search(r"\benabled\s*=\s*false\b", tail[: decl.start()], re.IGNORECASE):
+                continue
             method = decl.group(1)
             if method == path.stem:
                 continue
             raw_id = f"{fqcn}::{method}"
             case_id = bounded_case_id(raw_id)
-            key = case_id.upper()
+            key = raw_id.upper()
             if key in by_id:
                 raise SystemExit(
-                    f"[plm] CASE_ID 冲突（大小写归一后重复）: {case_id}"
+                    f"[plm] 测试目标重复（大小写归一后重复）: {raw_id}"
                 )
             by_id[key] = {
                 "caseId": case_id,
                 "_rawCaseId": case_id,
+                # 完整 target：映射/导入/pending 判断必须用完整值；
+                # _rawCaseId 只是超过 100 字符时的对外回退编号。
+                "_target": raw_id,
                 "automationType": automation_type,
                 "nodeId": raw_id,
                 "sourceFile": str(path.relative_to(root)).replace(os.sep, "/"),
@@ -212,7 +248,7 @@ def scan_cases(root: Path, automation_type: str) -> list:
     if case_map:
         remapped = {}
         for item in by_id.values():
-            mapped = case_map.get(item["_rawCaseId"].upper())
+            mapped = case_map.get(item["_target"].upper())
             if mapped:
                 item["caseId"] = mapped
             key = item["caseId"].upper()
@@ -246,10 +282,19 @@ def find_case(root: Path, case_id: str) -> dict:
     for item in items:
         if item["caseId"].upper() == normalized:
             return item
-    # 兼容尚未生成映射时直接使用程序自然 ID 的调用方式。
+    # 兼容尚未生成映射时直接使用程序自然 ID 的调用方式（完整 target 优先）。
+    for item in items:
+        if item["_target"].upper() == normalized:
+            return item
     for item in items:
         if item["_rawCaseId"].upper() == normalized:
             return item
+    # 恢复 remap 后 PLM 可能仍下发旧编号：按 aliases 找到 target。
+    alias_target = load_alias_map(root).get(normalized)
+    if alias_target:
+        for item in items:
+            if item["_target"].upper() == alias_target.upper():
+                return item
     raise SystemExit(f"[plm] CASE_ID 未找到: {case_id}")
 
 
@@ -277,7 +322,9 @@ def cmd_testng_xml(root: Path, case_id: str, output: str) -> int:
     )
     target = Path(output)
     target.parent.mkdir(parents=True, exist_ok=True)
-    target.write_text(content, encoding="utf-8", newline="\n")
+    # 不用 Path.write_text(newline=...)：该参数 Python 3.10+ 才支持，执行机可能是 3.8。
+    with target.open("w", encoding="utf-8", newline="\n") as handle:
+        handle.write(content)
     return 0
 
 

@@ -45,11 +45,14 @@ public class ReadConfig {
         if (host != null || port != null) {
             String effectiveHost = host != null ? host : properties.getProperty("host");
             String effectivePort = port != null ? port : properties.getProperty("port");
-            properties.setProperty("host", effectiveHost);
-            properties.setProperty("port", effectivePort);
-            properties.setProperty("url", effectiveHost + ":" + effectivePort);
-            properties.setProperty("hosts", effectiveHost + ":" + effectivePort);
-            properties.setProperty("host_nodes", effectiveHost + ":" + effectivePort);
+            // 自定义配置可能缺 host/port；Properties 不允许 null 值，缺失时保持原配置不动。
+            if (effectiveHost != null && effectivePort != null) {
+                properties.setProperty("host", effectiveHost);
+                properties.setProperty("port", effectivePort);
+                properties.setProperty("url", effectiveHost + ":" + effectivePort);
+                properties.setProperty("hosts", effectiveHost + ":" + effectivePort);
+                properties.setProperty("host_nodes", effectiveHost + ":" + effectivePort);
+            }
         }
         String hostNodes = env("IOTDB_HOST_NODES");
         if (hostNodes != null) {

@@ -1,21 +1,22 @@
 #!/usr/bin/env python3
-"""把 java-native-api-testcase 的用例导入 TimechoPLM，并生成 PLM 编号映射。
+"""把 java-native-api-testcase 的用例导入 TimechoPLM，并回填 PLM 编号映射。
 
 用法（需要 PAT，令牌只从环境变量读取）：
   export TIMECHO_PLM_BASE_URL=https://plm.infra.timecho.com
   export TIMECHO_PLM_TOKEN=plm_pat_xxx
-  python3 scripts/plm/import_to_plm.py --product-id 2 --feature-id 123
+  python3 scripts/plm/import_to_plm.py --product-id 1 --feature-id 2023
 
 可选：
-  --dry-run        只打印将导入的用例，不发请求、不写映射
-  --limit N        最多导入 N 条（分批验证用）
-  --owner NAME     负责人（默认不传）
-  --case-type      用例类型（默认「功能测试」）
-  --model          模型（默认「通用」）
-  --map            映射文件路径（默认 .plm-case-id-map.json）
+  --dry-run          只打印将导入的用例，不发请求、不写映射
+  --limit N          最多导入 N 条（分批验证用）
+  --owner NAME       负责人（默认不传）
+  --case-type        用例类型（默认「功能测试」）
+  --model            模型（默认「通用」）
+  --automation-type  自动化类型（默认 session-java）
+  --map              映射文件路径（默认 .plm-case-id-map.json）
 
-映射格式：{ "FQCN::method": "TimechoDB-123" }（程序自然 ID → PLM 公开编号）。
-导入成功后 list-cases 输出 PLM 编号，case <PLM编号> 按映射反查自然 ID 执行。
+映射兼容扁平与导入 skill 的 {nmap, revmap, aliases} 格式；写入时保留原格式、
+aliases 与未知顶层键。每条创建成功后立即原子落盘，避免中断后重复创建。
 """
 
 import argparse
@@ -36,10 +37,41 @@ def log(message: str) -> None:
     sys.stderr.write(f"[import] {message}\n")
 
 
-def write_map(path: Path, mapping: dict) -> None:
-    ordered = {key: mapping[key] for key in sorted(mapping, key=str.lower)}
+def load_raw_map(path: Path) -> dict:
+    if not path.is_file():
+        return {}
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, ValueError) as exc:
+        raise SystemExit(f"[import] 读取 {path} 失败: {exc}")
+    if not isinstance(data, dict):
+        raise SystemExit(f"[import] {path} 必须是 JSON 对象")
+    return data
+
+
+def write_map(path: Path, raw: dict, mapping: dict, originals: dict) -> None:
+    """原子写回映射；技能格式保留 aliases 与未知顶层键。"""
+    if isinstance(raw.get("nmap"), dict) or isinstance(raw.get("revmap"), dict):
+        nmap = raw.setdefault("nmap", {})
+        revmap = raw.setdefault("revmap", {})
+        for upper, plm_id in mapping.items():
+            target = originals.get(upper, upper)
+            revmap[target] = plm_id
+            targets = nmap.setdefault(plm_id, [])
+            if isinstance(targets, str):
+                targets = [targets]
+                nmap[plm_id] = targets
+            if target not in targets:
+                targets.append(target)
+        data = raw
+    else:
+        data = {
+            originals.get(upper, upper): mapping[upper]
+            for upper in sorted(mapping, key=lambda key: originals.get(key, key).lower())
+        }
+
     tmp = path.with_name(path.name + ".tmp")
-    tmp.write_text(json.dumps(ordered, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    tmp.write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     os.replace(tmp, path)
 
 
@@ -54,26 +86,21 @@ def request_json(method: str, url: str, token: str, payload=None):
 
 
 def create_case(base_url: str, token: str, payload: dict) -> dict:
+    """单次 POST。不自动重试：服务端可能已创建成功但响应超时，重试会产生重复用例。"""
     url = base_url.rstrip("/") + "/api/open/test-cases"
-    last_error = None
-    for attempt in range(3):
-        try:
-            result = request_json("POST", url, token, payload)
-        except urllib.error.HTTPError as exc:
-            detail = exc.read().decode("utf-8", errors="replace")[:300]
-            last_error = f"HTTP {exc.code}: {detail}"
-        except (urllib.error.URLError, TimeoutError, ValueError) as exc:
-            last_error = str(exc)
-        else:
-            if result.get("code") != 200:
-                raise RuntimeError(result.get("message") or "PLM 返回业务错误")
-            data = result.get("data")
-            if not isinstance(data, dict):
-                raise RuntimeError("PLM 响应缺少 data")
-            return data
-        if attempt < 2:
-            time.sleep(1 + attempt)
-    raise RuntimeError(last_error or "请求失败")
+    try:
+        result = request_json("POST", url, token, payload)
+    except urllib.error.HTTPError as exc:
+        detail = exc.read().decode("utf-8", errors="replace")[:300]
+        raise RuntimeError(f"HTTP {exc.code}: {detail}")
+    except (urllib.error.URLError, TimeoutError, ValueError) as exc:
+        raise RuntimeError(str(exc))
+    if result.get("code") != 200:
+        raise RuntimeError(result.get("message") or "PLM 返回业务错误")
+    data = result.get("data")
+    if not isinstance(data, dict):
+        raise RuntimeError("PLM 响应缺少 data")
+    return data
 
 
 def main() -> int:
@@ -96,16 +123,20 @@ def main() -> int:
         raise SystemExit("[import] 需要 TIMECHO_PLM_BASE_URL 与 TIMECHO_PLM_TOKEN")
 
     map_path = Path(args.map)
+    raw = load_raw_map(map_path)
     mapping = load_case_map(map_path)
+    originals = {}
     items = scan_cases(repo_root(), DEFAULT_AUTOMATION_TYPE)
-    pending = [item for item in items if item["_rawCaseId"].upper() not in mapping]
+    for item in items:
+        originals[item["_target"].upper()] = item["_target"]
+    pending = [item for item in items if item["_target"].upper() not in mapping]
     if args.limit > 0:
         pending = pending[: args.limit]
 
     log(f"用例总数 {len(items)}，已映射 {len(mapping)}，本次待导入 {len(pending)}")
     if args.dry_run:
         for item in pending[:10]:
-            log(f"DRY {item['_rawCaseId']} -> {item['sourceFile']}")
+            log(f"DRY {item['_target']} -> {item['sourceFile']}")
         if len(pending) > 10:
             log(f"DRY ... 其余 {len(pending) - 10} 条省略")
         return 0
@@ -128,22 +159,24 @@ def main() -> int:
         try:
             data = create_case(base_url, token, payload)
         except RuntimeError as exc:
-            failed.append((item["_rawCaseId"], str(exc)))
-            log(f"[{index}/{len(pending)}] 失败 {item['_rawCaseId']}: {exc}")
+            failed.append((item["_target"], str(exc)))
+            log(f"[{index}/{len(pending)}] 失败 {item['_target']}: {exc}")
             continue
         plm_id = data.get("externalCaseId")
         if not plm_id:
-            failed.append((item["_rawCaseId"], "响应缺少 externalCaseId"))
-            log(f"[{index}/{len(pending)}] 失败 {item['_rawCaseId']}: 响应缺少 externalCaseId")
+            failed.append((item["_target"], "响应缺少 externalCaseId"))
+            log(f"[{index}/{len(pending)}] 失败 {item['_target']}: 响应缺少 externalCaseId")
             continue
-        mapping[item["_rawCaseId"].upper()] = plm_id
+        mapping[item["_target"].upper()] = plm_id
+        originals[item["_target"].upper()] = item["_target"]
+        # 每条成功后立即落盘：进程中断后重跑不会重复创建已成功的用例。
+        write_map(map_path, raw, mapping, originals)
         created += 1
         if index == 1 or index % 20 == 0 or index == len(pending):
-            log(f"[{index}/{len(pending)}] {item['_rawCaseId']} -> {plm_id}")
+            log(f"[{index}/{len(pending)}] {item['_target']} -> {plm_id}")
         time.sleep(0.05)
 
-    if mapping:
-        write_map(map_path, mapping)
+    if created:
         log(f"映射已写入 {map_path}（{len(mapping)} 条）")
     log(f"完成：新建 {created}，失败 {len(failed)}")
     for raw_id, reason in failed[:20]:

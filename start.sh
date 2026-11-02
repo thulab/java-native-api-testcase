@@ -18,7 +18,7 @@ cd "$REPO_ROOT" || exit 1
 REPORTS_DIR="${PLM_REPORT_DIR:-reports}"
 AUTOMATION_TYPE="${PLM_AUTOMATION_TYPE:-session-java}"
 PYTHON="${PYTHON:-python3}"
-SUREFIRE_DIR="details/target/surefire-reports-plm"
+SUREFIRE_DIR="details/target/surefire-reports"
 TESTNG_TMP_DIR="details/target/plm-testng"
 
 usage() {
@@ -33,7 +33,9 @@ EOF
 }
 
 safe_name() {
-    printf '%s' "$1" | tr -c 'A-Za-z0-9_.-' '_'
+    # Java 用例编号（FQCN::method / PLM 编号）不含反斜杠，只需防止 '/'
+    # 造成路径穿越；保留大小写与 : @ 等字符，文件名保持 case-<原始 ID>.xml。
+    printf '%s' "$1" | tr '/' '_'
 }
 
 ensure_built() {
@@ -57,7 +59,7 @@ case_one() {
     method=$(printf '%s' "$lookup" | cut -f2)
 
     mkdir -p "$REPORTS_DIR"
-    target="$REPORTS_DIR/case-$(safe_name "$normalized").xml"
+    target="$REPORTS_DIR/case-$(safe_name "$1").xml"
     rm -f -- "$target"
 
     rm -rf -- "$TESTNG_TMP_DIR" "$SUREFIRE_DIR"
@@ -65,20 +67,15 @@ case_one() {
     xml="$TESTNG_TMP_DIR/single.xml"
     "$PYTHON" scripts/plm/plm_cases.py testng-xml "$normalized" "$xml" || return 1
 
-    ensure_built_if_needed() {
-        if [ ! -d "$REPO_ROOT/details/target/test-classes" ]; then
-            ensure_built || {
-                echo "[plm] 测试程序编译失败" >&2
-                return 1
-            }
-        fi
+    # 每次执行都做增量 install：保证 common 变更（含 ReadConfig 环境变量支持）进入
+    # 本地仓库；只检查 details/target/test-classes 会让 common 更新被静默跳过。
+    ensure_built || {
+        echo "[plm] 测试程序编译失败" >&2
+        return 1
     }
-
-    ensure_built_if_needed || return 1
 
     mvn -q -pl details test \
         -Dsurefire.suiteXmlFiles="$REPO_ROOT/$xml" \
-        -Dsurefire.reportsDirectory="$REPO_ROOT/$SUREFIRE_DIR" \
         -DfailIfNoTests=false
     rc=$?
 
