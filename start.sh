@@ -39,8 +39,9 @@ safe_name() {
 }
 
 ensure_built() {
-    # 只安装 common，保证 details 解析到最新公共模块；details 本身由 mvn test 编译，
-    # 避免每条用例都触发 details 的 package/shade（检查 common 变更是必须的）。
+    # 先安装根 POM（details 单模块构建需要 parent:master），再安装 common；
+    # details 本身由 mvn test/test-compile 编译，避免每条用例触发 package/shade。
+    mvn -q -N -DskipTests install || return 1
     mvn -q -DskipTests -pl common install || return 1
 }
 
