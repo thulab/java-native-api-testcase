@@ -305,16 +305,17 @@ def cmd_lookup(root: Path, case_id: str) -> int:
 
 
 def class_methods(root: Path, fqcn: str):
-    """从 testng.xml 读取该类登记的全部方法，保持原始顺序。
-
-    这些用例类大量依赖同类的 @BeforeClass / 前置方法（例如先 createTemplate
-    再 insert），单独跑一个方法会制造大量假失败。PLM 每条用例仍只回填目标
-    方法的 case_id，但执行时按原测试套件顺序跑完整类，保证前置状态成立。
-    """
+    """从 testng.xml 读取该类登记的方法；返回 [] 表示不在 XML 中，
+    返回 None 表示该类以自闭合标签登记（运行整个类）。"""
     path = root / TESTNG_XML
     if not path.is_file():
         return []
     text = read_text(path)
+    self_closing = re.search(
+        r'<class\s+name="' + re.escape(fqcn) + r'"\s*/>', text
+    )
+    if self_closing:
+        return None
     pattern = re.compile(
         r'<class\s+name="' + re.escape(fqcn) + r'"\s*>(.*?)</class>',
         re.DOTALL,
@@ -328,21 +329,27 @@ def class_methods(root: Path, fqcn: str):
 def cmd_testng_xml(root: Path, case_id: str, output: str) -> int:
     item = find_case(root, case_id)
     methods = class_methods(root, item["_fqcn"])
-    if not methods:
-        methods = [item["_method"]]
-    includes = "".join(
-        f'          <include name="{escape(method)}"/>\n' for method in methods
-    )
+    if methods is None:
+        class_block = f'      <class name="{escape(item["_fqcn"])}"/>\n'
+    else:
+        if not methods:
+            methods = [item["_method"]]
+        includes = "".join(
+            f'          <include name="{escape(method)}"/>\n' for method in methods
+        )
+        class_block = (
+            f'      <class name="{escape(item["_fqcn"])}">\n'
+            "        <methods>\n"
+            f"{includes}"
+            "        </methods>\n"
+            "      </class>\n"
+        )
     content = (
         '<?xml version="1.0" encoding="UTF-8"?>\n'
         '<suite name="plm-single" verbose="1" parallel="false">\n'
         '  <test name="plm-single">\n'
         "    <classes>\n"
-        f'      <class name="{escape(item["_fqcn"])}">\n'
-        "        <methods>\n"
-        f"{includes}"
-        "        </methods>\n"
-        "      </class>\n"
+        f"{class_block}"
         "    </classes>\n"
         "  </test>\n"
         "</suite>\n"
