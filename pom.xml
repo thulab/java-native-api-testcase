@@ -33,6 +33,14 @@
                 <artifactId>iotdb-session</artifactId>
                 <version>${iotdb.version}</version>
             </dependency>
+            <!-- TimechoDB 2.0.11 客户端源码产出的坐标是 com.timecho.iotdb:session-parent，
+                 它带 service-rpc / isession-parent / tsfile 等传递依赖；legacy iotdb-session
+                 坐标仅保留给旧版本使用。 -->
+            <dependency>
+                <groupId>com.timecho.iotdb</groupId>
+                <artifactId>session-parent</artifactId>
+                <version>${iotdb.version}</version>
+            </dependency>
             <dependency>
                 <groupId>org.apache.iotdb</groupId>
                 <artifactId>iotdb-jdbc</artifactId>

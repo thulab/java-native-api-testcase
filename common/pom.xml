@@ -13,8 +13,8 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.apache.iotdb</groupId>
-            <artifactId>iotdb-session</artifactId>
+            <groupId>com.timecho.iotdb</groupId>
+            <artifactId>session-parent</artifactId>
         </dependency>
         <dependency>
             <groupId>org.testng</groupId>
