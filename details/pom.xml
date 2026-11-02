@@ -25,6 +25,11 @@
             <groupId>org.apache.iotdb</groupId>
             <artifactId>iotdb-jdbc</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.apache.iotdb</groupId>
+            <artifactId>isession</artifactId>
+            <version>${iotdb.version}</version>
+        </dependency>
     </dependencies>
 
     <build>
