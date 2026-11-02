@@ -539,7 +539,7 @@ def build_mapping(defs: dict) -> dict:
         name = f"{module}｜{scenario}"
         mapping[case["plmCaseId"]] = {
             "name": name,
-            "description": f"验证{scenario}；对应测试程序用例 {target}。",
+            "description": f"验证{scenario}。",
             "target": target,
         }
     if missing:
@@ -677,11 +677,13 @@ def main() -> int:
             data = current["data"] or {}
             if data.get("name") != item["name"]:
                 mismatches.append(f"{cid} 名称不一致：{data.get('name')!r} != {item['name']!r}")
+            if data.get("description") != item["description"]:
+                mismatches.append(f"{cid} 描述不一致：{data.get('description')!r} != {item['description']!r}")
         if mismatches:
             print("校验失败：")
             print("\n".join(mismatches))
             return 1
-        print(f"校验通过：{len(defs['cases'])} 条名称均与映射一致。")
+        print(f"校验通过：{len(defs['cases'])} 条名称与描述均与映射一致。")
         return 0
 
     return 0
