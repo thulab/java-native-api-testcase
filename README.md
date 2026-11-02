@@ -68,6 +68,24 @@ mvn surefire-report:report
 
 ![](assets/16843000786395.jpg)
 
+## PLM 接入（start.sh）
+
+仓库根目录的 `start.sh` 是 TimechoPLM 测试程序统一入口，不改变原有 Maven 用法：
+
+```bash
+sh start.sh prepare                 # 编译测试程序（mvn install -DskipTests）
+sh start.sh list-cases --json       # 用例清单（stdout 仅 JSON）
+sh start.sh case <CASE_ID>          # 单条用例，产物写 $PLM_REPORT_DIR
+```
+
+- `PLM_AUTOMATION_TYPE`：PLM 绑定的仓库类型（默认 `session-java`）。
+- `PLM_REPORT_DIR`：JUnit XML 输出目录（相对仓库根，默认 `reports/`）。
+- `IOTDB_HOST` / `IOTDB_PORT` / `IOTDB_USER` / `IOTDB_PASSWORD`：覆盖 `config.properties` 的连接参数；不设置时行为与原配置一致。
+- 导入用例后由 `.plm-case-id-map.json` 维护 PLM 编号与 TestNG 目标（`FQCN::method`）的映射；同时支持扁平 `{自然ID: PLM编号}` 与 `{nmap, revmap}` 两种格式。
+- 导入脚本：`python3 scripts/plm/import_to_plm.py --product-id <id> --feature-id <id>`（PAT 只从环境变量读取；`--dry-run` 可先预览）。
+
+原有 `mvn clean package -DskipTests` 与 `mvn surefire-report:report` 流程不受影响。
+
 ## 覆盖率测试
 
 覆盖率测试通过 JaCoCo 采集 IoTDB 相关类的执行覆盖率。
