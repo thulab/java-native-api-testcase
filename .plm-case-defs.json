@@ -52,7 +52,9 @@
       "model": "通用",
       "featurePaths": [
         "接口模块/Java 原生接口/RPC 与工具"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2353",
+      "plmId": 6924
     },
     {
       "target": "org.apache.iotdb.api.test.rpc.TestRpcUtils::testTimeFormatAndPrecision",
@@ -62,7 +64,9 @@
       "model": "通用",
       "featurePaths": [
         "接口模块/Java 原生接口/RPC 与工具"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2354",
+      "plmId": 6925
     },
     {
       "target": "org.apache.iotdb.api.test.rpc.TestRpcUtils::testVerifyStatusListFailure",
@@ -72,7 +76,9 @@
       "model": "通用",
       "featurePaths": [
         "接口模块/Java 原生接口/RPC 与工具"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2355",
+      "plmId": 6926
     },
     {
       "target": "org.apache.iotdb.api.test.rpc.TestRpcUtils::testVerifySuccessAndFailureStatus",
@@ -82,7 +88,9 @@
       "model": "通用",
       "featurePaths": [
         "接口模块/Java 原生接口/RPC 与工具"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2356",
+      "plmId": 6927
     },
     {
       "target": "org.apache.iotdb.api.test.rpc.TestRpcUtils::testVerifySuccessWithRedirection",
@@ -92,7 +100,9 @@
       "model": "通用",
       "featurePaths": [
         "接口模块/Java 原生接口/RPC 与工具"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2357",
+      "plmId": 6928
     },
     {
       "target": "org.apache.iotdb.api.test.rpc.TestRpcUtils::testVerifySuccessWithRedirectionForMultiDevices",
@@ -102,7 +112,9 @@
       "model": "通用",
       "featurePaths": [
         "接口模块/Java 原生接口/RPC 与工具"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2358",
+      "plmId": 6929
     },
     {
       "target": "org.apache.iotdb.api.test.table.data.TestInsertError::insertError1",
@@ -112,7 +124,9 @@
       "model": "表模型",
       "featurePaths": [
         "接口模块/Java 原生接口/表模型数据"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2359",
+      "plmId": 6930
     },
     {
       "target": "org.apache.iotdb.api.test.table.data.TestInsertError::insertError2",
@@ -122,7 +136,9 @@
       "model": "表模型",
       "featurePaths": [
         "接口模块/Java 原生接口/表模型数据"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2360",
+      "plmId": 6931
     },
     {
       "target": "org.apache.iotdb.api.test.table.data.TestInsertNormal::insertAllNull",
@@ -132,7 +148,9 @@
       "model": "表模型",
       "featurePaths": [
         "接口模块/Java 原生接口/表模型数据"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2361",
+      "plmId": 6932
     },
     {
       "target": "org.apache.iotdb.api.test.table.data.TestInsertNormal::insertAutoCreateColumn",
@@ -142,7 +160,9 @@
       "model": "表模型",
       "featurePaths": [
         "接口模块/Java 原生接口/表模型数据"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2362",
+      "plmId": 6933
     },
     {
       "target": "org.apache.iotdb.api.test.table.data.TestInsertNormal::insertAutoCreateTable",
@@ -152,7 +172,9 @@
       "model": "表模型",
       "featurePaths": [
         "接口模块/Java 原生接口/表模型数据"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2363",
+      "plmId": 6934
     },
     {
       "target": "org.apache.iotdb.api.test.table.data.TestInsertNormal::insertNoNull",
@@ -162,7 +184,9 @@
       "model": "表模型",
       "featurePaths": [
         "接口模块/Java 原生接口/表模型数据"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2364",
+      "plmId": 6935
     },
     {
       "target": "org.apache.iotdb.api.test.table.data.TestInsertNormal::insertNull",
@@ -172,7 +196,9 @@
       "model": "表模型",
       "featurePaths": [
         "接口模块/Java 原生接口/表模型数据"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2365",
+      "plmId": 6936
     },
     {
       "target": "org.apache.iotdb.api.test.table.data.TestInsertNormal::insertOnlyAttr",
@@ -182,7 +208,9 @@
       "model": "表模型",
       "featurePaths": [
         "接口模块/Java 原生接口/表模型数据"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2366",
+      "plmId": 6937
     },
     {
       "target": "org.apache.iotdb.api.test.table.data.TestInsertNormal::insertOnlyField",
@@ -192,7 +220,9 @@
       "model": "表模型",
       "featurePaths": [
         "接口模块/Java 原生接口/表模型数据"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2367",
+      "plmId": 6938
     },
     {
       "target": "org.apache.iotdb.api.test.table.data.TestInsertNormal::insertOnlyTag",
@@ -202,7 +232,9 @@
       "model": "表模型",
       "featurePaths": [
         "接口模块/Java 原生接口/表模型数据"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2368",
+      "plmId": 6939
     },
     {
       "target": "org.apache.iotdb.api.test.table.data.TestInsertNormal::insertOnlyTagAndAttr",
@@ -212,7 +244,9 @@
       "model": "表模型",
       "featurePaths": [
         "接口模块/Java 原生接口/表模型数据"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2369",
+      "plmId": 6940
     },
     {
       "target": "org.apache.iotdb.api.test.table.data.TestInsertNormal::insertSQL",
@@ -222,7 +256,9 @@
       "model": "表模型",
       "featurePaths": [
         "接口模块/Java 原生接口/表模型数据"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2370",
+      "plmId": 6941
     },
     {
       "target": "org.apache.iotdb.api.test.table.data.TestSelectNormal::testDataIteratorException",
@@ -232,7 +268,9 @@
       "model": "表模型",
       "featurePaths": [
         "接口模块/Java 原生接口/表模型数据"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2371",
+      "plmId": 6942
     },
     {
       "target": "org.apache.iotdb.api.test.table.data.TestSelectNormal::testDataIteratorNormal",
@@ -242,7 +280,9 @@
       "model": "表模型",
       "featurePaths": [
         "接口模块/Java 原生接口/表模型数据"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2372",
+      "plmId": 6943
     },
     {
       "target": "org.apache.iotdb.api.test.table.data.TestSelectNormal::testExtractTimeFunction",
@@ -252,7 +292,9 @@
       "model": "表模型",
       "featurePaths": [
         "接口模块/Java 原生接口/表模型数据"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2373",
+      "plmId": 6944
     },
     {
       "target": "org.apache.iotdb.api.test.table.data.TestSelectNormal::testFieldNormal",
@@ -262,7 +304,9 @@
       "model": "表模型",
       "featurePaths": [
         "接口模块/Java 原生接口/表模型数据"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2374",
+      "plmId": 6945
     },
     {
       "target": "org.apache.iotdb.api.test.table.data.TestSelectNormal::testOther",
@@ -272,7 +316,9 @@
       "model": "表模型",
       "featurePaths": [
         "接口模块/Java 原生接口/表模型数据"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2375",
+      "plmId": 6946
     },
     {
       "target": "org.apache.iotdb.api.test.table.data.TestSelectNormal::testSQL",
@@ -282,7 +328,9 @@
       "model": "表模型",
       "featurePaths": [
         "接口模块/Java 原生接口/表模型数据"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2376",
+      "plmId": 6947
     },
     {
       "target": "org.apache.iotdb.api.test.table.database.TestDataBaseNormal::createDataBase",
@@ -292,7 +340,9 @@
       "model": "表模型",
       "featurePaths": [
         "接口模块/Java 原生接口/表模型数据"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2377",
+      "plmId": 6948
     },
     {
       "target": "org.apache.iotdb.api.test.table.database.TestDataBaseNormal::dropDataBase",
@@ -302,7 +352,9 @@
       "model": "表模型",
       "featurePaths": [
         "接口模块/Java 原生接口/表模型数据"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2378",
+      "plmId": 6949
     },
     {
       "target": "org.apache.iotdb.api.test.table.database.TestDataBaseNormal::showDataBase",
@@ -312,7 +364,9 @@
       "model": "表模型",
       "featurePaths": [
         "接口模块/Java 原生接口/表模型数据"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2379",
+      "plmId": 6950
     },
     {
       "target": "org.apache.iotdb.api.test.table.database.TestDataBaseNormal::useDataBase",
@@ -322,7 +376,9 @@
       "model": "表模型",
       "featurePaths": [
         "接口模块/Java 原生接口/表模型数据"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2380",
+      "plmId": 6951
     },
     {
       "target": "org.apache.iotdb.api.test.table.session.TestTableSessionBuilder::testAll",
@@ -332,7 +388,9 @@
       "model": "表模型",
       "featurePaths": [
         "接口模块/Java 原生接口/表模型会话"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2381",
+      "plmId": 6952
     },
     {
       "target": "org.apache.iotdb.api.test.table.session.TestTableSessionBuilder::testConnectionTimeoutInMs",
@@ -342,7 +400,9 @@
       "model": "表模型",
       "featurePaths": [
         "接口模块/Java 原生接口/表模型会话"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2382",
+      "plmId": 6953
     },
     {
       "target": "org.apache.iotdb.api.test.table.session.TestTableSessionBuilder::testDataBase",
@@ -352,7 +412,9 @@
       "model": "表模型",
       "featurePaths": [
         "接口模块/Java 原生接口/表模型会话"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2383",
+      "plmId": 6954
     },
     {
       "target": "org.apache.iotdb.api.test.table.session.TestTableSessionBuilder::testDefault",
@@ -362,7 +424,9 @@
       "model": "表模型",
       "featurePaths": [
         "接口模块/Java 原生接口/表模型会话"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2384",
+      "plmId": 6955
     },
     {
       "target": "org.apache.iotdb.api.test.table.session.TestTableSessionBuilder::testEnableAutoFetch",
@@ -372,7 +436,9 @@
       "model": "表模型",
       "featurePaths": [
         "接口模块/Java 原生接口/表模型会话"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2385",
+      "plmId": 6956
     },
     {
       "target": "org.apache.iotdb.api.test.table.session.TestTableSessionBuilder::testEnableRedirection",
@@ -382,7 +448,9 @@
       "model": "表模型",
       "featurePaths": [
         "接口模块/Java 原生接口/表模型会话"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2386",
+      "plmId": 6957
     },
     {
       "target": "org.apache.iotdb.api.test.table.session.TestTableSessionBuilder::testFetchSize",
@@ -392,7 +460,9 @@
       "model": "表模型",
       "featurePaths": [
         "接口模块/Java 原生接口/表模型会话"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2387",
+      "plmId": 6958
     },
     {
       "target": "org.apache.iotdb.api.test.table.session.TestTableSessionBuilder::testMaxRetryCount",
@@ -402,7 +472,9 @@
       "model": "表模型",
       "featurePaths": [
         "接口模块/Java 原生接口/表模型会话"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2388",
+      "plmId": 6959
     },
     {
       "target": "org.apache.iotdb.api.test.table.session.TestTableSessionBuilder::testNodeUrls",
@@ -412,7 +484,9 @@
       "model": "表模型",
       "featurePaths": [
         "接口模块/Java 原生接口/表模型会话"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2389",
+      "plmId": 6960
     },
     {
       "target": "org.apache.iotdb.api.test.table.session.TestTableSessionBuilder::testQueryTimeoutInMs",
@@ -422,7 +496,9 @@
       "model": "表模型",
       "featurePaths": [
         "接口模块/Java 原生接口/表模型会话"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2390",
+      "plmId": 6961
     },
     {
       "target": "org.apache.iotdb.api.test.table.session.TestTableSessionBuilder::testRetryIntervalInMs",
@@ -432,7 +508,9 @@
       "model": "表模型",
       "featurePaths": [
         "接口模块/Java 原生接口/表模型会话"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2391",
+      "plmId": 6962
     },
     {
       "target": "org.apache.iotdb.api.test.table.session.TestTableSessionBuilder::testThriftDefaultBufferSize",
@@ -442,7 +520,9 @@
       "model": "表模型",
       "featurePaths": [
         "接口模块/Java 原生接口/表模型会话"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2392",
+      "plmId": 6963
     },
     {
       "target": "org.apache.iotdb.api.test.table.session.TestTableSessionBuilder::testThriftMaxFrameSize",
@@ -452,7 +532,9 @@
       "model": "表模型",
       "featurePaths": [
         "接口模块/Java 原生接口/表模型会话"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2393",
+      "plmId": 6964
     },
     {
       "target": "org.apache.iotdb.api.test.table.session.TestTableSessionBuilder::testUserNameAndPassword",
@@ -462,7 +544,9 @@
       "model": "表模型",
       "featurePaths": [
         "接口模块/Java 原生接口/表模型会话"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2394",
+      "plmId": 6965
     },
     {
       "target": "org.apache.iotdb.api.test.table.session.TestTableSessionBuilder::testZoneId",
@@ -472,7 +556,9 @@
       "model": "表模型",
       "featurePaths": [
         "接口模块/Java 原生接口/表模型会话"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2395",
+      "plmId": 6966
     },
     {
       "target": "org.apache.iotdb.api.test.table.session.TestTableSessionBuilderError::testErrorNodeUrlsHost",
@@ -482,7 +568,9 @@
       "model": "表模型",
       "featurePaths": [
         "接口模块/Java 原生接口/表模型会话"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2396",
+      "plmId": 6967
     },
     {
       "target": "org.apache.iotdb.api.test.table.session.TestTableSessionBuilderError::testErrorNodeUrlsPort",
@@ -492,7 +580,9 @@
       "model": "表模型",
       "featurePaths": [
         "接口模块/Java 原生接口/表模型会话"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2397",
+      "plmId": 6968
     },
     {
       "target": "org.apache.iotdb.api.test.table.session.TestTableSessionBuilderError::testErrorUserNameAndPassword",
@@ -502,7 +592,9 @@
       "model": "表模型",
       "featurePaths": [
         "接口模块/Java 原生接口/表模型会话"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2398",
+      "plmId": 6969
     },
     {
       "target": "org.apache.iotdb.api.test.table.session.TestTableSessionPoolBuilder::testAll",
@@ -512,7 +604,9 @@
       "model": "表模型",
       "featurePaths": [
         "接口模块/Java 原生接口/表模型会话"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2399",
+      "plmId": 6970
     },
     {
       "target": "org.apache.iotdb.api.test.table.session.TestTableSessionPoolBuilder::testConnectionTimeoutInMs",
@@ -522,7 +616,9 @@
       "model": "表模型",
       "featurePaths": [
         "接口模块/Java 原生接口/表模型会话"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2400",
+      "plmId": 6971
     },
     {
       "target": "org.apache.iotdb.api.test.table.session.TestTableSessionPoolBuilder::testDataBase",
@@ -532,7 +628,9 @@
       "model": "表模型",
       "featurePaths": [
         "接口模块/Java 原生接口/表模型会话"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2401",
+      "plmId": 6972
     },
     {
       "target": "org.apache.iotdb.api.test.table.session.TestTableSessionPoolBuilder::testDefault",
@@ -542,7 +640,9 @@
       "model": "表模型",
       "featurePaths": [
         "接口模块/Java 原生接口/表模型会话"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2402",
+      "plmId": 6973
     },
     {
       "target": "org.apache.iotdb.api.test.table.session.TestTableSessionPoolBuilder::testEnableAutoFetch",
@@ -552,7 +652,9 @@
       "model": "表模型",
       "featurePaths": [
         "接口模块/Java 原生接口/表模型会话"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2403",
+      "plmId": 6974
     },
     {
       "target": "org.apache.iotdb.api.test.table.session.TestTableSessionPoolBuilder::testEnableRedirection",
@@ -562,7 +664,9 @@
       "model": "表模型",
       "featurePaths": [
         "接口模块/Java 原生接口/表模型会话"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2404",
+      "plmId": 6975
     },
     {
       "target": "org.apache.iotdb.api.test.table.session.TestTableSessionPoolBuilder::testFetchSize",
@@ -572,7 +676,9 @@
       "model": "表模型",
       "featurePaths": [
         "接口模块/Java 原生接口/表模型会话"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2405",
+      "plmId": 6976
     },
     {
       "target": "org.apache.iotdb.api.test.table.session.TestTableSessionPoolBuilder::testMaxRetryCount",
@@ -582,7 +688,9 @@
       "model": "表模型",
       "featurePaths": [
         "接口模块/Java 原生接口/表模型会话"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2406",
+      "plmId": 6977
     },
     {
       "target": "org.apache.iotdb.api.test.table.session.TestTableSessionPoolBuilder::testMaxSize",
@@ -592,7 +700,9 @@
       "model": "表模型",
       "featurePaths": [
         "接口模块/Java 原生接口/表模型会话"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2407",
+      "plmId": 6978
     },
     {
       "target": "org.apache.iotdb.api.test.table.session.TestTableSessionPoolBuilder::testNodeUrls",
@@ -602,7 +712,9 @@
       "model": "表模型",
       "featurePaths": [
         "接口模块/Java 原生接口/表模型会话"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2408",
+      "plmId": 6979
     },
     {
       "target": "org.apache.iotdb.api.test.table.session.TestTableSessionPoolBuilder::testQueryTimeoutInMs",
@@ -612,7 +724,9 @@
       "model": "表模型",
       "featurePaths": [
         "接口模块/Java 原生接口/表模型会话"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2409",
+      "plmId": 6980
     },
     {
       "target": "org.apache.iotdb.api.test.table.session.TestTableSessionPoolBuilder::testRetryIntervalInMs",
@@ -622,7 +736,9 @@
       "model": "表模型",
       "featurePaths": [
         "接口模块/Java 原生接口/表模型会话"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2410",
+      "plmId": 6981
     },
     {
       "target": "org.apache.iotdb.api.test.table.session.TestTableSessionPoolBuilder::testThriftDefaultBufferSize",
@@ -632,7 +748,9 @@
       "model": "表模型",
       "featurePaths": [
         "接口模块/Java 原生接口/表模型会话"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2411",
+      "plmId": 6982
     },
     {
       "target": "org.apache.iotdb.api.test.table.session.TestTableSessionPoolBuilder::testThriftMaxFrameSize",
@@ -642,7 +760,9 @@
       "model": "表模型",
       "featurePaths": [
         "接口模块/Java 原生接口/表模型会话"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2412",
+      "plmId": 6983
     },
     {
       "target": "org.apache.iotdb.api.test.table.session.TestTableSessionPoolBuilder::testUserNameAndPassword",
@@ -652,7 +772,9 @@
       "model": "表模型",
       "featurePaths": [
         "接口模块/Java 原生接口/表模型会话"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2413",
+      "plmId": 6984
     },
     {
       "target": "org.apache.iotdb.api.test.table.session.TestTableSessionPoolBuilder::testZoneId",
@@ -662,7 +784,9 @@
       "model": "表模型",
       "featurePaths": [
         "接口模块/Java 原生接口/表模型会话"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2414",
+      "plmId": 6985
     },
     {
       "target": "org.apache.iotdb.api.test.table.table.TestTableNormal::createTable",
@@ -672,7 +796,9 @@
       "model": "表模型",
       "featurePaths": [
         "接口模块/Java 原生接口/表模型数据"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2415",
+      "plmId": 6986
     },
     {
       "target": "org.apache.iotdb.api.test.table.table.TestTableNormal::describe",
@@ -682,7 +808,9 @@
       "model": "表模型",
       "featurePaths": [
         "接口模块/Java 原生接口/表模型数据"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2416",
+      "plmId": 6987
     },
     {
       "target": "org.apache.iotdb.api.test.table.table.TestTableNormal::showTables",
@@ -692,7 +820,9 @@
       "model": "表模型",
       "featurePaths": [
         "接口模块/Java 原生接口/表模型数据"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2417",
+      "plmId": 6988
     },
     {
       "target": "org.apache.iotdb.api.test.tree.data.insert.TestInsertAlignedRecordNormal::insertAlignedRecord",
@@ -702,7 +832,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型写入"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2418",
+      "plmId": 6989
     },
     {
       "target": "org.apache.iotdb.api.test.tree.data.insert.TestInsertAlignedRecordNormal::insertAlignedRecord2",
@@ -712,7 +844,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型写入"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2419",
+      "plmId": 6990
     },
     {
       "target": "org.apache.iotdb.api.test.tree.data.insert.TestInsertAlignedRecordsNormal::insertAlignedRecords",
@@ -722,7 +856,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型写入"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2420",
+      "plmId": 6991
     },
     {
       "target": "org.apache.iotdb.api.test.tree.data.insert.TestInsertAlignedRecordsOfOneDeviceNormal::insertAlignedRecordsOfOneDevice",
@@ -732,7 +868,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型写入"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2421",
+      "plmId": 6992
     },
     {
       "target": "org.apache.iotdb.api.test.tree.data.insert.TestInsertAlignedTabletNormal::insertAlignedTablet",
@@ -742,7 +880,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型写入"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2422",
+      "plmId": 6993
     },
     {
       "target": "org.apache.iotdb.api.test.tree.data.insert.TestInsertAlignedTabletsNormal::insertAlignedTables",
@@ -752,7 +892,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型写入"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2423",
+      "plmId": 6994
     },
     {
       "target": "org.apache.iotdb.api.test.tree.data.insert.TestInsertAlignedTabletsNormal::insertAlignedTables2",
@@ -762,7 +904,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型写入"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2424",
+      "plmId": 6995
     },
     {
       "target": "org.apache.iotdb.api.test.tree.data.insert.TestInsertAlignedTabletsNormal::insertAlignedTablets3",
@@ -772,7 +916,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型写入"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2425",
+      "plmId": 6996
     },
     {
       "target": "org.apache.iotdb.api.test.tree.data.insert.TestInsertError::testInsertAlignedRecordsOfOneDeviceError1",
@@ -782,7 +928,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型写入"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2426",
+      "plmId": 6997
     },
     {
       "target": "org.apache.iotdb.api.test.tree.data.insert.TestInsertError::testInsertAlignedRecordError1",
@@ -792,7 +940,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型写入"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2427",
+      "plmId": 6998
     },
     {
       "target": "org.apache.iotdb.api.test.tree.data.insert.TestInsertError::testInsertAlignedRecordError3",
@@ -802,7 +952,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型写入"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2428",
+      "plmId": 6999
     },
     {
       "target": "org.apache.iotdb.api.test.tree.data.insert.TestInsertError::testInsertAlignedRecordInferenceError1",
@@ -812,7 +964,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型写入"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2429",
+      "plmId": 7000
     },
     {
       "target": "org.apache.iotdb.api.test.tree.data.insert.TestInsertError::testInsertAlignedRecordsError1",
@@ -822,7 +976,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型写入"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2430",
+      "plmId": 7001
     },
     {
       "target": "org.apache.iotdb.api.test.tree.data.insert.TestInsertError::testInsertAlignedRecordsError3",
@@ -832,7 +988,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型写入"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2431",
+      "plmId": 7002
     },
     {
       "target": "org.apache.iotdb.api.test.tree.data.insert.TestInsertError::testInsertAlignedRecordsInferenceError1",
@@ -842,7 +1000,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型写入"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2432",
+      "plmId": 7003
     },
     {
       "target": "org.apache.iotdb.api.test.tree.data.insert.TestInsertError::testInsertAlignedStringRecordsOfOneDeviceInferenceError1",
@@ -852,7 +1012,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型写入"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2433",
+      "plmId": 7004
     },
     {
       "target": "org.apache.iotdb.api.test.tree.data.insert.TestInsertError::testInsertAlignedTabletError1",
@@ -862,7 +1024,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型写入"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2434",
+      "plmId": 7005
     },
     {
       "target": "org.apache.iotdb.api.test.tree.data.insert.TestInsertError::testInsertAlignedTabletError2",
@@ -872,7 +1036,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型写入"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2435",
+      "plmId": 7006
     },
     {
       "target": "org.apache.iotdb.api.test.tree.data.insert.TestInsertError::testInsertAlignedTabletsError1",
@@ -882,7 +1048,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型写入"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2436",
+      "plmId": 7007
     },
     {
       "target": "org.apache.iotdb.api.test.tree.data.insert.TestInsertError::testInsertAlignedTabletsError2",
@@ -892,7 +1060,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型写入"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2437",
+      "plmId": 7008
     },
     {
       "target": "org.apache.iotdb.api.test.tree.data.insert.TestInsertError::testInsertRecordError1",
@@ -902,7 +1072,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型写入"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2438",
+      "plmId": 7009
     },
     {
       "target": "org.apache.iotdb.api.test.tree.data.insert.TestInsertError::testInsertRecordError3",
@@ -912,7 +1084,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型写入"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2439",
+      "plmId": 7010
     },
     {
       "target": "org.apache.iotdb.api.test.tree.data.insert.TestInsertError::testInsertRecordInferenceError1",
@@ -922,7 +1096,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型写入"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2440",
+      "plmId": 7011
     },
     {
       "target": "org.apache.iotdb.api.test.tree.data.insert.TestInsertError::testInsertRecordsError1",
@@ -932,7 +1108,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型写入"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2441",
+      "plmId": 7012
     },
     {
       "target": "org.apache.iotdb.api.test.tree.data.insert.TestInsertError::testInsertRecordsError3",
@@ -942,7 +1120,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型写入"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2442",
+      "plmId": 7013
     },
     {
       "target": "org.apache.iotdb.api.test.tree.data.insert.TestInsertError::testInsertRecordsInferenceError1",
@@ -952,7 +1132,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型写入"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2443",
+      "plmId": 7014
     },
     {
       "target": "org.apache.iotdb.api.test.tree.data.insert.TestInsertError::testInsertRecordsOfOneDeviceError1",
@@ -962,7 +1144,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型写入"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2444",
+      "plmId": 7015
     },
     {
       "target": "org.apache.iotdb.api.test.tree.data.insert.TestInsertError::testInsertStringRecordsOfOneDeviceInferenceError1",
@@ -972,7 +1156,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型写入"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2445",
+      "plmId": 7016
     },
     {
       "target": "org.apache.iotdb.api.test.tree.data.insert.TestInsertError::testInsertTabletError1",
@@ -982,7 +1168,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型写入"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2446",
+      "plmId": 7017
     },
     {
       "target": "org.apache.iotdb.api.test.tree.data.insert.TestInsertError::testInsertTabletError2",
@@ -992,7 +1180,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型写入"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2447",
+      "plmId": 7018
     },
     {
       "target": "org.apache.iotdb.api.test.tree.data.insert.TestInsertError::testInsertTabletsError1",
@@ -1002,7 +1192,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型写入"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2448",
+      "plmId": 7019
     },
     {
       "target": "org.apache.iotdb.api.test.tree.data.insert.TestInsertError::testInsertTabletsError2",
@@ -1012,7 +1204,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型写入"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2449",
+      "plmId": 7020
     },
     {
       "target": "org.apache.iotdb.api.test.tree.data.insert.TestInsertError::testTSError",
@@ -1022,7 +1216,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型写入"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2450",
+      "plmId": 7021
     },
     {
       "target": "org.apache.iotdb.api.test.tree.data.insert.TestInsertParams::testInsertRecord_datatypeEmpty",
@@ -1032,7 +1228,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型写入"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2451",
+      "plmId": 7022
     },
     {
       "target": "org.apache.iotdb.api.test.tree.data.insert.TestInsertParams::testInsertRecord_sameTS",
@@ -1042,7 +1240,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型写入"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2452",
+      "plmId": 7023
     },
     {
       "target": "org.apache.iotdb.api.test.tree.data.insert.TestInsertParams::testInsertRecord_sizedatatypeDup",
@@ -1052,7 +1252,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型写入"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2453",
+      "plmId": 7024
     },
     {
       "target": "org.apache.iotdb.api.test.tree.data.insert.TestInsertParams::testInsertRecord_sizeTSNameDup",
@@ -1062,7 +1264,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型写入"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2454",
+      "plmId": 7025
     },
     {
       "target": "org.apache.iotdb.api.test.tree.data.insert.TestInsertParams::testInsertRecord_sizeTSNameOver",
@@ -1072,7 +1276,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型写入"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2455",
+      "plmId": 7026
     },
     {
       "target": "org.apache.iotdb.api.test.tree.data.insert.TestInsertParams::testInsertRecord_sizeValuesDup",
@@ -1082,7 +1288,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型写入"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2456",
+      "plmId": 7027
     },
     {
       "target": "org.apache.iotdb.api.test.tree.data.insert.TestInsertParams::testInsertRecord_timestampFuture",
@@ -1092,7 +1300,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型写入"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2457",
+      "plmId": 7028
     },
     {
       "target": "org.apache.iotdb.api.test.tree.data.insert.TestInsertParams::testInsertRecord_timestampNegative",
@@ -1102,7 +1312,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型写入"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2458",
+      "plmId": 7029
     },
     {
       "target": "org.apache.iotdb.api.test.tree.data.insert.TestInsertParams::testInsertRecord_tsNameEmpty",
@@ -1112,7 +1324,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型写入"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2459",
+      "plmId": 7030
     },
     {
       "target": "org.apache.iotdb.api.test.tree.data.insert.TestInsertParams::testInsertRecord_valuesEmpty",
@@ -1122,7 +1336,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型写入"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2460",
+      "plmId": 7031
     },
     {
       "target": "org.apache.iotdb.api.test.tree.data.insert.TestInsertParams::testInsertRecord_valuesErrorType",
@@ -1132,7 +1348,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型写入"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2461",
+      "plmId": 7032
     },
     {
       "target": "org.apache.iotdb.api.test.tree.data.insert.TestInsertParams::testInsertRecord_valuesNull",
@@ -1142,7 +1360,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型写入"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2462",
+      "plmId": 7033
     },
     {
       "target": "org.apache.iotdb.api.test.tree.data.insert.TestInsertParams::testInsertRecord_valuesNullIn",
@@ -1152,7 +1372,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型写入"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2463",
+      "plmId": 7034
     },
     {
       "target": "org.apache.iotdb.api.test.tree.data.insert.TestInsertParams::testInsertRecords_sameTS",
@@ -1162,7 +1384,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型写入"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2464",
+      "plmId": 7035
     },
     {
       "target": "org.apache.iotdb.api.test.tree.data.insert.TestInsertParams::testInsertTablet_NoValue",
@@ -1172,7 +1396,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型写入"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2465",
+      "plmId": 7036
     },
     {
       "target": "org.apache.iotdb.api.test.tree.data.insert.TestInsertParams::testInsertTablet_rowIndex0",
@@ -1182,7 +1408,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型写入"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2466",
+      "plmId": 7037
     },
     {
       "target": "org.apache.iotdb.api.test.tree.data.insert.TestInsertParams::testInsertTablet_rowIndex2",
@@ -1192,7 +1420,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型写入"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2467",
+      "plmId": 7038
     },
     {
       "target": "org.apache.iotdb.api.test.tree.data.insert.TestInsertParams::testInsertTablet_rowIndexNegative",
@@ -1202,7 +1432,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型写入"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2468",
+      "plmId": 7039
     },
     {
       "target": "org.apache.iotdb.api.test.tree.data.insert.TestInsertParams::testInsertTablet_sameTS",
@@ -1212,7 +1444,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型写入"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2469",
+      "plmId": 7040
     },
     {
       "target": "org.apache.iotdb.api.test.tree.data.insert.TestInsertParams::testInsertTablet_schemaListNull",
@@ -1222,7 +1456,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型写入"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2470",
+      "plmId": 7041
     },
     {
       "target": "org.apache.iotdb.api.test.tree.data.insert.TestInsertParams::testInsertTablet_schemaListNullIn",
@@ -1232,7 +1468,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型写入"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2471",
+      "plmId": 7042
     },
     {
       "target": "org.apache.iotdb.api.test.tree.data.insert.TestInsertParams::testInsertTablet_schemaListNullIn2",
@@ -1242,7 +1480,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型写入"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2472",
+      "plmId": 7043
     },
     {
       "target": "org.apache.iotdb.api.test.tree.data.insert.TestInsertParams::testInsertTablet_schemaOutOfIndex",
@@ -1252,7 +1492,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型写入"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2473",
+      "plmId": 7044
     },
     {
       "target": "org.apache.iotdb.api.test.tree.data.insert.TestInsertParams::testInsertTablet_timestampFuture",
@@ -1262,7 +1504,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型写入"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2474",
+      "plmId": 7045
     },
     {
       "target": "org.apache.iotdb.api.test.tree.data.insert.TestInsertParams::testInsertTablet_timestampNegative",
@@ -1272,7 +1516,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型写入"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2475",
+      "plmId": 7046
     },
     {
       "target": "org.apache.iotdb.api.test.tree.data.insert.TestInsertParams::testInsertTablet_typeError",
@@ -1282,7 +1528,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型写入"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2476",
+      "plmId": 7047
     },
     {
       "target": "org.apache.iotdb.api.test.tree.data.insert.TestInsertParams::testInsertTablet_typeError2",
@@ -1292,7 +1540,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型写入"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2477",
+      "plmId": 7048
     },
     {
       "target": "org.apache.iotdb.api.test.tree.data.insert.TestInsertRecordNormal::insertRecord1",
@@ -1302,7 +1552,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型写入"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2478",
+      "plmId": 7049
     },
     {
       "target": "org.apache.iotdb.api.test.tree.data.insert.TestInsertRecordNormal::insertRecord2",
@@ -1312,7 +1564,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型写入"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2479",
+      "plmId": 7050
     },
     {
       "target": "org.apache.iotdb.api.test.tree.data.insert.TestInsertRecordsNormal::insertRecords",
@@ -1322,7 +1576,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型写入"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2480",
+      "plmId": 7051
     },
     {
       "target": "org.apache.iotdb.api.test.tree.data.insert.TestInsertRecordsNormal::insertRecords2",
@@ -1332,7 +1588,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型写入"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2481",
+      "plmId": 7052
     },
     {
       "target": "org.apache.iotdb.api.test.tree.data.insert.TestInsertRecordsOfOneDeviceNormal::insertRecordsOfOneDevice",
@@ -1342,7 +1600,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型写入"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2482",
+      "plmId": 7053
     },
     {
       "target": "org.apache.iotdb.api.test.tree.data.insert.TestInsertTabletNormal::testSessionInsertTable",
@@ -1352,7 +1612,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型写入"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2483",
+      "plmId": 7054
     },
     {
       "target": "org.apache.iotdb.api.test.tree.data.insert.TestInsertTabletNormal::testSessionPoolInsertTable",
@@ -1362,7 +1624,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型写入"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2484",
+      "plmId": 7055
     },
     {
       "target": "org.apache.iotdb.api.test.tree.data.insert.TestInsertTabletsNormal::insertTables",
@@ -1372,7 +1636,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型写入"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2485",
+      "plmId": 7056
     },
     {
       "target": "org.apache.iotdb.api.test.tree.database.TestDataBase::test1",
@@ -1382,7 +1648,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型元数据与会话"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2486",
+      "plmId": 7057
     },
     {
       "target": "org.apache.iotdb.api.test.tree.database.TestDataBase::testDeleteStorageGroup_error",
@@ -1392,7 +1660,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型元数据与会话"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2487",
+      "plmId": 7058
     },
     {
       "target": "org.apache.iotdb.api.test.tree.database.TestDataBase::testDeleteStorageGroup_exact_normal",
@@ -1402,7 +1672,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型元数据与会话"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2488",
+      "plmId": 7059
     },
     {
       "target": "org.apache.iotdb.api.test.tree.database.TestDataBase::testDeleteStorageGroup_match_normal",
@@ -1412,7 +1684,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型元数据与会话"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2489",
+      "plmId": 7060
     },
     {
       "target": "org.apache.iotdb.api.test.tree.database.TestDataBase::testDeleteStorageGroups_empty",
@@ -1422,7 +1696,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型元数据与会话"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2490",
+      "plmId": 7061
     },
     {
       "target": "org.apache.iotdb.api.test.tree.database.TestDataBase::testDeleteStorageGroups_error",
@@ -1432,7 +1708,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型元数据与会话"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2491",
+      "plmId": 7062
     },
     {
       "target": "org.apache.iotdb.api.test.tree.database.TestDataBase::testDeleteStorageGroups_min",
@@ -1442,7 +1720,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型元数据与会话"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2492",
+      "plmId": 7063
     },
     {
       "target": "org.apache.iotdb.api.test.tree.database.TestDataBase::testSetStorageGroup_error",
@@ -1452,7 +1732,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型元数据与会话"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2493",
+      "plmId": 7064
     },
     {
       "target": "org.apache.iotdb.api.test.tree.database.TestDataBase::testSetStorageGroup_keyword_normal",
@@ -1462,7 +1744,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型元数据与会话"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2494",
+      "plmId": 7065
     },
     {
       "target": "org.apache.iotdb.api.test.tree.database.TestDataBase::testSetStorageGroup_normal",
@@ -1472,7 +1756,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型元数据与会话"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2495",
+      "plmId": 7066
     },
     {
       "target": "org.apache.iotdb.api.test.tree.database.TestDatabaseParams::testCreateChild",
@@ -1482,7 +1768,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型元数据与会话"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2496",
+      "plmId": 7067
     },
     {
       "target": "org.apache.iotdb.api.test.tree.database.TestDatabaseParams::testCreateDatabaseEmpty",
@@ -1492,7 +1780,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型元数据与会话"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2497",
+      "plmId": 7068
     },
     {
       "target": "org.apache.iotdb.api.test.tree.database.TestDatabaseParams::testCreateDatabaseNull",
@@ -1502,7 +1792,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型元数据与会话"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2498",
+      "plmId": 7069
     },
     {
       "target": "org.apache.iotdb.api.test.tree.database.TestDatabaseParams::testDeleteDatabaseEmpty",
@@ -1512,7 +1804,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型元数据与会话"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2499",
+      "plmId": 7070
     },
     {
       "target": "org.apache.iotdb.api.test.tree.database.TestDatabaseParams::testDeleteDatabaseNonExist",
@@ -1522,7 +1816,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型元数据与会话"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2500",
+      "plmId": 7071
     },
     {
       "target": "org.apache.iotdb.api.test.tree.database.TestDatabaseParams::testDeleteDatabasesEmpty",
@@ -1532,7 +1828,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型元数据与会话"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2501",
+      "plmId": 7072
     },
     {
       "target": "org.apache.iotdb.api.test.tree.database.TestDatabaseParams::testDeleteDatabasesNonExist",
@@ -1542,7 +1840,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型元数据与会话"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2502",
+      "plmId": 7073
     },
     {
       "target": "org.apache.iotdb.api.test.tree.database.TestDatabaseParams::testDeleteDatabasesNull",
@@ -1552,7 +1852,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型元数据与会话"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2503",
+      "plmId": 7074
     },
     {
       "target": "org.apache.iotdb.api.test.tree.database.TestDatabaseParams::testDeleteSgEmpty",
@@ -1562,7 +1864,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型元数据与会话"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2504",
+      "plmId": 7075
     },
     {
       "target": "org.apache.iotdb.api.test.tree.database.TestDatabaseParams::testDeleteSgsEmpty",
@@ -1572,7 +1876,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型元数据与会话"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2505",
+      "plmId": 7076
     },
     {
       "target": "org.apache.iotdb.api.test.tree.database.TestDatabaseParams::testDeleteSgsNonExist",
@@ -1582,7 +1888,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型元数据与会话"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2506",
+      "plmId": 7077
     },
     {
       "target": "org.apache.iotdb.api.test.tree.database.TestDatabaseParams::testDeleteSgsNull",
@@ -1592,7 +1900,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型元数据与会话"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2507",
+      "plmId": 7078
     },
     {
       "target": "org.apache.iotdb.api.test.tree.database.TestDatabaseParams::testDuplicateCreate",
@@ -1602,7 +1912,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型元数据与会话"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2508",
+      "plmId": 7079
     },
     {
       "target": "org.apache.iotdb.api.test.tree.database.TestDatabaseParams::testDuplicateDelete",
@@ -1612,7 +1924,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型元数据与会话"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2509",
+      "plmId": 7080
     },
     {
       "target": "org.apache.iotdb.api.test.tree.database.TestDatabaseParams::testSetStorageGroupNull",
@@ -1622,7 +1936,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型元数据与会话"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2510",
+      "plmId": 7081
     },
     {
       "target": "org.apache.iotdb.api.test.tree.database.TestDatabaseParams::testSetStroageGroupEmpty",
@@ -1632,7 +1948,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型元数据与会话"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2511",
+      "plmId": 7082
     },
     {
       "target": "org.apache.iotdb.api.test.tree.database.TestDatabaseParams::testSgNonExist",
@@ -1642,7 +1960,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型元数据与会话"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2512",
+      "plmId": 7083
     },
     {
       "target": "org.apache.iotdb.api.test.tree.session.TestSessionBuilderException::testSessionBuilderParamException1",
@@ -1652,7 +1972,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型元数据与会话"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2513",
+      "plmId": 7084
     },
     {
       "target": "org.apache.iotdb.api.test.tree.session.TestSessionBuilderException::testSessionBuilderParamException2",
@@ -1662,7 +1984,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型元数据与会话"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2514",
+      "plmId": 7085
     },
     {
       "target": "org.apache.iotdb.api.test.tree.session.TestSessionBuilderNormal::testSessionBuilderAllParam",
@@ -1672,7 +1996,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型元数据与会话"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2515",
+      "plmId": 7086
     },
     {
       "target": "org.apache.iotdb.api.test.tree.session.TestSessionBuilderNormal::testSessionBuilderPartParam",
@@ -1682,7 +2008,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型元数据与会话"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2516",
+      "plmId": 7087
     },
     {
       "target": "org.apache.iotdb.api.test.tree.session.TestSessionNormal::testSessionGenerate",
@@ -1692,7 +2020,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型元数据与会话"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2517",
+      "plmId": 7088
     },
     {
       "target": "org.apache.iotdb.api.test.tree.session.TestSessionNormal::testSessionOtherMethod",
@@ -1702,7 +2032,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型元数据与会话"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2518",
+      "plmId": 7089
     },
     {
       "target": "org.apache.iotdb.api.test.tree.session.TestSessionPoolBuilderNormal::testSessionBuilderPartParam",
@@ -1712,7 +2044,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型元数据与会话"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2519",
+      "plmId": 7090
     },
     {
       "target": "org.apache.iotdb.api.test.tree.session.TestSessionPoolBuilderNormal::testSessionPoolBuilderAllParam",
@@ -1722,7 +2056,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型元数据与会话"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2520",
+      "plmId": 7091
     },
     {
       "target": "org.apache.iotdb.api.test.tree.session.TestSessionPoolNormal::testSessionPoolGenerate",
@@ -1732,7 +2068,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型元数据与会话"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2521",
+      "plmId": 7092
     },
     {
       "target": "org.apache.iotdb.api.test.tree.session.TestSessionPoolNormal::testSessionPoolOther",
@@ -1742,7 +2080,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型元数据与会话"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2522",
+      "plmId": 7093
     },
     {
       "target": "org.apache.iotdb.api.test.tree.session.TestSessionPoolNormal::testSessionPoolRejectsEmptyNodeUrls",
@@ -1752,7 +2092,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型元数据与会话"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2523",
+      "plmId": 7094
     },
     {
       "target": "org.apache.iotdb.api.test.tree.session.TestSessionPoolNormal::testSessionPoolResultSetLifecycle",
@@ -1762,7 +2104,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型元数据与会话"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2524",
+      "plmId": 7095
     },
     {
       "target": "org.apache.iotdb.api.test.tree.template.ActiveInBatch::createTemplate",
@@ -1772,7 +2116,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型模板"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2525",
+      "plmId": 7096
     },
     {
       "target": "org.apache.iotdb.api.test.tree.template.ActiveInBatch::testActiveDatabaseAfterTemplate",
@@ -1782,7 +2128,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型模板"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2526",
+      "plmId": 7097
     },
     {
       "target": "org.apache.iotdb.api.test.tree.template.ActiveInBatch::testActiveParentChild",
@@ -1792,7 +2140,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型模板"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2527",
+      "plmId": 7098
     },
     {
       "target": "org.apache.iotdb.api.test.tree.template.ActiveInBatch::testContain2loadedPath",
@@ -1802,7 +2152,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型模板"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2528",
+      "plmId": 7099
     },
     {
       "target": "org.apache.iotdb.api.test.tree.template.ActiveInBatch::testContainErrorPath",
@@ -1812,7 +2164,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型模板"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2529",
+      "plmId": 7100
     },
     {
       "target": "org.apache.iotdb.api.test.tree.template.ActiveInBatch::testDuplicatePath",
@@ -1822,7 +2176,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型模板"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2530",
+      "plmId": 7101
     },
     {
       "target": "org.apache.iotdb.api.test.tree.template.ActiveInBatch::testErrorPath",
@@ -1832,7 +2188,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型模板"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2531",
+      "plmId": 7102
     },
     {
       "target": "org.apache.iotdb.api.test.tree.template.ActiveInBatch::testNormalOne",
@@ -1842,7 +2200,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型模板"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2532",
+      "plmId": 7103
     },
     {
       "target": "org.apache.iotdb.api.test.tree.template.ActiveInBatch::testNullError",
@@ -1852,7 +2212,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型模板"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2533",
+      "plmId": 7104
     },
     {
       "target": "org.apache.iotdb.api.test.tree.template.ActiveInBatch::testSingleError_databaseNotExist",
@@ -1862,7 +2224,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型模板"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2534",
+      "plmId": 7105
     },
     {
       "target": "org.apache.iotdb.api.test.tree.template.ActiveInBatch::testSingleError_normalPath",
@@ -1872,7 +2236,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型模板"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2535",
+      "plmId": 7106
     },
     {
       "target": "org.apache.iotdb.api.test.tree.template.ActiveInBatch::testValidPath",
@@ -1882,7 +2248,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型模板"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2536",
+      "plmId": 7107
     },
     {
       "target": "org.apache.iotdb.api.test.tree.template.ActiveInBatch::testWildcard",
@@ -1892,7 +2260,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型模板"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2537",
+      "plmId": 7108
     },
     {
       "target": "org.apache.iotdb.api.test.tree.template.dynamic.TestDynamicTemplateMin::testStructure_addAllType",
@@ -1902,7 +2272,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型模板"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2538",
+      "plmId": 7109
     },
     {
       "target": "org.apache.iotdb.api.test.tree.template.dynamic.TestDynamicTemplateMin::testStructureNormal_addOne",
@@ -1912,7 +2284,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型模板"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2539",
+      "plmId": 7110
     },
     {
       "target": "org.apache.iotdb.api.test.tree.template.dynamic.TestDynamicTemplateMulti::testMultipleTemplates",
@@ -1922,7 +2296,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型模板"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2540",
+      "plmId": 7111
     },
     {
       "target": "org.apache.iotdb.api.test.tree.template.dynamic.TestOrdinary::createTemplate",
@@ -1932,7 +2308,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型模板"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2541",
+      "plmId": 7112
     },
     {
       "target": "org.apache.iotdb.api.test.tree.template.dynamic.TestOrdinary::testAdd0",
@@ -1942,7 +2320,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型模板"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2542",
+      "plmId": 7113
     },
     {
       "target": "org.apache.iotdb.api.test.tree.template.dynamic.TestOrdinary::testAddTSToTemplate_normalNames",
@@ -1952,7 +2332,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型模板"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2543",
+      "plmId": 7114
     },
     {
       "target": "org.apache.iotdb.api.test.tree.template.dynamic.TestOrdinary::testCreateSingle_struct",
@@ -1962,7 +2344,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型模板"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2544",
+      "plmId": 7115
     },
     {
       "target": "org.apache.iotdb.api.test.tree.template.dynamic.TestOrdinary::testInsert_noTemp",
@@ -1972,7 +2356,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型模板"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2545",
+      "plmId": 7116
     },
     {
       "target": "org.apache.iotdb.api.test.tree.template.dynamic.TestOrdinary::testReAdd",
@@ -1982,7 +2368,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型模板"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2546",
+      "plmId": 7117
     },
     {
       "target": "org.apache.iotdb.api.test.tree.template.dynamic.TestOrdinary::testReAdd_auto",
@@ -1992,7 +2380,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型模板"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2547",
+      "plmId": 7118
     },
     {
       "target": "org.apache.iotdb.api.test.tree.template.dynamic.TestOrdinary::testReAdd_inBatchDuplicate",
@@ -2002,7 +2392,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型模板"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2548",
+      "plmId": 7119
     },
     {
       "target": "org.apache.iotdb.api.test.tree.template.dynamic.TestOrdinary::testReAdd_otherType",
@@ -2012,7 +2404,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型模板"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2549",
+      "plmId": 7120
     },
     {
       "target": "org.apache.iotdb.api.test.tree.template.dynamic.TestOrdinary::testTemplateAndTS",
@@ -2022,7 +2416,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型模板"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2550",
+      "plmId": 7121
     },
     {
       "target": "org.apache.iotdb.api.test.tree.template.dynamic.TestOrdinary::testTSAndTemplate",
@@ -2032,7 +2428,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型模板"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2551",
+      "plmId": 7122
     },
     {
       "target": "org.apache.iotdb.api.test.tree.template.TestTemplate::createTemplate_aligned",
@@ -2042,7 +2440,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型模板"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2552",
+      "plmId": 7123
     },
     {
       "target": "org.apache.iotdb.api.test.tree.template.TestTemplate::testAddDuplicateNodes",
@@ -2052,7 +2452,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型模板"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2553",
+      "plmId": 7124
     },
     {
       "target": "org.apache.iotdb.api.test.tree.template.TestTemplate::testCreateSingle_errorStruct",
@@ -2062,7 +2464,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型模板"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2554",
+      "plmId": 7125
     },
     {
       "target": "org.apache.iotdb.api.test.tree.template.TestTemplate::testCreateSingle_struct",
@@ -2072,7 +2476,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型模板"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2555",
+      "plmId": 7126
     },
     {
       "target": "org.apache.iotdb.api.test.tree.template.TestTemplate::testCreateTemplate_0TS",
@@ -2082,7 +2488,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型模板"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2556",
+      "plmId": 7127
     },
     {
       "target": "org.apache.iotdb.api.test.tree.template.TestTemplate::testCreateTemplate_1TS",
@@ -2092,7 +2500,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型模板"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2557",
+      "plmId": 7128
     },
     {
       "target": "org.apache.iotdb.api.test.tree.template.TestTemplate::testCreateTemplate_structError",
@@ -2102,7 +2512,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型模板"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2558",
+      "plmId": 7129
     },
     {
       "target": "org.apache.iotdb.api.test.tree.template.TestTemplate::testCreateTemplate_structNormal",
@@ -2112,7 +2524,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型模板"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2559",
+      "plmId": 7130
     },
     {
       "target": "org.apache.iotdb.api.test.tree.template.TestTemplate::testSet_2template",
@@ -2122,7 +2536,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型模板"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2560",
+      "plmId": 7131
     },
     {
       "target": "org.apache.iotdb.api.test.tree.template.TestTemplate::testSet_childPath",
@@ -2132,7 +2548,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型模板"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2561",
+      "plmId": 7132
     },
     {
       "target": "org.apache.iotdb.api.test.tree.template.TestTemplate::testSet_database",
@@ -2142,7 +2560,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型模板"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2562",
+      "plmId": 7133
     },
     {
       "target": "org.apache.iotdb.api.test.tree.template.TestTemplate::testSet_parentPath",
@@ -2152,7 +2572,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型模板"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2563",
+      "plmId": 7134
     },
     {
       "target": "org.apache.iotdb.api.test.tree.template.TestTemplateAligned::testCreateTemplate",
@@ -2162,7 +2584,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型模板"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2564",
+      "plmId": 7135
     },
     {
       "target": "org.apache.iotdb.api.test.tree.template.TestTemplateAligned::testDelete",
@@ -2172,7 +2596,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型模板"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2565",
+      "plmId": 7136
     },
     {
       "target": "org.apache.iotdb.api.test.tree.template.TestTemplateAligned::testDropTemplate",
@@ -2182,7 +2608,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型模板"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2566",
+      "plmId": 7137
     },
     {
       "target": "org.apache.iotdb.api.test.tree.template.TestTemplateAligned::testInsert",
@@ -2192,7 +2620,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型模板"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2567",
+      "plmId": 7138
     },
     {
       "target": "org.apache.iotdb.api.test.tree.template.TestTemplateAligned::testInsertAfterDelete",
@@ -2202,7 +2632,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型模板"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2568",
+      "plmId": 7139
     },
     {
       "target": "org.apache.iotdb.api.test.tree.template.TestTemplateAligned::testQuery",
@@ -2212,7 +2644,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型模板"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2569",
+      "plmId": 7140
     },
     {
       "target": "org.apache.iotdb.api.test.tree.template.TestTemplateAligned::testUpdate",
@@ -2222,7 +2656,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型模板"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2570",
+      "plmId": 7141
     },
     {
       "target": "org.apache.iotdb.api.test.tree.template.TestTemplateAlignedAddTS::testAddTS",
@@ -2232,7 +2668,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型模板"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2571",
+      "plmId": 7142
     },
     {
       "target": "org.apache.iotdb.api.test.tree.template.TestTemplateAlignedAddTS::testCreateAlignedTemplate",
@@ -2242,7 +2680,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型模板"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2572",
+      "plmId": 7143
     },
     {
       "target": "org.apache.iotdb.api.test.tree.template.TestTemplateAlignedAddTS::testInsertAlignedTemplateTS",
@@ -2252,7 +2692,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型模板"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2573",
+      "plmId": 7144
     },
     {
       "target": "org.apache.iotdb.api.test.tree.template.TestTemplateAlignedAddTS::testInsertWithoutAdd",
@@ -2262,7 +2704,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型模板"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2574",
+      "plmId": 7145
     },
     {
       "target": "org.apache.iotdb.api.test.tree.template.TestTemplateAlignedAddTS::testUpdateAfterAddTS_alignedTemp",
@@ -2272,7 +2716,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型模板"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2575",
+      "plmId": 7146
     },
     {
       "target": "org.apache.iotdb.api.test.tree.template.TestTemplateAlignedAddTS::testUpdateAlignedTS",
@@ -2282,7 +2728,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型模板"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2576",
+      "plmId": 7147
     },
     {
       "target": "org.apache.iotdb.api.test.tree.template.TestTemplateNonAligned::testCreateTemplate",
@@ -2292,7 +2740,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型模板"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2577",
+      "plmId": 7148
     },
     {
       "target": "org.apache.iotdb.api.test.tree.template.TestTemplateNonAligned::testDelete",
@@ -2302,7 +2752,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型模板"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2578",
+      "plmId": 7149
     },
     {
       "target": "org.apache.iotdb.api.test.tree.template.TestTemplateNonAligned::testDropTemplate",
@@ -2312,7 +2764,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型模板"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2579",
+      "plmId": 7150
     },
     {
       "target": "org.apache.iotdb.api.test.tree.template.TestTemplateNonAligned::testInsert",
@@ -2322,7 +2776,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型模板"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2580",
+      "plmId": 7151
     },
     {
       "target": "org.apache.iotdb.api.test.tree.template.TestTemplateNonAligned::testInsertAfterDelete",
@@ -2332,7 +2788,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型模板"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2581",
+      "plmId": 7152
     },
     {
       "target": "org.apache.iotdb.api.test.tree.template.TestTemplateNonAligned::testQuery",
@@ -2342,7 +2800,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型模板"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2582",
+      "plmId": 7153
     },
     {
       "target": "org.apache.iotdb.api.test.tree.template.TestTemplateNonAligned::testUpdate",
@@ -2352,7 +2812,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型模板"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2583",
+      "plmId": 7154
     },
     {
       "target": "org.apache.iotdb.api.test.tree.template.TestTemplateNonAlignedAddTS::testCreateAlignedTemplate",
@@ -2362,7 +2824,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型模板"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2584",
+      "plmId": 7155
     },
     {
       "target": "org.apache.iotdb.api.test.tree.template.TestTemplateNonAlignedAddTS::testInsertAlignedTemplateTS",
@@ -2372,7 +2836,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型模板"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2585",
+      "plmId": 7156
     },
     {
       "target": "org.apache.iotdb.api.test.tree.template.TestTemplateNonAlignedAddTS::testInsertWithoutAdd",
@@ -2382,7 +2848,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型模板"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2586",
+      "plmId": 7157
     },
     {
       "target": "org.apache.iotdb.api.test.tree.template.TestTemplateNonAlignedAddTS::testUpdateAfterAddTS_alignedTemp",
@@ -2392,7 +2860,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型模板"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2587",
+      "plmId": 7158
     },
     {
       "target": "org.apache.iotdb.api.test.tree.template.TestTemplateNonAlignedAddTS::testUpdateAlignedTS",
@@ -2402,7 +2872,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型模板"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2588",
+      "plmId": 7159
     },
     {
       "target": "org.apache.iotdb.api.test.tree.template.TestTemplateParams::createTemplate",
@@ -2412,7 +2884,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型模板"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2589",
+      "plmId": 7160
     },
     {
       "target": "org.apache.iotdb.api.test.tree.template.TestTemplateParams::testContainsNullTsName",
@@ -2422,7 +2896,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型模板"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2590",
+      "plmId": 7161
     },
     {
       "target": "org.apache.iotdb.api.test.tree.template.TestTemplateParams::testCreateTemplate_empty",
@@ -2432,7 +2908,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型模板"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2591",
+      "plmId": 7162
     },
     {
       "target": "org.apache.iotdb.api.test.tree.template.TestTemplateParams::testDeactive_emptyPath",
@@ -2442,7 +2920,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型模板"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2592",
+      "plmId": 7163
     },
     {
       "target": "org.apache.iotdb.api.test.tree.template.TestTemplateParams::testDeactive_emptyTemplate",
@@ -2452,7 +2932,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型模板"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2593",
+      "plmId": 7164
     },
     {
       "target": "org.apache.iotdb.api.test.tree.template.TestTemplateParams::testDeactive_nonExistPath",
@@ -2462,7 +2944,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型模板"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2594",
+      "plmId": 7165
     },
     {
       "target": "org.apache.iotdb.api.test.tree.template.TestTemplateParams::testDeactive_nonExistTemplate",
@@ -2472,7 +2956,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型模板"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2595",
+      "plmId": 7166
     },
     {
       "target": "org.apache.iotdb.api.test.tree.template.TestTemplateParams::testDeactive_nullPath",
@@ -2482,7 +2968,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型模板"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2596",
+      "plmId": 7167
     },
     {
       "target": "org.apache.iotdb.api.test.tree.template.TestTemplateParams::testDeactive_nullTemplate",
@@ -2492,7 +2980,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型模板"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2597",
+      "plmId": 7168
     },
     {
       "target": "org.apache.iotdb.api.test.tree.template.TestTemplateParams::testDeactive_wildcardPath",
@@ -2502,7 +2992,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型模板"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2598",
+      "plmId": 7169
     },
     {
       "target": "org.apache.iotdb.api.test.tree.template.TestTemplateParams::testDeactive_wildcardPath_noActive",
@@ -2512,7 +3004,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型模板"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2599",
+      "plmId": 7170
     },
     {
       "target": "org.apache.iotdb.api.test.tree.template.TestTemplateParams::testDropTemplate_empty",
@@ -2522,7 +3016,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型模板"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2600",
+      "plmId": 7171
     },
     {
       "target": "org.apache.iotdb.api.test.tree.template.TestTemplateParams::testDropTemplate_invalid",
@@ -2532,7 +3028,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型模板"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2601",
+      "plmId": 7172
     },
     {
       "target": "org.apache.iotdb.api.test.tree.template.TestTemplateParams::testNormal",
@@ -2542,7 +3040,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型模板"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2602",
+      "plmId": 7173
     },
     {
       "target": "org.apache.iotdb.api.test.tree.template.TestTemplateParams::testNullTsName",
@@ -2552,7 +3052,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型模板"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2603",
+      "plmId": 7174
     },
     {
       "target": "org.apache.iotdb.api.test.tree.template.TestTemplateParams::testSet_emptyPath",
@@ -2562,7 +3064,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型模板"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2604",
+      "plmId": 7175
     },
     {
       "target": "org.apache.iotdb.api.test.tree.template.TestTemplateParams::testSet_noPath",
@@ -2572,7 +3076,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型模板"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2605",
+      "plmId": 7176
     },
     {
       "target": "org.apache.iotdb.api.test.tree.template.TestTemplateParams::testSet_noTemp",
@@ -2582,7 +3088,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型模板"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2606",
+      "plmId": 7177
     },
     {
       "target": "org.apache.iotdb.api.test.tree.template.TestTemplateParams::testSet_noTempEmptyPath",
@@ -2592,7 +3100,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型模板"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2607",
+      "plmId": 7178
     },
     {
       "target": "org.apache.iotdb.api.test.tree.template.TestTemplateParams::testSet_noTempRootPath",
@@ -2602,7 +3112,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型模板"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2608",
+      "plmId": 7179
     },
     {
       "target": "org.apache.iotdb.api.test.tree.template.TestTemplateParams::testUnset_activePath",
@@ -2612,7 +3124,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型模板"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2609",
+      "plmId": 7180
     },
     {
       "target": "org.apache.iotdb.api.test.tree.template.TestTemplateParams::testUnSet_emptyPath",
@@ -2622,7 +3136,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型模板"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2610",
+      "plmId": 7181
     },
     {
       "target": "org.apache.iotdb.api.test.tree.template.TestTemplateParams::testUnSet_noPath",
@@ -2632,7 +3148,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型模板"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2611",
+      "plmId": 7182
     },
     {
       "target": "org.apache.iotdb.api.test.tree.template.TestTemplateParams::testUnset_wildcardPath",
@@ -2642,7 +3160,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型模板"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2612",
+      "plmId": 7183
     },
     {
       "target": "org.apache.iotdb.api.test.tree.timeseries.TestAlignedTS::testCreateTS",
@@ -2652,7 +3172,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型时间序列"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2613",
+      "plmId": 7184
     },
     {
       "target": "org.apache.iotdb.api.test.tree.timeseries.TestAlignedTS::testDelete",
@@ -2662,7 +3184,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型时间序列"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2614",
+      "plmId": 7185
     },
     {
       "target": "org.apache.iotdb.api.test.tree.timeseries.TestAlignedTS::testDropTimeseries",
@@ -2672,7 +3196,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型时间序列"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2615",
+      "plmId": 7186
     },
     {
       "target": "org.apache.iotdb.api.test.tree.timeseries.TestAlignedTS::testInsert",
@@ -2682,7 +3208,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型时间序列"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2616",
+      "plmId": 7187
     },
     {
       "target": "org.apache.iotdb.api.test.tree.timeseries.TestAlignedTS::testInsertAfterDelete",
@@ -2692,7 +3220,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型时间序列"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2617",
+      "plmId": 7188
     },
     {
       "target": "org.apache.iotdb.api.test.tree.timeseries.TestAlignedTS::testQuery",
@@ -2702,7 +3232,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型时间序列"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2618",
+      "plmId": 7189
     },
     {
       "target": "org.apache.iotdb.api.test.tree.timeseries.TestAlignedTS::testUpdate",
@@ -2712,7 +3244,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型时间序列"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2619",
+      "plmId": 7190
     },
     {
       "target": "org.apache.iotdb.api.test.tree.timeseries.TestAlignedTSAdd::testAddTS",
@@ -2722,7 +3256,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型时间序列"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2620",
+      "plmId": 7191
     },
     {
       "target": "org.apache.iotdb.api.test.tree.timeseries.TestAlignedTSAdd::testCreateTS",
@@ -2732,7 +3268,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型时间序列"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2621",
+      "plmId": 7192
     },
     {
       "target": "org.apache.iotdb.api.test.tree.timeseries.TestAlignedTSAdd::testDelete",
@@ -2742,7 +3280,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型时间序列"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2622",
+      "plmId": 7193
     },
     {
       "target": "org.apache.iotdb.api.test.tree.timeseries.TestAlignedTSAdd::testDropTimeseries",
@@ -2752,7 +3292,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型时间序列"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2623",
+      "plmId": 7194
     },
     {
       "target": "org.apache.iotdb.api.test.tree.timeseries.TestAlignedTSAdd::testInsert",
@@ -2762,7 +3304,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型时间序列"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2624",
+      "plmId": 7195
     },
     {
       "target": "org.apache.iotdb.api.test.tree.timeseries.TestAlignedTSAdd::testInsertAfterDelete",
@@ -2772,7 +3316,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型时间序列"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2625",
+      "plmId": 7196
     },
     {
       "target": "org.apache.iotdb.api.test.tree.timeseries.TestAlignedTSAdd::testInsertAfterUpdate",
@@ -2782,7 +3328,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型时间序列"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2626",
+      "plmId": 7197
     },
     {
       "target": "org.apache.iotdb.api.test.tree.timeseries.TestAlignedTSAdd::testQuery",
@@ -2792,7 +3340,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型时间序列"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2627",
+      "plmId": 7198
     },
     {
       "target": "org.apache.iotdb.api.test.tree.timeseries.TestAlignedTSAdd::testUpdate",
@@ -2802,7 +3352,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型时间序列"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2628",
+      "plmId": 7199
     },
     {
       "target": "org.apache.iotdb.api.test.tree.timeseries.TestAlignedTSMinus::testCreateTS",
@@ -2812,7 +3364,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型时间序列"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2629",
+      "plmId": 7200
     },
     {
       "target": "org.apache.iotdb.api.test.tree.timeseries.TestAlignedTSMinus::testDelete",
@@ -2822,7 +3376,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型时间序列"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2630",
+      "plmId": 7201
     },
     {
       "target": "org.apache.iotdb.api.test.tree.timeseries.TestAlignedTSMinus::testDropTimeseries",
@@ -2832,7 +3388,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型时间序列"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2631",
+      "plmId": 7202
     },
     {
       "target": "org.apache.iotdb.api.test.tree.timeseries.TestAlignedTSMinus::testInsert",
@@ -2842,7 +3400,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型时间序列"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2632",
+      "plmId": 7203
     },
     {
       "target": "org.apache.iotdb.api.test.tree.timeseries.TestAlignedTSMinus::testInsertAfterDelete",
@@ -2852,7 +3412,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型时间序列"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2633",
+      "plmId": 7204
     },
     {
       "target": "org.apache.iotdb.api.test.tree.timeseries.TestAlignedTSMinus::testInsertAfterUpdate",
@@ -2862,7 +3424,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型时间序列"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2634",
+      "plmId": 7205
     },
     {
       "target": "org.apache.iotdb.api.test.tree.timeseries.TestAlignedTSMinus::testMinusTS",
@@ -2872,7 +3436,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型时间序列"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2635",
+      "plmId": 7206
     },
     {
       "target": "org.apache.iotdb.api.test.tree.timeseries.TestAlignedTSMinus::testQuery",
@@ -2882,7 +3448,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型时间序列"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2636",
+      "plmId": 7207
     },
     {
       "target": "org.apache.iotdb.api.test.tree.timeseries.TestAlignedTSMinus::testUpdate",
@@ -2892,7 +3460,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型时间序列"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2637",
+      "plmId": 7208
     },
     {
       "target": "org.apache.iotdb.api.test.tree.timeseries.TestBlendScenario::testCreateAlignedTemplate",
@@ -2902,7 +3472,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型时间序列"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2638",
+      "plmId": 7209
     },
     {
       "target": "org.apache.iotdb.api.test.tree.timeseries.TestBlendScenario::testCreateNonAlignedTemplate",
@@ -2912,7 +3484,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型时间序列"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2639",
+      "plmId": 7210
     },
     {
       "target": "org.apache.iotdb.api.test.tree.timeseries.TestBlendScenario::testDropTemplate",
@@ -2922,7 +3496,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型时间序列"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2640",
+      "plmId": 7211
     },
     {
       "target": "org.apache.iotdb.api.test.tree.timeseries.TestBlendScenario::testDropTS",
@@ -2932,7 +3508,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型时间序列"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2641",
+      "plmId": 7212
     },
     {
       "target": "org.apache.iotdb.api.test.tree.timeseries.TestBlendScenario::testInsertAlignedTemplateTS",
@@ -2942,7 +3520,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型时间序列"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2642",
+      "plmId": 7213
     },
     {
       "target": "org.apache.iotdb.api.test.tree.timeseries.TestBlendScenario::testInsertAlignedTS",
@@ -2952,7 +3532,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型时间序列"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2643",
+      "plmId": 7214
     },
     {
       "target": "org.apache.iotdb.api.test.tree.timeseries.TestBlendScenario::testInsertNonAlignedTemplateTS",
@@ -2962,7 +3544,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型时间序列"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2644",
+      "plmId": 7215
     },
     {
       "target": "org.apache.iotdb.api.test.tree.timeseries.TestBlendScenario::testInsertNonAlignedTS",
@@ -2972,7 +3556,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型时间序列"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2645",
+      "plmId": 7216
     },
     {
       "target": "org.apache.iotdb.api.test.tree.timeseries.TestBlendScenario::testUpdateAlignedTemplateTS",
@@ -2982,7 +3568,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型时间序列"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2646",
+      "plmId": 7217
     },
     {
       "target": "org.apache.iotdb.api.test.tree.timeseries.TestBlendScenario::testUpdateAlignedTS",
@@ -2992,7 +3580,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型时间序列"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2647",
+      "plmId": 7218
     },
     {
       "target": "org.apache.iotdb.api.test.tree.timeseries.TestBlendScenario::testUpdateNonAlignedTemplateTS",
@@ -3002,7 +3592,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型时间序列"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2648",
+      "plmId": 7219
     },
     {
       "target": "org.apache.iotdb.api.test.tree.timeseries.TestBlendScenario::testUpdateNonAlignedTS",
@@ -3012,7 +3604,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型时间序列"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2649",
+      "plmId": 7220
     },
     {
       "target": "org.apache.iotdb.api.test.tree.timeseries.TestBlendScenarioAddTS::testCreateAlignedTemplate",
@@ -3022,7 +3616,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型时间序列"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2650",
+      "plmId": 7221
     },
     {
       "target": "org.apache.iotdb.api.test.tree.timeseries.TestBlendScenarioAddTS::testCreateNonAlignedTemplate",
@@ -3032,7 +3628,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型时间序列"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2651",
+      "plmId": 7222
     },
     {
       "target": "org.apache.iotdb.api.test.tree.timeseries.TestBlendScenarioAddTS::testDropTemplate",
@@ -3042,7 +3640,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型时间序列"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2652",
+      "plmId": 7223
     },
     {
       "target": "org.apache.iotdb.api.test.tree.timeseries.TestBlendScenarioAddTS::testDropTS",
@@ -3052,7 +3652,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型时间序列"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2653",
+      "plmId": 7224
     },
     {
       "target": "org.apache.iotdb.api.test.tree.timeseries.TestBlendScenarioAddTS::testInsertAlignedTemplateTS",
@@ -3062,7 +3664,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型时间序列"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2654",
+      "plmId": 7225
     },
     {
       "target": "org.apache.iotdb.api.test.tree.timeseries.TestBlendScenarioAddTS::testInsertAlignedTS",
@@ -3072,7 +3676,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型时间序列"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2655",
+      "plmId": 7226
     },
     {
       "target": "org.apache.iotdb.api.test.tree.timeseries.TestBlendScenarioAddTS::testInsertNonAlignedTemplateTS",
@@ -3082,7 +3688,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型时间序列"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2656",
+      "plmId": 7227
     },
     {
       "target": "org.apache.iotdb.api.test.tree.timeseries.TestBlendScenarioAddTS::testInsertNonAlignedTS",
@@ -3092,7 +3700,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型时间序列"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2657",
+      "plmId": 7228
     },
     {
       "target": "org.apache.iotdb.api.test.tree.timeseries.TestBlendScenarioAddTS::testUpdateAfterAddTS_nonAlignedTemp",
@@ -3102,7 +3712,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型时间序列"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2658",
+      "plmId": 7229
     },
     {
       "target": "org.apache.iotdb.api.test.tree.timeseries.TestBlendScenarioAddTS::testUpdateAfterAddTS_aligned",
@@ -3112,7 +3724,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型时间序列"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2659",
+      "plmId": 7230
     },
     {
       "target": "org.apache.iotdb.api.test.tree.timeseries.TestBlendScenarioAddTS::testUpdateAfterAddTS_alignedTemp",
@@ -3122,7 +3736,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型时间序列"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2660",
+      "plmId": 7231
     },
     {
       "target": "org.apache.iotdb.api.test.tree.timeseries.TestBlendScenarioAddTS::testUpdateAfterAddTS_nonAligned",
@@ -3132,7 +3748,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型时间序列"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2661",
+      "plmId": 7232
     },
     {
       "target": "org.apache.iotdb.api.test.tree.timeseries.TestBlendScenarioAddTS::testUpdateAlignedTemplateTS",
@@ -3142,7 +3760,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型时间序列"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2662",
+      "plmId": 7233
     },
     {
       "target": "org.apache.iotdb.api.test.tree.timeseries.TestBlendScenarioAddTS::testUpdateAlignedTS",
@@ -3152,7 +3772,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型时间序列"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2663",
+      "plmId": 7234
     },
     {
       "target": "org.apache.iotdb.api.test.tree.timeseries.TestBlendScenarioAddTS::testUpdateNonAlignedTemplateTS",
@@ -3162,7 +3784,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型时间序列"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2664",
+      "plmId": 7235
     },
     {
       "target": "org.apache.iotdb.api.test.tree.timeseries.TestBlendScenarioAddTS::testUpdateNonAlignedTS",
@@ -3172,7 +3796,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型时间序列"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2665",
+      "plmId": 7236
     },
     {
       "target": "org.apache.iotdb.api.test.tree.timeseries.TestCleanUp::createAlignedTS",
@@ -3182,7 +3808,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型时间序列"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2666",
+      "plmId": 7237
     },
     {
       "target": "org.apache.iotdb.api.test.tree.timeseries.TestCleanUp::createNonAlignedTS",
@@ -3192,7 +3820,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型时间序列"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2667",
+      "plmId": 7238
     },
     {
       "target": "org.apache.iotdb.api.test.tree.timeseries.TestCleanUp::createTemplate",
@@ -3202,7 +3832,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型时间序列"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2668",
+      "plmId": 7239
     },
     {
       "target": "org.apache.iotdb.api.test.tree.timeseries.TestCleanUp::createTemplateNonAligned",
@@ -3212,7 +3844,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型时间序列"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2669",
+      "plmId": 7240
     },
     {
       "target": "org.apache.iotdb.api.test.tree.timeseries.TestNonAlignedTS::testCreateTS",
@@ -3222,7 +3856,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型时间序列"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2670",
+      "plmId": 7241
     },
     {
       "target": "org.apache.iotdb.api.test.tree.timeseries.TestNonAlignedTS::testDelete",
@@ -3232,7 +3868,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型时间序列"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2671",
+      "plmId": 7242
     },
     {
       "target": "org.apache.iotdb.api.test.tree.timeseries.TestNonAlignedTS::testDropTimeseries",
@@ -3242,7 +3880,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型时间序列"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2672",
+      "plmId": 7243
     },
     {
       "target": "org.apache.iotdb.api.test.tree.timeseries.TestNonAlignedTS::testInsert",
@@ -3252,7 +3892,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型时间序列"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2673",
+      "plmId": 7244
     },
     {
       "target": "org.apache.iotdb.api.test.tree.timeseries.TestNonAlignedTS::testInsertAfterDelete",
@@ -3262,7 +3904,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型时间序列"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2674",
+      "plmId": 7245
     },
     {
       "target": "org.apache.iotdb.api.test.tree.timeseries.TestNonAlignedTS::testQuery",
@@ -3272,7 +3916,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型时间序列"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2675",
+      "plmId": 7246
     },
     {
       "target": "org.apache.iotdb.api.test.tree.timeseries.TestNonAlignedTS::testUpdate",
@@ -3282,7 +3928,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型时间序列"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2676",
+      "plmId": 7247
     },
     {
       "target": "org.apache.iotdb.api.test.tree.timeseries.TestNonAlignedTSAdd::testAddTS",
@@ -3292,7 +3940,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型时间序列"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2677",
+      "plmId": 7248
     },
     {
       "target": "org.apache.iotdb.api.test.tree.timeseries.TestNonAlignedTSAdd::testCreateTS",
@@ -3302,7 +3952,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型时间序列"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2678",
+      "plmId": 7249
     },
     {
       "target": "org.apache.iotdb.api.test.tree.timeseries.TestNonAlignedTSAdd::testDelete",
@@ -3312,7 +3964,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型时间序列"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2679",
+      "plmId": 7250
     },
     {
       "target": "org.apache.iotdb.api.test.tree.timeseries.TestNonAlignedTSAdd::testDropTimeseries",
@@ -3322,7 +3976,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型时间序列"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2680",
+      "plmId": 7251
     },
     {
       "target": "org.apache.iotdb.api.test.tree.timeseries.TestNonAlignedTSAdd::testInsert",
@@ -3332,7 +3988,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型时间序列"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2681",
+      "plmId": 7252
     },
     {
       "target": "org.apache.iotdb.api.test.tree.timeseries.TestNonAlignedTSAdd::testInsertAfterDelete",
@@ -3342,7 +4000,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型时间序列"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2682",
+      "plmId": 7253
     },
     {
       "target": "org.apache.iotdb.api.test.tree.timeseries.TestNonAlignedTSAdd::testInsertAfterUpdate",
@@ -3352,7 +4012,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型时间序列"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2683",
+      "plmId": 7254
     },
     {
       "target": "org.apache.iotdb.api.test.tree.timeseries.TestNonAlignedTSAdd::testQuery",
@@ -3362,7 +4024,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型时间序列"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2684",
+      "plmId": 7255
     },
     {
       "target": "org.apache.iotdb.api.test.tree.timeseries.TestNonAlignedTSAdd::testUpdate",
@@ -3372,7 +4036,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型时间序列"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2685",
+      "plmId": 7256
     },
     {
       "target": "org.apache.iotdb.api.test.tree.timeseries.TestNonAlignedTSMinus::testCreateTS",
@@ -3382,7 +4048,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型时间序列"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2686",
+      "plmId": 7257
     },
     {
       "target": "org.apache.iotdb.api.test.tree.timeseries.TestNonAlignedTSMinus::testDelete",
@@ -3392,7 +4060,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型时间序列"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2687",
+      "plmId": 7258
     },
     {
       "target": "org.apache.iotdb.api.test.tree.timeseries.TestNonAlignedTSMinus::testDropTimeseries",
@@ -3402,7 +4072,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型时间序列"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2688",
+      "plmId": 7259
     },
     {
       "target": "org.apache.iotdb.api.test.tree.timeseries.TestNonAlignedTSMinus::testInsert",
@@ -3412,7 +4084,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型时间序列"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2689",
+      "plmId": 7260
     },
     {
       "target": "org.apache.iotdb.api.test.tree.timeseries.TestNonAlignedTSMinus::testInsertAfterDelete",
@@ -3422,7 +4096,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型时间序列"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2690",
+      "plmId": 7261
     },
     {
       "target": "org.apache.iotdb.api.test.tree.timeseries.TestNonAlignedTSMinus::testInsertAfterUpdate",
@@ -3432,7 +4108,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型时间序列"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2691",
+      "plmId": 7262
     },
     {
       "target": "org.apache.iotdb.api.test.tree.timeseries.TestNonAlignedTSMinus::testMinusTS",
@@ -3442,7 +4120,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型时间序列"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2692",
+      "plmId": 7263
     },
     {
       "target": "org.apache.iotdb.api.test.tree.timeseries.TestNonAlignedTSMinus::testQuery",
@@ -3452,7 +4132,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型时间序列"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2693",
+      "plmId": 7264
     },
     {
       "target": "org.apache.iotdb.api.test.tree.timeseries.TestNonAlignedTSMinus::testUpdate",
@@ -3462,7 +4144,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型时间序列"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2694",
+      "plmId": 7265
     },
     {
       "target": "org.apache.iotdb.api.test.tree.timeseries.TestTimeSeries::testCreateSingleTimeSeries_error",
@@ -3472,7 +4156,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型时间序列"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2695",
+      "plmId": 7266
     },
     {
       "target": "org.apache.iotdb.api.test.tree.timeseries.TestTimeSeries::testCreateSingleTimeSeries_normal",
@@ -3482,7 +4168,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型时间序列"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2696",
+      "plmId": 7267
     },
     {
       "target": "org.apache.iotdb.api.test.tree.timeseries.TestTimeSeries::testCreateSingleTimeSeriesAligned_normal",
@@ -3492,7 +4180,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型时间序列"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2697",
+      "plmId": 7268
     },
     {
       "target": "org.apache.iotdb.api.test.tree.timeseries.TestTimeSeries::testCreateTimeSeries_10props",
@@ -3502,7 +4192,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型时间序列"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2698",
+      "plmId": 7269
     },
     {
       "target": "org.apache.iotdb.api.test.tree.timeseries.TestTimeSeries::testCreateTimeSeries_1props",
@@ -3512,7 +4204,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型时间序列"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2699",
+      "plmId": 7270
     },
     {
       "target": "org.apache.iotdb.api.test.tree.timeseries.TestTimeSeries::testCreateTimeSeries_GTprops_error",
@@ -3522,7 +4216,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型时间序列"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2700",
+      "plmId": 7271
     },
     {
       "target": "org.apache.iotdb.api.test.tree.timeseries.TestTimeSeries::testCreateTimeSeries_max_props",
@@ -3532,7 +4228,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型时间序列"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2701",
+      "plmId": 7272
     },
     {
       "target": "org.apache.iotdb.api.test.tree.timeseries.TestTimeSeries::testDeleteError",
@@ -3542,7 +4240,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型时间序列"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2702",
+      "plmId": 7273
     },
     {
       "target": "org.apache.iotdb.api.test.tree.timeseries.TestTimeSeries::testDeleteMultiTimeSeries_error",
@@ -3552,7 +4252,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型时间序列"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2703",
+      "plmId": 7274
     },
     {
       "target": "org.apache.iotdb.api.test.tree.timeseries.TestTimeSeries::testDeleteMultiTS",
@@ -3562,7 +4264,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型时间序列"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2704",
+      "plmId": 7275
     },
     {
       "target": "org.apache.iotdb.api.test.tree.timeseries.TestTimeSeries::testDeleteSingleTimeSeries_error",
@@ -3572,7 +4276,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型时间序列"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2705",
+      "plmId": 7276
     },
     {
       "target": "org.apache.iotdb.api.test.tree.timeseries.TestTimeSeries::testDeleteSingleTimeSeries_normal",
@@ -3582,7 +4288,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型时间序列"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2706",
+      "plmId": 7277
     },
     {
       "target": "org.apache.iotdb.api.test.tree.timeseries.TestTimeSeries::testDeviceAsTS",
@@ -3592,7 +4300,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型时间序列"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2707",
+      "plmId": 7278
     },
     {
       "target": "org.apache.iotdb.api.test.tree.timeseries.TestTimeSeries::testDuplicateCreateTS",
@@ -3602,7 +4312,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型时间序列"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2708",
+      "plmId": 7279
     },
     {
       "target": "org.apache.iotdb.api.test.tree.timeseries.TestTimeSeries::testDuplicateTS",
@@ -3612,7 +4324,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型时间序列"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2709",
+      "plmId": 7280
     },
     {
       "target": "org.apache.iotdb.api.test.tree.timeseries.TestTimeSeries::testSingle",
@@ -3622,7 +4336,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型时间序列"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2710",
+      "plmId": 7281
     },
     {
       "target": "org.apache.iotdb.api.test.tree.timeseries.TestTimeSeriesMulti::testCreateTimeSeriesMulti_single_error",
@@ -3632,7 +4348,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型时间序列"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2711",
+      "plmId": 7282
     },
     {
       "target": "org.apache.iotdb.api.test.tree.timeseries.TestTimeSeriesMulti::testCreateTimeSeriesMultiAligned_inBatch",
@@ -3642,7 +4360,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型时间序列"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2712",
+      "plmId": 7283
     },
     {
       "target": "org.apache.iotdb.api.test.tree.timeseries.TestTimeSeriesMulti::testCreateTimeSeriesMulti_error",
@@ -3652,7 +4372,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型时间序列"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2713",
+      "plmId": 7284
     },
     {
       "target": "org.apache.iotdb.api.test.tree.timeseries.TestTimeSeriesMulti::testCreateTimeSeriesMulti_normal",
@@ -3662,7 +4384,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型时间序列"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2714",
+      "plmId": 7285
     },
     {
       "target": "org.apache.iotdb.api.test.tree.timeseries.TestTimeSeriesMulti::testCreateTimeSeriesMulti_single",
@@ -3672,7 +4396,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型时间序列"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2715",
+      "plmId": 7286
     },
     {
       "target": "org.apache.iotdb.api.test.tree.timeseries.TestTimeSeriesParams::testCreateAligned_nullAlias",
@@ -3682,7 +4408,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型时间序列"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2716",
+      "plmId": 7287
     },
     {
       "target": "org.apache.iotdb.api.test.tree.timeseries.TestTimeSeriesParams::testCreateAligned_nullAttrs",
@@ -3692,7 +4420,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型时间序列"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2717",
+      "plmId": 7288
     },
     {
       "target": "org.apache.iotdb.api.test.tree.timeseries.TestTimeSeriesParams::testCreateAligned_nullProps",
@@ -3702,7 +4432,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型时间序列"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2718",
+      "plmId": 7289
     },
     {
       "target": "org.apache.iotdb.api.test.tree.timeseries.TestTimeSeriesParams::testCreateAligned_nullTags",
@@ -3712,7 +4444,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型时间序列"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2719",
+      "plmId": 7290
     },
     {
       "target": "org.apache.iotdb.api.test.tree.timeseries.TestTimeSeriesParams::testCreateAligned_PropsNullInList",
@@ -3722,7 +4456,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型时间序列"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2720",
+      "plmId": 7291
     },
     {
       "target": "org.apache.iotdb.api.test.tree.timeseries.TestTimeSeriesParams::testCreateMulti_nullAlias",
@@ -3732,7 +4468,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型时间序列"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2721",
+      "plmId": 7292
     },
     {
       "target": "org.apache.iotdb.api.test.tree.timeseries.TestTimeSeriesParams::testCreateMulti_nullAttrs",
@@ -3742,7 +4480,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型时间序列"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2722",
+      "plmId": 7293
     },
     {
       "target": "org.apache.iotdb.api.test.tree.timeseries.TestTimeSeriesParams::testCreateMulti_nullProps",
@@ -3752,7 +4492,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型时间序列"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2723",
+      "plmId": 7294
     },
     {
       "target": "org.apache.iotdb.api.test.tree.timeseries.TestTimeSeriesParams::testCreateMulti_nullTags",
@@ -3762,7 +4504,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型时间序列"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2724",
+      "plmId": 7295
     },
     {
       "target": "org.apache.iotdb.api.test.tree.timeseries.TestTimeSeriesParams::testCreateTimeSeries_nullAlias_error",
@@ -3772,7 +4516,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型时间序列"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2725",
+      "plmId": 7296
     },
     {
       "target": "org.apache.iotdb.api.test.tree.timeseries.TestTimeSeriesParams::testCreateTimeSeries_nullAttrs_error",
@@ -3782,7 +4528,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型时间序列"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2726",
+      "plmId": 7297
     },
     {
       "target": "org.apache.iotdb.api.test.tree.timeseries.TestTimeSeriesParams::testCreateTimeSeries_nullProps_error",
@@ -3792,7 +4540,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型时间序列"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2727",
+      "plmId": 7298
     },
     {
       "target": "org.apache.iotdb.api.test.tree.timeseries.TestTimeSeriesParams::testCreateTimeSeries_nullTags_error",
@@ -3802,7 +4552,9 @@
       "model": "树模型",
       "featurePaths": [
         "接口模块/Java 原生接口/树模型时间序列"
-      ]
+      ],
+      "plmCaseId": "TimechoDB-2728",
+      "plmId": 7299
     }
   ]
 }
