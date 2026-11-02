@@ -27,22 +27,13 @@ import urllib.error
 import urllib.request
 from pathlib import Path
 
-from plm_cases import CASE_MAP, repo_root, scan_cases
+from plm_cases import CASE_MAP, load_case_map, repo_root, scan_cases
 
 DEFAULT_AUTOMATION_TYPE = "session-java"
 
 
 def log(message: str) -> None:
     sys.stderr.write(f"[import] {message}\n")
-
-
-def load_map(path: Path) -> dict:
-    if not path.is_file():
-        return {}
-    data = json.loads(path.read_text(encoding="utf-8"))
-    if not isinstance(data, dict):
-        raise SystemExit(f"[import] {path} 必须是 JSON 对象")
-    return {str(k): str(v) for k, v in data.items() if str(v).strip()}
 
 
 def write_map(path: Path, mapping: dict) -> None:
@@ -105,9 +96,9 @@ def main() -> int:
         raise SystemExit("[import] 需要 TIMECHO_PLM_BASE_URL 与 TIMECHO_PLM_TOKEN")
 
     map_path = Path(args.map)
-    mapping = load_map(map_path)
+    mapping = load_case_map(map_path)
     items = scan_cases(repo_root(), DEFAULT_AUTOMATION_TYPE)
-    pending = [item for item in items if item["_rawCaseId"] not in mapping]
+    pending = [item for item in items if item["_rawCaseId"].upper() not in mapping]
     if args.limit > 0:
         pending = pending[: args.limit]
 
@@ -145,7 +136,7 @@ def main() -> int:
             failed.append((item["_rawCaseId"], "响应缺少 externalCaseId"))
             log(f"[{index}/{len(pending)}] 失败 {item['_rawCaseId']}: 响应缺少 externalCaseId")
             continue
-        mapping[item["_rawCaseId"]] = plm_id
+        mapping[item["_rawCaseId"].upper()] = plm_id
         created += 1
         if index == 1 or index % 20 == 0 or index == len(pending):
             log(f"[{index}/{len(pending)}] {item['_rawCaseId']} -> {plm_id}")
