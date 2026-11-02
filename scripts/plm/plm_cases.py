@@ -115,10 +115,13 @@ def bounded_case_id(raw: str) -> str:
 
 
 def load_case_map(root: Path) -> dict:
-    """读取 PLM 编号映射（扁平 JSON：程序自然 ID -> PLM 公开编号）。
+    """读取 PLM 编号映射，兼容两种格式：
 
-    文件由 import_to_plm.py 在导入后生成；不存在时返回空映射，此时
-    list-cases 输出自然 ID，兼容尚未导入 PLM 的使用方式。
+    - 扁平 JSON（手工/旧格式）：{程序自然 ID: PLM 公开编号}
+    - 导入 skill 生成的 {nmap: {PLM编号: [target...]}, revmap: {target: PLM编号}}
+
+    文件由 import_to_plm.py 或 timecho-plm-test-program-import skill 在导入后生成；
+    不存在时返回空映射，此时 list-cases 输出自然 ID，兼容尚未导入 PLM 的使用方式。
     """
     path = root / CASE_MAP
     if not path.is_file():
@@ -130,10 +133,35 @@ def load_case_map(root: Path) -> dict:
     if not isinstance(data, dict):
         raise SystemExit(f"[plm] {CASE_MAP} 必须是 JSON 对象")
     mapping = {}
+
+    # skill 格式：revmap 直接是自然 ID -> PLM 编号
+    revmap = data.get("revmap")
+    if isinstance(revmap, dict):
+        for raw_id, plm_id in revmap.items():
+            if isinstance(plm_id, str) and plm_id.strip():
+                mapping[str(raw_id).strip().upper()] = plm_id.strip()
+
+    # skill 格式：nmap 是 PLM 编号 -> 自然 ID 列表；revmap 缺失时由它反转
+    nmap = data.get("nmap")
+    if isinstance(nmap, dict):
+        for plm_id, targets in nmap.items():
+            if not isinstance(plm_id, str) or not plm_id.strip():
+                continue
+            if isinstance(targets, str):
+                targets = [targets]
+            if not isinstance(targets, list):
+                continue
+            for target in targets:
+                if not isinstance(target, str) or not target.strip():
+                    continue
+                mapping.setdefault(target.strip().upper(), plm_id.strip())
+
+    # 扁平格式：{自然 ID: PLM 编号}（仅在没有 nmap/revmap 时使用，避免把元数据键当映射）
+    if mapping:
+        return mapping
     for raw_id, plm_id in data.items():
-        if not isinstance(plm_id, str) or not plm_id.strip():
-            continue
-        mapping[str(raw_id).strip().upper()] = plm_id.strip()
+        if isinstance(plm_id, str) and plm_id.strip():
+            mapping[str(raw_id).strip().upper()] = plm_id.strip()
     return mapping
 
 
