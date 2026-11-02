@@ -49,12 +49,16 @@ def load_raw_map(path: Path) -> dict:
     return data
 
 
-def write_map(path: Path, raw: dict, mapping: dict, originals: dict) -> None:
-    """原子写回映射；技能格式保留 aliases 与未知顶层键。"""
+def write_map(path: Path, raw: dict, mapping: dict, originals: dict, new_entries=None) -> None:
+    """原子写回映射；技能格式保留 aliases 与未知顶层键。
+
+    skill 格式只写本次新建的条目（new_entries），避免把已有但不在当前扫描范围的
+    target 以大写形式重写；扁平格式写完整 mapping。
+    """
     if isinstance(raw.get("nmap"), dict) or isinstance(raw.get("revmap"), dict):
         nmap = raw.setdefault("nmap", {})
         revmap = raw.setdefault("revmap", {})
-        for upper, plm_id in mapping.items():
+        for upper, plm_id in (new_entries if new_entries is not None else mapping).items():
             target = originals.get(upper, upper)
             revmap[target] = plm_id
             targets = nmap.setdefault(plm_id, [])
@@ -126,6 +130,10 @@ def main() -> int:
     raw = load_raw_map(map_path)
     mapping = load_case_map(map_path)
     originals = {}
+    # 扁平映射里已有、但当前扫描范围外的 target 也要保留原大小写。
+    for key, value in raw.items():
+        if isinstance(value, str) and value.strip():
+            originals[str(key).strip().upper()] = str(key).strip()
     items = scan_cases(repo_root(), DEFAULT_AUTOMATION_TYPE)
     for item in items:
         originals[item["_target"].upper()] = item["_target"]
@@ -143,6 +151,7 @@ def main() -> int:
 
     created = 0
     failed = []
+    new_entries = {}
     for index, item in enumerate(pending, start=1):
         payload = {
             "name": item["_method"],
@@ -169,8 +178,9 @@ def main() -> int:
             continue
         mapping[item["_target"].upper()] = plm_id
         originals[item["_target"].upper()] = item["_target"]
+        new_entries[item["_target"].upper()] = plm_id
         # 每条成功后立即落盘：进程中断后重跑不会重复创建已成功的用例。
-        write_map(map_path, raw, mapping, originals)
+        write_map(map_path, raw, mapping, originals, new_entries=new_entries)
         created += 1
         if index == 1 or index % 20 == 0 or index == len(pending):
             log(f"[{index}/{len(pending)}] {item['_target']} -> {plm_id}")
