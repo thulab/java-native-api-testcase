@@ -46,6 +46,8 @@ ensure_built() {
 }
 
 BUILD_MARKER="$REPO_ROOT/details/target/.plm-build-ok"
+CP_FILE="$REPO_ROOT/details/target/plm-classpath.txt"
+TESTNG_OUT="$REPO_ROOT/details/target/plm-testng/out"
 
 needs_build() {
     [ -f "$BUILD_MARKER" ] || return 0
@@ -62,11 +64,15 @@ ensure_built_cached() {
     needs_build || return 0
     ensure_built || return 1
     mvn -q -DskipTests -pl details test-compile || return 1
+    mvn -o -q -pl details dependency:build-classpath -Dmdep.outputFile="$CP_FILE" || return 1
     touch "$BUILD_MARKER"
 }
 
 prepare() {
-    ensure_built_cached
+    ensure_built_cached && [ -f "$CP_FILE" ] || {
+        # marker 已存在但 classpath 文件被清理时补生成
+        mvn -o -q -pl details dependency:build-classpath -Dmdep.outputFile="$CP_FILE" || return 1
+    }
 }
 
 list_cases() {
@@ -102,20 +108,25 @@ case_one() {
     xml="$TESTNG_TMP_DIR/single.xml"
     "$PYTHON" scripts/plm/plm_cases.py testng-xml "$normalized" "$xml" || return 1
 
-    # 构建结果按源码时间戳缓存：PLM 逐条派发时只做一次 install/test-compile，
-    # 后续用例只跑 mvn test，避免 379 条用例重复 Maven install 把批次拖过总时限。
+    # 构建结果按源码时间戳缓存：PLM 逐条派发时只做一次 install/test-compile/classpath，
+    # 后续用例直接用 java + TestNG 运行单条，避免 379 条用例重复启动 Maven 把批次拖过总时限。
     ensure_built_cached || {
         echo "[plm] 测试程序编译失败" >&2
         return 1
     }
 
-    mvn -o -q -pl details test \
-        -Dsurefire.suiteXmlFiles="$REPO_ROOT/$xml" \
-        -DfailIfNoTests=false
+    [ -f "$CP_FILE" ] || {
+        mvn -o -q -pl details dependency:build-classpath -Dmdep.outputFile="$CP_FILE" || return 1
+    }
+
+    # 直接用 TestNG 运行单条用例，避免每条用例启动一次 Maven。
+    classpath="$REPO_ROOT/details/target/test-classes:$REPO_ROOT/common/target/classes:$(cat "$CP_FILE")"
+    rm -rf -- "$TESTNG_OUT"
+    java -ea -cp "$classpath" org.testng.TestNG "$xml" -d "$TESTNG_OUT"
     rc=$?
 
     if ! "$PYTHON" scripts/plm/plm_xml_post.py single \
-        "$SUREFIRE_DIR" "$target" "$normalized" "$fqcn" "$method"; then
+        "$TESTNG_OUT/junitreports" "$target" "$normalized" "$fqcn" "$method"; then
         rm -f -- "$target"
         return 1
     fi
