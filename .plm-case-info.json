@@ -1,0 +1,20 @@
+{
+  "TimechoDB-2350": {
+    "name": "TestRpcUtils::testBuildStatusAndResponseWrappers",
+    "nodeId": "org.apache.iotdb.api.test.rpc.TestRpcUtils::testBuildStatusAndResponseWrappers",
+    "plmDescription": "org.apache.iotdb.api.test.rpc.TestRpcUtils::testBuildStatusAndResponseWrappers",
+    "automationType": "session-java"
+  },
+  "TimechoDB-2351": {
+    "name": "TestRpcUtils::testFailureStatusExtractionAndSquash",
+    "nodeId": "org.apache.iotdb.api.test.rpc.TestRpcUtils::testFailureStatusExtractionAndSquash",
+    "plmDescription": "org.apache.iotdb.api.test.rpc.TestRpcUtils::testFailureStatusExtractionAndSquash",
+    "automationType": "session-java"
+  },
+  "TimechoDB-2352": {
+    "name": "TestRpcUtils::testSqlDetection",
+    "nodeId": "org.apache.iotdb.api.test.rpc.TestRpcUtils::testSqlDetection",
+    "plmDescription": "org.apache.iotdb.api.test.rpc.TestRpcUtils::testSqlDetection",
+    "automationType": "session-java"
+  }
+}

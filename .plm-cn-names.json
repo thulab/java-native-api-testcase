@@ -1,0 +1,5 @@
+{
+  "TimechoDB-2350": "TestRpcUtils::testBuildStatusAndResponseWrappers",
+  "TimechoDB-2351": "TestRpcUtils::testFailureStatusExtractionAndSquash",
+  "TimechoDB-2352": "TestRpcUtils::testSqlDetection"
+}

@@ -1,0 +1,19 @@
+{
+  "nmap": {
+    "TimechoDB-2350": [
+      "org.apache.iotdb.api.test.rpc.TestRpcUtils::testBuildStatusAndResponseWrappers"
+    ],
+    "TimechoDB-2351": [
+      "org.apache.iotdb.api.test.rpc.TestRpcUtils::testFailureStatusExtractionAndSquash"
+    ],
+    "TimechoDB-2352": [
+      "org.apache.iotdb.api.test.rpc.TestRpcUtils::testSqlDetection"
+    ]
+  },
+  "revmap": {
+    "org.apache.iotdb.api.test.rpc.TestRpcUtils::testBuildStatusAndResponseWrappers": "TimechoDB-2350",
+    "org.apache.iotdb.api.test.rpc.TestRpcUtils::testFailureStatusExtractionAndSquash": "TimechoDB-2351",
+    "org.apache.iotdb.api.test.rpc.TestRpcUtils::testSqlDetection": "TimechoDB-2352"
+  },
+  "aliases": {}
+}
