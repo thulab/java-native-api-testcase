@@ -41,6 +41,8 @@ public class TestTimeSeries extends TimeSeriesBaseTestSuite {
      */
     private void testCreateTimeSeries_tags(int value) throws IoTDBConnectionException, StatementExecutionException {
         String path = "root.t1.pros" + value;
+        // PLM 2026-11-04：显式建库并等 schema region 可用，避免自动建库后立即 906。
+        createDatabaseAwaitReady("root.t1");
         for (int i = 0; i < value; i++) {
 //            props.put("prop_" + i, "弹出模板" + i);
             tags.put("tag_" + i, "竖编辑模式" + i);
@@ -69,7 +71,7 @@ public class TestTimeSeries extends TimeSeriesBaseTestSuite {
         int count = getTimeSeriesCount("", false);
         String database = "root.testDuplicate";
         String path = database + ".device.s_name";
-        session.createDatabase(database);
+        createDatabaseAwaitReady(database);
         session.createTimeseries(path, TSDataType.BOOLEAN, TSEncoding.PLAIN, CompressionType.UNCOMPRESSED);
         count++;
         assert count == getTimeSeriesCount("", verbose):"创建TS成功";
@@ -94,7 +96,7 @@ public class TestTimeSeries extends TimeSeriesBaseTestSuite {
     public void testSingle() throws IoTDBConnectionException, StatementExecutionException {
         String database = "root.sg.d1";
         String path = database + ".ts1.boolean";
-        session.createDatabase(database);
+        createDatabaseAwaitReady(database);
         session.createTimeseries(path, TSDataType.TEXT, TSEncoding.DICTIONARY,CompressionType.GZIP);
         insertRecordSingle(path, TSDataType.TEXT, false, null);
         session.deleteTimeseries(path);
@@ -133,6 +135,7 @@ public class TestTimeSeries extends TimeSeriesBaseTestSuite {
     @Test(priority = 22)
     public void testDeviceAsTS() throws IoTDBConnectionException, StatementExecutionException {
         String device = "root.sgt.d1";
+        createDatabaseAwaitReady("root.sgt");
         session.createTimeseries(device+".s1", TSDataType.FLOAT, TSEncoding.GORILLA, CompressionType.SNAPPY);
         assertTSExists(device+".s1", verbose);
         Assert.assertThrows(StatementExecutionException.class, ()->{
@@ -144,6 +147,7 @@ public class TestTimeSeries extends TimeSeriesBaseTestSuite {
     @Test(priority = 23)
     public void testDuplicateTS() throws IoTDBConnectionException, StatementExecutionException {
         String path = "root.error.`6`.`timecho.com`";
+        createDatabaseAwaitReady("root.error");
         session.createTimeseries(path, TSDataType.TEXT, TSEncoding.PLAIN, CompressionType.GZIP);
         assertTSExists(path, verbose);
         Assert.assertThrows(StatementExecutionException.class, ()->{

@@ -19,11 +19,17 @@ public class TestTimeSeriesParams extends BaseTestSuiteTreeModel {
     private String database = "root.params.ts";
     @BeforeClass
     public void beforeClass() throws IoTDBConnectionException, StatementExecutionException {
-        session.createDatabase(database);
+        // PLM 2026-11-04：建库后等 schema region 可用，避免整类 47 个方法连续 906。
+        createDatabaseAwaitReady(database);
     }
     @AfterClass
     public void afterClass() throws IoTDBConnectionException, StatementExecutionException {
-        session.deleteDatabase(database);
+        try {
+            session.deleteDatabase(database);
+        } catch (Exception e) {
+            // 删除失败不阻断父类 @AfterClass 的全量清理。
+            logger.warn("[plm] 删除 " + database + " 失败（交给父类清理）：" + e.getMessage());
+        }
     }
     private void testCreateTS_null(String name) throws IoTDBConnectionException, StatementExecutionException {
         String path = database+".testNull." + name;

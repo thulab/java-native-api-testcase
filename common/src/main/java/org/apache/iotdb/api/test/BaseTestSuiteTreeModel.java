@@ -44,6 +44,8 @@ public class BaseTestSuiteTreeModel {
     // 自动创建元数据开关。 dynamic module. 动态模版相关
     protected boolean auto_create_schema;
     protected long baseTime;
+    /** PLM 就绪/清理等待上限（毫秒），可用 -Dplm.db-ready-timeout-ms 覆盖。 */
+    private static final long PLM_DB_READY_TIMEOUT_MS = Long.getLong("plm.db-ready-timeout-ms", 30_000L);
 
     @BeforeClass
     public void beforeSuite() throws IoTDBConnectionException, ParseException, IOException {
@@ -57,6 +59,126 @@ public class BaseTestSuiteTreeModel {
         isAligned = Boolean.parseBoolean(ReadConfig.getInstance().getValue("isAligned"));
         auto_create_schema = Boolean.parseBoolean(ReadConfig.getInstance().getValue("auto_create_schema"));
         baseTime = parseDate();
+        // PLM 2026-11-04：每个测试类开始前先清干净，并确认集群已经能建库/建序列。
+        // 之前只在 @AfterClass 清理：前一次失败（如 906 schema region 不可用）留下的
+        // 数据库/模板会污染后续类，表现为 501/503/505/508 的级联失败。
+        resetClusterState();
+    }
+
+    private void resetClusterState() {
+        try {
+            cleanDatabases(verbose);
+            cleanTemplates(verbose);
+        } catch (Exception e) {
+            logger.warn("[plm] 启动清理失败（继续执行，后续用例可能命中残留状态）：" + e.getMessage());
+        }
+        awaitClusterReady();
+    }
+
+    /** 集群就绪探测：建库 + 建一条探测序列，成功后删除；906 期间等待重试。 */
+    protected void awaitClusterReady() {
+        long deadline = System.currentTimeMillis() + PLM_DB_READY_TIMEOUT_MS;
+        String probeDb = "root.plm_probe_" + Long.toHexString(System.nanoTime());
+        while (true) {
+            boolean created = false;
+            try {
+                session.createDatabase(probeDb);
+                created = true;
+                session.createTimeseries(probeDb + ".d.s", TSDataType.BOOLEAN,
+                        TSEncoding.PLAIN, CompressionType.UNCOMPRESSED);
+                return;
+            } catch (StatementExecutionException e) {
+                if (!isRegionUnavailable(e)) {
+                    logger.warn("[plm] 集群就绪探测非 906 失败（继续执行）：" + e.getMessage());
+                    return;
+                }
+            } catch (IoTDBConnectionException e) {
+                logger.warn("[plm] 集群就绪探测连接失败（继续重试）：" + e.getMessage());
+            } finally {
+                if (created) {
+                    try {
+                        session.deleteDatabase(probeDb);
+                    } catch (Exception ignored) {
+                        // 探测库删除失败不阻塞测试；后续 cleanDatabases 会再次尝试。
+                    }
+                }
+            }
+            if (System.currentTimeMillis() >= deadline) {
+                logger.warn("[plm] 集群就绪探测超时（" + PLM_DB_READY_TIMEOUT_MS
+                        + "ms），继续执行，让用例自身暴露失败");
+                return;
+            }
+            sleepQuietly(500L);
+        }
+    }
+
+    /** 建库并等待该库的 schema region 可用（兼容 906/DataRegionGroups）。 */
+    protected void createDatabaseAwaitReady(String database)
+            throws IoTDBConnectionException, StatementExecutionException {
+        try {
+            session.createDatabase(database);
+        } catch (StatementExecutionException e) {
+            if (!isAlreadyCreated(e)) {
+                throw e;
+            }
+        }
+        awaitDatabaseReady(database);
+    }
+
+    /** 轮询探测序列，直到指定库可以正常写入（或超时后抛出最后一次 906）。 */
+    protected void awaitDatabaseReady(String database)
+            throws IoTDBConnectionException, StatementExecutionException {
+        long deadline = System.currentTimeMillis() + PLM_DB_READY_TIMEOUT_MS;
+        StatementExecutionException last = null;
+        while (true) {
+            String probe = database + ".__plm_ready_" + Long.toHexString(System.nanoTime());
+            try {
+                session.createTimeseries(probe, TSDataType.BOOLEAN,
+                        TSEncoding.PLAIN, CompressionType.UNCOMPRESSED);
+                try {
+                    session.deleteTimeseries(probe);
+                } catch (Exception ignored) {
+                    // 探测序列删除失败不影响就绪结论；@AfterClass 会清库。
+                }
+                return;
+            } catch (StatementExecutionException e) {
+                if (!isRegionUnavailable(e)) {
+                    throw e;
+                }
+                last = e;
+            }
+            if (System.currentTimeMillis() >= deadline) {
+                if (last != null) {
+                    throw last;
+                }
+                return;
+            }
+            sleepQuietly(500L);
+        }
+    }
+
+    /** 906：schema/data region group 暂不可用（建库后 region 尚未就绪、集群抖动）。 */
+    protected static boolean isRegionUnavailable(Throwable error) {
+        String message = error == null ? null : error.getMessage();
+        if (message == null) {
+            return false;
+        }
+        return message.contains("906")
+                || message.contains("SchemaRegionGroup")
+                || message.contains("DataRegionGroup");
+    }
+
+    private static boolean isAlreadyCreated(Throwable error) {
+        String message = error == null ? null : error.getMessage();
+        return message != null && message.contains("already been created as database");
+    }
+
+    private static void sleepQuietly(long millis) {
+        try {
+            Thread.sleep(millis);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
     }
 
     @AfterClass
@@ -260,31 +382,53 @@ public class BaseTestSuiteTreeModel {
         }
     }
 
-    // 删除数据库
+    // 删除数据库：先收集快照再逐个删除，单个失败不阻断其余（否则残留会级联污染后续用例）。
     public void cleanDatabases(boolean verbose) throws IoTDBConnectionException, StatementExecutionException {
+        List<String> databases = new ArrayList<>();
         SessionDataSet dataSet = session.executeQueryStatement("show databases");
         while (dataSet.hasNext()) {
             RowRecord record = dataSet.next();
             String database = record.getFields().get(0).toString();
+            if (!database.equals("root.__audit")) {
+                databases.add(database);
+            }
+        }
+        for (String database : databases) {
             if (verbose) {
                 logger.info("drop databases: " + database);
             }
-            if (!database.equals("root.__audit")) {
-                session.executeNonQueryStatement("drop database " + database);
-            }
+            executeCleanupWithRetry("drop database " + database, "drop database " + database);
         }
     }
 
-    // 删除设备模板
+    // 删除设备模板：同样先收集快照，避免边删边读导致漏删。
     public void cleanTemplates(boolean verbose) throws IoTDBConnectionException, StatementExecutionException {
+        List<String> templates = new ArrayList<>();
         SessionDataSet records = session.executeQueryStatement("show schema templates");
-        int count = 0;
         while (records.hasNext()) {
-            count++;
-            session.dropSchemaTemplate("`" + records.next().getFields().get(0) + "`");
+            templates.add(records.next().getFields().get(0).toString());
+        }
+        for (String template : templates) {
+            executeCleanupWithRetry("drop schema template `" + template + "`", "drop template " + template);
         }
         if (verbose) {
-            logger.info("drop templates:" + count);
+            logger.info("drop templates:" + templates.size());
+        }
+    }
+
+    /** 清理语句最多重试 3 次；最终失败只记日志，不中断整轮清理。 */
+    private void executeCleanupWithRetry(String sql, String label) {
+        for (int attempt = 1; attempt <= 3; attempt++) {
+            try {
+                session.executeNonQueryStatement(sql);
+                return;
+            } catch (Exception e) {
+                if (attempt >= 3 || !isRegionUnavailable(e)) {
+                    logger.warn("[plm] 清理失败（" + label + "，已尝试 " + attempt + " 次）：" + e.getMessage());
+                    return;
+                }
+                sleepQuietly(300L * attempt);
+            }
         }
     }
 

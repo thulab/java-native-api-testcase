@@ -19,22 +19,25 @@ import java.util.List;
 import java.util.Map;
 
 public class TestTimeSeriesMulti extends TimeSeriesBaseTestSuite {
-    @DataProvider(name = "createSingleTimeSeriesNormal", parallel = true)
+    // PLM 2026-11-04：本类方法共用基类 session（不是每条 data provider 行新建 Session），
+    // 并行执行会在 SessionConnection.reconnect 上抛 ConcurrentModificationException。
+    // 数据量只有 142 行，改为串行执行，避免共享 Session 的并发竞态。
+    @DataProvider(name = "createSingleTimeSeriesNormal", parallel = false)
     private Iterator<Object[]> getSingleTimeSeriesNormal() throws IOException {
         return new CustomDataProvider().load("data/tree/timeseries-single.csv").getData();
     }
 
-    @DataProvider(name = "createSingleTimeSeriesError", parallel = true)
+    @DataProvider(name = "createSingleTimeSeriesError", parallel = false)
     private Iterator<Object[]> getSingleTimeSeriesError() throws IOException {
         return new CustomDataProvider().load("data/tree/timeseries-single-error.csv").getData();
     }
 
-    @DataProvider(name = "createTimeSeriesMulti", parallel = true)
+    @DataProvider(name = "createTimeSeriesMulti", parallel = false)
     private Iterator<Object[]> getTimeSeriesMulti() throws IOException {
         return new CustomDataProvider().load("data/tree/timeseries-multi.csv").getData();
     }
 
-    @DataProvider(name = "createTimeSeriesMultiError", parallel = true)
+    @DataProvider(name = "createTimeSeriesMultiError", parallel = false)
     private Iterator<Object[]> getTimeSeriesMultiError() throws IOException {
         return new CustomDataProvider().load("data/tree/timeseries-multi-error.csv").getData();
     }
