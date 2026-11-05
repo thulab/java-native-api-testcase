@@ -242,7 +242,7 @@ public class TestInsertRecordsNormal extends BaseTestSuiteTreeModel {
     @AfterClass
     public void afterClass() throws IoTDBConnectionException, StatementExecutionException {
         // 删除数据库
-        session.deleteDatabase(database);
+        deleteDatabaseIfExists(database);
     }
 
 }

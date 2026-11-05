@@ -233,6 +233,35 @@ public class BaseTestSuiteTreeModel {
         executeCleanupWithRetry("drop schema template `" + template + "`", "drop template " + template);
     }
 
+    protected void deleteDatabaseIfExists(String database) {
+        if (session == null || database == null || database.trim().isEmpty()) {
+            return;
+        }
+        try {
+            if (!checkStroageGroupExists(database)) {
+                return;
+            }
+            session.deleteDatabase(database);
+        } catch (Exception e) {
+            // @AfterClass 清理不应把“资源本来就没创建”升级成 config FAIL（会让类级缓存失效并放大重跑）。
+            logger.warn("[plm] @AfterClass 删除库失败（忽略）：" + database + " " + e.getMessage());
+        }
+    }
+
+    protected void deleteStorageGroupIfExists(String storageGroup) {
+        if (session == null || storageGroup == null || storageGroup.trim().isEmpty()) {
+            return;
+        }
+        try {
+            if (!checkStroageGroupExists(storageGroup)) {
+                return;
+            }
+            session.deleteStorageGroup(storageGroup);
+        } catch (Exception e) {
+            logger.warn("[plm] @AfterClass 删除存储组失败（忽略）：" + storageGroup + " " + e.getMessage());
+        }
+    }
+
     protected void dropDatabasesMatching(String prefix) {
         if (prefix == null || prefix.trim().isEmpty() || prefix.contains("*")) {
             return;

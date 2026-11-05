@@ -68,9 +68,9 @@ public class TestTemplateAlignedAddTS extends BaseTestSuiteTreeModel {
 
     @AfterClass(enabled = true)
     public void afterClass() throws IoTDBConnectionException, StatementExecutionException {
-        session.deleteStorageGroup(database);
+        deleteStorageGroupIfExists(database);
         if (checkTemplateExists(templateNames[0])) {
-            session.dropSchemaTemplate(templateNames[0]);
+            dropTemplateIfExists(templateNames[0]);
         }
     }
 

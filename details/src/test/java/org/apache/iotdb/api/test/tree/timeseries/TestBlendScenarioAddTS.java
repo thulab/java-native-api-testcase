@@ -71,11 +71,11 @@ public class TestBlendScenarioAddTS extends BaseTestSuiteTreeModel {
     @AfterClass(enabled = true)
     public void afterClass() throws IoTDBConnectionException, StatementExecutionException {
         if (checkStroageGroupExists(database)) {
-            session.deleteStorageGroup(database);
+            deleteStorageGroupIfExists(database);
         }
         for (String templateName : templateNames) {
             if (checkTemplateExists(templateName)) {
-                session.dropSchemaTemplate(templateName);
+                dropTemplateIfExists(templateName);
             }
         }
 

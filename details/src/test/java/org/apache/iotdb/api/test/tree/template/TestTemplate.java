@@ -46,7 +46,10 @@ public class TestTemplate extends BaseTestSuiteTreeModel {
 
     @Override
     protected Set<String> managedTemplatePrefixes() {
-        return Set.of("template0", "template0Err", "duplicateNodesTemplate");
+        // 本类会按 ts-structures.csv 的 Index（1..219）创建 template1..template219，
+        // 还有 template_struct / template_0TS_* / template_1TS / template0Err 等；
+        // 统一用 template 前缀覆盖，避免把 ~220 个模板留给后续 TestTemplateAligned/NonAligned。
+        return Set.of("template", "duplicateNodesTemplate");
     }
     //    private final String[] databases = new String[]{"root.template.aligned", "root.template.nonAligned"};
 //    private int expectCount = 17;

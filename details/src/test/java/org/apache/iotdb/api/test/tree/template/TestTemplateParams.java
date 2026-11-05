@@ -46,8 +46,13 @@ public class TestTemplateParams extends BaseTestSuiteTreeModel {
 
     @AfterClass
     public void afterClass() throws IoTDBConnectionException, StatementExecutionException {
-        session.deleteDatabase(database);
-        session.dropSchemaTemplate(tName);
+        // 创建失败时资源可能不存在；无条件 drop 会变成 config FAIL，使类级缓存失效并放大整类重跑。
+        if (checkStroageGroupExists(database)) {
+            deleteDatabaseIfExists(database);
+        }
+        if (checkTemplateExists(tName)) {
+            dropTemplateIfExists(tName);
+        }
     }
 
     // TIMECHODB-141

@@ -70,7 +70,7 @@ public class TestInsertParams extends BaseTestSuiteTreeModel {
 
     //    @AfterClass
 //    public void afterClass() throws IoTDBConnectionException, StatementExecutionException {
-//        session.deleteDatabase(database);
+//        deleteDatabaseIfExists(database);
 //    }
     private void checkResult(long timestamp, TSDataType dataType, Object expect) throws IoTDBConnectionException, StatementExecutionException {
         checkQueryResult("select " + tsName + " from " + device + " where time =" + timestamp, dataType, expect);
