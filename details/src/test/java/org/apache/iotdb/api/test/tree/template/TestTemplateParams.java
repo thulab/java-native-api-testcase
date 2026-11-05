@@ -46,13 +46,9 @@ public class TestTemplateParams extends BaseTestSuiteTreeModel {
 
     @AfterClass
     public void afterClass() throws IoTDBConnectionException, StatementExecutionException {
-        // 创建失败时资源可能不存在；无条件 drop 会变成 config FAIL，使类级缓存失效并放大整类重跑。
-        if (checkStroageGroupExists(database)) {
-            deleteDatabaseIfExists(database);
-        }
-        if (checkTemplateExists(tName)) {
-            dropTemplateIfExists(tName);
-        }
+        // helper 内部有存在性检查并吞掉异常，避免连接/资源问题升级为 config FAIL（会放大整类重跑）。
+        deleteDatabaseIfExists(database);
+        dropTemplateIfExists(tName);
     }
 
     // TIMECHODB-141
