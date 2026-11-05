@@ -29,6 +29,16 @@ public class TestTemplateNonAlignedAddTS extends BaseTestSuiteTreeModel {
     private List<TSDataType> dataTypes = new ArrayList<>(7);
     private List<IMeasurementSchema> schemaList = new ArrayList<>(7);// tablet
 
+    @Override
+    protected Set<String> managedDatabases() {
+        return Set.of("root.blendAddTS");
+    }
+
+    @Override
+    protected Set<String> managedTemplates() {
+        return Set.of("aligned_template", "nonAligned_template");
+    }
+
     @BeforeClass(enabled = true)
     public void beforeClass() throws IoTDBConnectionException, StatementExecutionException, IOException {
         if (checkStroageGroupExists(database)) {

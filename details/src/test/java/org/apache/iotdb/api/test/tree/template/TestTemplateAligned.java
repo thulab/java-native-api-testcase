@@ -37,6 +37,16 @@ public class TestTemplateAligned extends BaseTestSuiteTreeModel {
     private List<IMeasurementSchema> schemaList = new ArrayList<>(6);// tablet
 
 
+    @Override
+    protected Set<String> managedDatabases() {
+        return Set.of("root.business.aligned");
+    }
+
+    @Override
+    protected Set<String> managedTemplates() {
+        return Set.of("aligned_template");
+    }
+
     @BeforeClass(enabled = true)
     public void beforeClass() throws IoTDBConnectionException, StatementExecutionException, IOException {
         if (checkStroageGroupExists(database)) {
