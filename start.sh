@@ -9,6 +9,10 @@
 # 数据库连接通过环境变量覆盖（不设置时沿用 config.properties）：
 #   IOTDB_HOST / IOTDB_PORT / IOTDB_USER / IOTDB_PASSWORD
 #   IOTDB_IS_CLUSTER / IOTDB_HOST_NODES
+#
+# 依赖版本覆盖：PLM 产品源码构建把本轮 TimechoDB 版本写入仓库根的
+# .plm-dep-version（未跟踪文件），本脚本读取后用 -Diotdb.version 覆盖根 pom
+# 的声明，保证消费的是本轮构建产物；文件不存在时沿用 pom 里的版本。
 # ============================================================================
 set -u
 
@@ -20,6 +24,22 @@ AUTOMATION_TYPE="${PLM_AUTOMATION_TYPE:-session-java}"
 PYTHON="${PYTHON:-python3}"
 SUREFIRE_DIR="details/target/surefire-reports"
 TESTNG_TMP_DIR="details/target/plm-testng"
+
+# PLM 产品源码构建写入的依赖版本（未跟踪文件，见文件头说明）
+DEP_VERSION_FILE="$REPO_ROOT/.plm-dep-version"
+DEP_VERSION=""
+if [ -f "$DEP_VERSION_FILE" ]; then
+    DEP_VERSION=$(sed -n '1p' "$DEP_VERSION_FILE" | tr -d '[:space:]')
+fi
+
+# 所有需要解析 iotdb.version 的 Maven 调用统一走这里
+mvn_dep() {
+    if [ -n "$DEP_VERSION" ]; then
+        mvn "$@" "-Diotdb.version=$DEP_VERSION"
+    else
+        mvn "$@"
+    fi
+}
 
 usage() {
     cat >&2 <<'EOF'
@@ -41,8 +61,8 @@ safe_name() {
 ensure_built() {
     # 先安装根 POM（details 单模块构建需要 parent:master），再安装 common；
     # details 本身由 mvn test/test-compile 编译，避免每条用例触发 package/shade。
-    mvn -q -N -DskipTests install || return 1
-    mvn -q -DskipTests -pl common install || return 1
+    mvn_dep -q -N -DskipTests install || return 1
+    mvn_dep -q -DskipTests -pl common install || return 1
 }
 
 BUILD_MARKER="$REPO_ROOT/details/target/.plm-build-ok"
@@ -53,6 +73,7 @@ needs_build() {
     [ -f "$BUILD_MARKER" ] || return 0
     [ -d "$REPO_ROOT/common/target/classes" ] || return 0
     [ -d "$REPO_ROOT/details/target/test-classes" ] || return 0
+    [ -f "$DEP_VERSION_FILE" ] && [ "$DEP_VERSION_FILE" -nt "$BUILD_MARKER" ] && return 0
     [ "$REPO_ROOT/pom.xml" -nt "$BUILD_MARKER" ] && return 0
     [ "$REPO_ROOT/common/pom.xml" -nt "$BUILD_MARKER" ] && return 0
     [ "$REPO_ROOT/details/pom.xml" -nt "$BUILD_MARKER" ] && return 0
@@ -63,15 +84,15 @@ needs_build() {
 ensure_built_cached() {
     needs_build || return 0
     ensure_built || return 1
-    mvn -q -DskipTests -pl details test-compile || return 1
-    mvn -o -q -pl details dependency:build-classpath -Dmdep.outputFile="$CP_FILE" || return 1
+    mvn_dep -q -DskipTests -pl details test-compile || return 1
+    mvn_dep -o -q -pl details dependency:build-classpath -Dmdep.outputFile="$CP_FILE" || return 1
     touch "$BUILD_MARKER"
 }
 
 prepare() {
     ensure_built_cached && [ -f "$CP_FILE" ] || {
         # marker 已存在但 classpath 文件被清理时补生成
-        mvn -o -q -pl details dependency:build-classpath -Dmdep.outputFile="$CP_FILE" || return 1
+        mvn_dep -o -q -pl details dependency:build-classpath -Dmdep.outputFile="$CP_FILE" || return 1
     }
 }
 
@@ -116,7 +137,7 @@ case_one() {
     }
 
     [ -f "$CP_FILE" ] || {
-        mvn -o -q -pl details dependency:build-classpath -Dmdep.outputFile="$CP_FILE" || return 1
+        mvn_dep -o -q -pl details dependency:build-classpath -Dmdep.outputFile="$CP_FILE" || return 1
     }
 
     # 直接用 TestNG 运行单条用例，避免每条用例启动一次 Maven。
