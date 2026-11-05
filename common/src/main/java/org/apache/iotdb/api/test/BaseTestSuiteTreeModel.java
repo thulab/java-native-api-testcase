@@ -45,7 +45,7 @@ public class BaseTestSuiteTreeModel {
     protected boolean auto_create_schema;
     protected long baseTime;
     /** PLM 就绪/清理等待上限（毫秒），可用 -Dplm.db-ready-timeout-ms 覆盖。 */
-    private static final long PLM_DB_READY_TIMEOUT_MS = Long.getLong("plm.db-ready-timeout-ms", 30_000L);
+    private static final long PLM_DB_READY_TIMEOUT_MS = Long.getLong("plm.db-ready-timeout-ms", 120_000L);
 
     @BeforeClass
     public void beforeSuite() throws IoTDBConnectionException, ParseException, IOException {
@@ -65,7 +65,8 @@ public class BaseTestSuiteTreeModel {
         resetClusterState();
     }
 
-    private void resetClusterState() {
+    /** 清理并探测集群；子类自定义 @BeforeClass 也应调用它，避免直接 clean 抛异常导致整类 skipped。 */
+    protected void resetClusterState() {
         try {
             cleanDatabases(verbose);
             cleanTemplates(verbose);
@@ -78,6 +79,7 @@ public class BaseTestSuiteTreeModel {
     /** 集群就绪探测：建库 + 建一条探测序列，成功后删除；906 期间等待重试。 */
     protected void awaitClusterReady() {
         long deadline = System.currentTimeMillis() + PLM_DB_READY_TIMEOUT_MS;
+        long retrySleep = 500L;
         String probeDb = "root.plm_probe_" + Long.toHexString(System.nanoTime());
         while (true) {
             boolean created = false;
@@ -108,7 +110,8 @@ public class BaseTestSuiteTreeModel {
                         + "ms），继续执行，让用例自身暴露失败");
                 return;
             }
-            sleepQuietly(500L);
+            sleepQuietly(retrySleep);
+            retrySleep = Math.min(retrySleep * 2, 5_000L);
         }
     }
 
@@ -129,6 +132,7 @@ public class BaseTestSuiteTreeModel {
     protected void awaitDatabaseReady(String database)
             throws IoTDBConnectionException, StatementExecutionException {
         long deadline = System.currentTimeMillis() + PLM_DB_READY_TIMEOUT_MS;
+        long retrySleep = 500L;
         StatementExecutionException last = null;
         while (true) {
             String probe = database + ".__plm_ready_" + Long.toHexString(System.nanoTime());
@@ -153,7 +157,8 @@ public class BaseTestSuiteTreeModel {
                 }
                 return;
             }
-            sleepQuietly(500L);
+            sleepQuietly(retrySleep);
+            retrySleep = Math.min(retrySleep * 2, 5_000L);
         }
     }
 
@@ -173,11 +178,40 @@ public class BaseTestSuiteTreeModel {
         return message != null && message.contains("already been created as database");
     }
 
-    private static void sleepQuietly(long millis) {
+    protected static void sleepQuietly(long millis) {
         try {
             Thread.sleep(millis);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
+        }
+    }
+
+    @FunctionalInterface
+    protected interface SqlOperation {
+        void run() throws IoTDBConnectionException, StatementExecutionException;
+    }
+
+    /**
+     * 906 期间重试写入：自动建库（auto_create_schema）后 region 尚未就绪时，
+     * 客户端可能自己重试到超时仍返回 906。这里按就绪上限做指数退避，
+     * 避免单条用例被一次 region 排队直接判错。
+     */
+    protected void executeWithRegionRetry(String label, SqlOperation operation)
+            throws IoTDBConnectionException, StatementExecutionException {
+        long deadline = System.currentTimeMillis() + PLM_DB_READY_TIMEOUT_MS;
+        long retrySleep = 500L;
+        while (true) {
+            try {
+                operation.run();
+                return;
+            } catch (StatementExecutionException e) {
+                if (!isRegionUnavailable(e) || System.currentTimeMillis() >= deadline) {
+                    throw e;
+                }
+                logger.warn("[plm] " + label + " 命中 906，等待 region 就绪后重试：" + e.getMessage());
+                sleepQuietly(retrySleep);
+                retrySleep = Math.min(retrySleep * 2, 5_000L);
+            }
         }
     }
 
@@ -507,11 +541,13 @@ public class BaseTestSuiteTreeModel {
 //        System.out.println(tsDataTypeList);
 //        System.out.println(values);
 //        System.out.println("-----------");
-        if (isAligned) {
-            session.insertAlignedRecord(device, timestamp, tsNames, tsDataTypeList, values);
-        } else {
-            session.insertRecord(device, timestamp, tsNames, tsDataTypeList, values);
-        }
+        executeWithRegionRetry("insertRecord " + device, () -> {
+            if (isAligned) {
+                session.insertAlignedRecord(device, timestamp, tsNames, tsDataTypeList, values);
+            } else {
+                session.insertRecord(device, timestamp, tsNames, tsDataTypeList, values);
+            }
+        });
         for (int i = 0; i < tsNames.size(); i++) {
             checkQueryResult("select " + tsNames.get(i) + " from "
                     + device + " where time=" + timestamp + ";", tsDataTypeList.get(i), values.get(i));
@@ -576,11 +612,13 @@ public class BaseTestSuiteTreeModel {
             }
             rowIndex++;
         }
-        if (isAligned) {
-            session.insertAlignedTablet(tablet);
-        } else {
-            session.insertTablet(tablet);
-        }
+        executeWithRegionRetry("insertTablet " + device, () -> {
+            if (isAligned) {
+                session.insertAlignedTablet(tablet);
+            } else {
+                session.insertTablet(tablet);
+            }
+        });
         checkQueryResult("select count(" + schemaList.get(0).getMeasurementName() + ") from "
                 + device + ";", TSDataType.INT32, insertCount);
     }

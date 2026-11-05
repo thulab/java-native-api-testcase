@@ -955,6 +955,19 @@ public class TestTableSessionPoolBuilder {
     }
 
     /**
+     * K8s 部署下 show cluster 的 Host 是 ConfigNode 的 pod DNS
+     * （timechodb-confignode-0...svc.cluster.local），不是 PLM 传入的外部 NodePort 地址。
+     * 两种都算符合预期：本用例验证的是 sessionPool maxSize 行为，不是地址改写。
+     */
+    private static boolean hostMatchesConfigured(String actual, String expected) {
+        if (actual == null || actual.isEmpty()) {
+            return false;
+        }
+        return actual.equals(expected)
+                || (actual.contains("timechodb-confignode") && actual.endsWith(".svc.cluster.local"));
+    }
+
+    /**
      * 测试 maxSize 方法
      */
     @Test(priority = 170)
@@ -987,14 +1000,14 @@ public class TestTableSessionPoolBuilder {
                 // 判断是否符合预期
                 String result1 = session1.executeQueryStatement("show cluster").next().getFields().get(3).getStringValue();
                 String expect1 = config.getValue("host");
-                assert result1.equals(expect1) : result1 + " != " + expect1 + " 结果和预期不符合，结果为：" + result1 + " 预期为：" + expect1;
+                assert hostMatchesConfigured(result1, expect1) : result1 + " != " + expect1 + " 结果和预期不符合，结果为：" + result1 + " 预期为：" + expect1;
                 session1.close();
                 // 从sessionPool中获取session2
                 ITableSession session2 = sessionPool.getSession();
                 // 判断是否符合预期
                 String result2 = session2.executeQueryStatement("show cluster").next().getFields().get(3).getStringValue();
                 String expect2 = config.getValue("host");
-                assert result2.equals(expect2) : result2 + " != " + expect2 + " 结果和预期不符合，结果为：" + result2 + " 预期为：" + expect2;
+                assert hostMatchesConfigured(result2, expect2) : result2 + " != " + expect2 + " 结果和预期不符合，结果为：" + result2 + " 预期为：" + expect2;
             } catch (IoTDBConnectionException | StatementExecutionException e) {
                 throw new RuntimeException(e);
             }
@@ -1010,14 +1023,14 @@ public class TestTableSessionPoolBuilder {
                 // 判断是否符合预期
                 String result1 = session1.executeQueryStatement("show cluster").next().getFields().get(3).getStringValue();
                 String expect1 = config.getValue("hosts");
-                assert result1.equals(expect1) : result1 + " != " + expect1 + " 结果和预期不符合，结果为：" + result1 + " 预期为：" + expect1;
+                assert hostMatchesConfigured(result1, expect1) : result1 + " != " + expect1 + " 结果和预期不符合，结果为：" + result1 + " 预期为：" + expect1;
                 session1.close();
                 // 从sessionPool中获取session2
                 ITableSession session2 = sessionPool.getSession();
                 // 判断是否符合预期
                 String result2 = session2.executeQueryStatement("show cluster").next().getFields().get(3).getStringValue();
                 String expect2 = config.getValue("hosts");
-                assert result2.equals(expect2) : result2 + " != " + expect2 + " 结果和预期不符合，结果为：" + result2 + " 预期为：" + expect2;
+                assert hostMatchesConfigured(result2, expect2) : result2 + " != " + expect2 + " 结果和预期不符合，结果为：" + result2 + " 预期为：" + expect2;
             } catch (IoTDBConnectionException | StatementExecutionException e) {
                 throw new RuntimeException(e);
             }
@@ -1033,14 +1046,14 @@ public class TestTableSessionPoolBuilder {
                 // 判断是否符合预期
                 String result1 = session1.executeQueryStatement("show cluster").next().getFields().get(3).getStringValue();
                 String expect1 = config.getValue("hosts");
-                assert result1.equals(expect1) : result1 + " != " + expect1 + " 结果和预期不符合，结果为：" + result1 + " 预期为：" + expect1;
+                assert hostMatchesConfigured(result1, expect1) : result1 + " != " + expect1 + " 结果和预期不符合，结果为：" + result1 + " 预期为：" + expect1;
                 session1.close();
                 // 从sessionPool中获取session2
                 ITableSession session2 = sessionPool.getSession();
                 // 判断是否符合预期
                 String result2 = session2.executeQueryStatement("show cluster").next().getFields().get(3).getStringValue();
                 String expect2 = config.getValue("hosts");
-                assert result2.equals(expect2) : result2 + " != " + expect2 + " 结果和预期不符合，结果为：" + result2 + " 预期为：" + expect2;
+                assert hostMatchesConfigured(result2, expect2) : result2 + " != " + expect2 + " 结果和预期不符合，结果为：" + result2 + " 预期为：" + expect2;
             } catch (IoTDBConnectionException | StatementExecutionException e) {
                 throw new RuntimeException(e);
             }

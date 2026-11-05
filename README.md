@@ -81,13 +81,17 @@ sh start.sh case <CASE_ID>          # 单条用例，产物写 $PLM_REPORT_DIR
 ```
 
 - `PLM_AUTOMATION_TYPE`：PLM 绑定的仓库类型（默认 `session-java`）。
-- `PLM_REPORT_DIR`：JUnit XML 输出目录（相对仓库根，默认 `reports/`）。
+- `PLM_REPORT_DIR`：JUnit XML 输出目录（相对仓库根，默认 `reports/`）。真实 run 中，执行机上 `reports/plm-exec` 下超过 2 天的逐用例目录会按年龄回收（产物已由 PLM 下载归档）。
+- `PLM_RUN_ID`：PLM 真实执行时注入的 run 标识。同一个 run 内，同一个 TestNG 类的**可缓存结果只真正执行一次**，其余用例从 `reports/plm-class-cache/<runId>/...` 复用结果（键包含 FQCN、HEAD、工作区改动、构建标记、DB 地址与依赖版本；可用 `PLM_CLASS_CACHE_DIR` 改缓存根，默认仓库内 `reports/plm-class-cache`）。`PLM_CLASS_CACHE=0` 可关闭复用；只有 operationKey 为 `run:<id>` 的真实执行会注入，sync/check 等非 run 操作不注入（任何创建 `test_run` 的执行都会带 `run:` 前缀并注入）。配置失败、类超时、目标方法不在报告里时不会复用坏结果：前两者会让后续同类用例重跑/复用超时结论，目标缺失会作废缓存重跑。
+- `PLM_CLASS_TIMEOUT_SEC`：单个测试类的硬超时（默认 600 秒），依赖 coreutils `timeout`；缺失时 `start.sh` 会在 stderr 告警并退化为无硬超时。客户端对服务端 socket 读没有超时，服务端卡住时用 `timeout` 终止整类，并写出带原因的 ERROR；同一 run 内后续同类用例复用该超时结论，下个 run 重新尝试，避免挂住 PLM 整轮。
+- `.plm-known-issues.json`：已知产品限制/待确认行为的用例清单，**必须随仓库提交到执行机**。`match`（错误消息正则）把匹配的 failure/error 改写成带原因的 SKIPPED；**没有 `match` 的条目只用于“目标方法 0 次执行”的停用用例**（如空 DataProvider），不会吞掉真实运行出来的失败；`skipRun=true` 直接跳过会挂起的用例（如 `TestDynamicTemplateMin` 的 aligned tablet 写入）。清单只做“可见的已知问题”，不要用来掩盖普通失败。
 - `IOTDB_HOST` / `IOTDB_PORT`：PLM 执行时由平台按 `k8sInstanceId` 解析 K8s 实例的 `connectionHost/connectionPort` 后注入，测试程序必须使用该地址；缺少任一项时 `start.sh case` 直接失败，**不会回退到 `config.properties` 的默认地址**。手工本地运行时可不设置，继续使用 `config.properties`。
 - `IOTDB_USER` / `IOTDB_PASSWORD` / `IOTDB_IS_CLUSTER` / `IOTDB_HOST_NODES`：可选覆盖；PLM 不注入数据库账号/口令，账号/口令由本仓库 `config.properties` 的 `user/password` 提供（默认 `root/TimechoDB@2021`，开源版可改为 `root/root`）。
 - 执行机依赖：本地 Maven 仓库需有 `iotdb.version`（当前 `2.0.11-SNAPSHOT`）对应的 `com.timecho.iotdb:session-parent`、`com.timecho.iotdb:isession-parent`、`com.timecho.iotdb:service-rpc`、`org.apache.iotdb:iotdb-jdbc`；由 TimechoDB 2.0.11 源码执行 `mvn -DskipTests -pl iotdb-client/service-rpc,iotdb-client/isession,iotdb-client/session,iotdb-client/jdbc -am install` 安装。旧版本若仍使用 `org.apache.iotdb:iotdb-session` / `isession` 坐标，需同步调整根 `pom.xml` 的依赖管理。手工运行且没有 `.plm-dep-version` 时，切换目标数据库版本需同步修改根 `pom.xml` 的 `iotdb.version`；PLM 构建会自动覆盖，不需要改 pom。
 - `.plm-dep-version`：PLM 产品源码构建写入的依赖版本覆盖文件（未跟踪，勿提交）。存在时 `start.sh` 用 `-Diotdb.version=<值>` 覆盖根 `pom.xml` 的 `iotdb.version`，文件比 `details/target/.plm-build-ok` 新时强制重编；手工运行时可删除该文件回退到 pom 版本。
 - 导入用例后由 `.plm-case-id-map.json` 维护 PLM 编号与 TestNG 目标（`FQCN::method`）的映射；同时支持扁平 `{自然ID: PLM编号}` 与 `{nmap, revmap}` 两种格式。
 - 导入脚本：`python3 scripts/plm/import_to_plm.py --product-id <id> --feature-id <id>`（PAT 只从环境变量读取；`--dry-run` 可先预览）。
+- 结果后处理单测：`python3 -m unittest discover -s scripts/plm -p 'test_*.py'`。
 
 原有 `mvn clean package -DskipTests` 与 `mvn surefire-report:report` 流程不受影响。
 

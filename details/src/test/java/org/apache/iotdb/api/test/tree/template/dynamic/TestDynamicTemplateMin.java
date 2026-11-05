@@ -39,8 +39,9 @@ public class TestDynamicTemplateMin extends BaseTestSuiteTreeModel {
 
     @BeforeClass
     public void BeforeClass() throws IOException, IoTDBConnectionException, StatementExecutionException {
-        cleanDatabases(verbose);
-        cleanTemplates(verbose);
+        // PLM 2026-11-05：子类清理直接 throw 会让整类被 TestNG 标成 skipped（原因还会丢）。
+        // 统一走基类的安全清理：失败只告警，并等待集群/库就绪。
+        resetClusterState();
         structures = new CustomDataProvider().parseTSStructure("data/tree/ts-structures.csv");
         structureInfo.put("s_boolean", new Object[]{TSDataType.BOOLEAN, TSEncoding.PLAIN, CompressionType.UNCOMPRESSED});
         structureInfo.put("s_int", new Object[]{TSDataType.INT32, TSEncoding.PLAIN, CompressionType.UNCOMPRESSED});
@@ -65,8 +66,13 @@ public class TestDynamicTemplateMin extends BaseTestSuiteTreeModel {
 
     @AfterMethod
     public void afterMethod() throws IoTDBConnectionException, StatementExecutionException {
-        cleanDatabases(verbose);
-        cleanTemplates(verbose);
+        // 清理失败不能让后续测试直接 skipped；交由下一个类的 resetClusterState 再次收拾。
+        try {
+            cleanDatabases(verbose);
+            cleanTemplates(verbose);
+        } catch (Exception e) {
+            logger.warn("[plm] TestDynamicTemplateMin @AfterMethod 清理失败（继续）：" + e.getMessage());
+        }
     }
 
     private void business(List<Object>... structs) throws IoTDBConnectionException, IOException, StatementExecutionException {
@@ -82,8 +88,10 @@ public class TestDynamicTemplateMin extends BaseTestSuiteTreeModel {
         // database0 用于主要业务，database1用于清理，database2用于普通序列的测试
         for (int i = 0; i < 3; i++) {
             databases.add(databasePrefix + i);
+            // 只在新库时等待就绪；已存在说明本类前面已建好，避免依赖
+            // “already been created as database” 这条英文文案。
             if (!checkStroageGroupExists(databases.get(i))) {
-                session.createDatabase(databases.get(i));
+                createDatabaseAwaitReady(databases.get(i));
             }
         }
         String database = databases.get(0);
@@ -393,7 +401,7 @@ public class TestDynamicTemplateMin extends BaseTestSuiteTreeModel {
         assert 0 == getSetPathsCount(templateName, verbose) : "模版挂载数目 == 0";
         // 删除database再创建，查看与模版关联是否清除
         session.deleteDatabase(database);
-        session.createDatabase(database);
+        createDatabaseAwaitReady(database);
         session.setSchemaTemplate(templateName, devicePaths.get(0));
         session.unsetSchemaTemplate(devicePaths.get(0), templateName);
         // 删除模版

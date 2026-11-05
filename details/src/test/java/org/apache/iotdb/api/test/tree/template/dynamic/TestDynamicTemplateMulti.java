@@ -33,8 +33,8 @@ public class TestDynamicTemplateMulti extends BaseTestSuiteTreeModel {
     @BeforeClass
     public void BeforeClass() throws IOException, IoTDBConnectionException, StatementExecutionException {
         session = PrepareConnection.getSessionTreeModel();
-        cleanDatabases(verbose);
-        cleanTemplates(verbose);
+        // 与 TestDynamicTemplateMin 一致：清理失败不 throw，避免整类被 TestNG 标成 skipped。
+        resetClusterState();
     }
 
     private void createTemplate(int databaseCount, int deviceCount, String templateName, String suffix) throws StatementExecutionException, IoTDBConnectionException, IOException {
@@ -102,8 +102,9 @@ public class TestDynamicTemplateMulti extends BaseTestSuiteTreeModel {
         }
         for (int i = 0; i < databaseCount; i++) {
             String database = databasePrefix + "_" + i;
+            // 只在新库时等待就绪，避免重复建库依赖英文错误文案。
             if (!checkStroageGroupExists(database)) {
-                session.createDatabase(database);
+                createDatabaseAwaitReady(database);
             }
             databases.add(database);
             for (int j = 0; j < deviceCount; j++) {
@@ -112,7 +113,7 @@ public class TestDynamicTemplateMulti extends BaseTestSuiteTreeModel {
         }
         // 为了测试清理
         String database = databasePrefix + 2;
-        session.createDatabase(database);
+        createDatabaseAwaitReady(database);
         Template t = new Template(templateName_clean, isAligned);
         t.addToTemplate(new MeasurementNode("name", TSDataType.TEXT, TSEncoding.PLAIN, CompressionType.GZIP));
         schemaList_clean.add(new MeasurementSchema("name", TSDataType.TEXT, TSEncoding.PLAIN, CompressionType.GZIP));
