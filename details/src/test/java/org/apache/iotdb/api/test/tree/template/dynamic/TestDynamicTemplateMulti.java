@@ -18,6 +18,7 @@ import org.testng.log4testng.Logger;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class TestDynamicTemplateMulti extends BaseTestSuiteTreeModel {
     private Logger logger = Logger.getLogger(TestDynamicTemplateMulti.class);
@@ -30,11 +31,20 @@ public class TestDynamicTemplateMulti extends BaseTestSuiteTreeModel {
     private String tsPrefix = "sensors_";
     private String templateName_clean = templatePrefix + 2;
 
+    @Override
+    protected Set<String> managedDatabasePrefixes() {
+        return Set.of("root.db.factory");
+    }
+
+    @Override
+    protected Set<String> managedTemplatePrefixes() {
+        return Set.of("template0");
+    }
+
     @BeforeClass
     public void BeforeClass() throws IOException, IoTDBConnectionException, StatementExecutionException {
         session = PrepareConnection.getSessionTreeModel();
-        // 与 TestDynamicTemplateMin 一致：清理失败不 throw，避免整类被 TestNG 标成 skipped。
-        resetClusterState();
+        // run 级首类已做过全局清理；后续类由基类按 managedDatabases/managedTemplates 做 scoped 清理。
     }
 
     private void createTemplate(int databaseCount, int deviceCount, String templateName, String suffix) throws StatementExecutionException, IoTDBConnectionException, IOException {

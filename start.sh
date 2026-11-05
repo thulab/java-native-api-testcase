@@ -162,9 +162,11 @@ cleanup_class_cache() {
 cleanup_old_reports() {
     # PLM_REPORT_DIR 是逐条用例的新目录；执行机上 reports/plm-exec 会持续累积。
     # 产物已由 PLM 下载归档，这里按年龄回收，避免长期占满执行机磁盘。
-    [ -d "$REPO_ROOT/reports/plm-exec" ] || return 0
-    find "$REPO_ROOT/reports/plm-exec" -mindepth 1 -maxdepth 1 -type d -mtime +2 \
-        -exec rm -rf -- {} + 2>/dev/null || true
+    for dir in "$REPO_ROOT/reports/plm-exec" "$REPO_ROOT/reports/plm-run-state"; do
+        [ -d "$dir" ] || continue
+        find "$dir" -mindepth 1 -maxdepth 1 -type d -mtime +2 \
+            -exec rm -rf -- {} + 2>/dev/null || true
+    done
 }
 
 class_cache_hit() {

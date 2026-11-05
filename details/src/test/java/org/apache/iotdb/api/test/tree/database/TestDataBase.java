@@ -19,6 +19,12 @@ public class TestDataBase extends BaseTestSuiteTreeModel {
     private static List<String> normalSGs = new ArrayList<>();
     private static List<String> deleteSGs = new ArrayList<>();
 
+    /** 本类按 CSV 删任意库（含通配路径），需要每次从干净实例开始。 */
+    @Override
+    protected boolean requiresGlobalClean() {
+        return true;
+    }
+
     @BeforeClass(enabled = true)
     public void beforeClass() throws IoTDBConnectionException, StatementExecutionException, IOException {
         normalSGs = new CustomDataProvider().getFirstColumns("data/tree/storage-group.csv");

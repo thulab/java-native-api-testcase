@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * 单模版，多database
@@ -36,12 +37,23 @@ public class TestDynamicTemplateMin extends BaseTestSuiteTreeModel {
     private List<String> devicePaths = new ArrayList<>();
     private String databasePrefix = "root.db.factory";
     private String templateName = "template01";
+    private static final Set<String> MANAGED_DATABASES = Set.of(
+            "root.db.factory0", "root.db.factory1", "root.db.factory2");
+    private static final Set<String> MANAGED_TEMPLATES = Set.of("template01");
+
+    @Override
+    protected Set<String> managedDatabases() {
+        return MANAGED_DATABASES;
+    }
+
+    @Override
+    protected Set<String> managedTemplates() {
+        return MANAGED_TEMPLATES;
+    }
 
     @BeforeClass
     public void BeforeClass() throws IOException, IoTDBConnectionException, StatementExecutionException {
-        // PLM 2026-11-05：子类清理直接 throw 会让整类被 TestNG 标成 skipped（原因还会丢）。
-        // 统一走基类的安全清理：失败只告警，并等待集群/库就绪。
-        resetClusterState();
+        // run 级首类已做过全局清理；后续类由基类按 managedDatabases/managedTemplates 做 scoped 清理。
         structures = new CustomDataProvider().parseTSStructure("data/tree/ts-structures.csv");
         structureInfo.put("s_boolean", new Object[]{TSDataType.BOOLEAN, TSEncoding.PLAIN, CompressionType.UNCOMPRESSED});
         structureInfo.put("s_int", new Object[]{TSDataType.INT32, TSEncoding.PLAIN, CompressionType.UNCOMPRESSED});
@@ -66,12 +78,11 @@ public class TestDynamicTemplateMin extends BaseTestSuiteTreeModel {
 
     @AfterMethod
     public void afterMethod() throws IoTDBConnectionException, StatementExecutionException {
-        // 清理失败不能让后续测试直接 skipped；交由下一个类的 resetClusterState 再次收拾。
+        // 只清本类自己的库/模板，不再每个方法后 drop 全实例。
         try {
-            cleanDatabases(verbose);
-            cleanTemplates(verbose);
+            cleanManagedResources();
         } catch (Exception e) {
-            logger.warn("[plm] TestDynamicTemplateMin @AfterMethod 清理失败（继续）：" + e.getMessage());
+            logger.warn("[plm] TestDynamicTemplateMin @AfterMethod scoped 清理失败（继续）：" + e.getMessage());
         }
     }
 

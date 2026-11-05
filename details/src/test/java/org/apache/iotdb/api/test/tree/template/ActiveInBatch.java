@@ -41,6 +41,21 @@ public class ActiveInBatch extends BaseTestSuiteTreeModel {
     private static final String tsName = "s0";
     private static int maxDatabaseLength;
 
+    @Override
+    protected Set<String> managedDatabases() {
+        return Set.of("root.templateSingle1", "root.templateSingle2");
+    }
+
+    @Override
+    protected Set<String> managedDatabasePrefixes() {
+        return Set.of("root.template");
+    }
+
+    @Override
+    protected Set<String> managedTemplatePrefixes() {
+        return Set.of("tempGroup");
+    }
+
     /**
      * 测试前准备工作
      */

@@ -23,11 +23,20 @@ import org.testng.log4testng.Logger;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.FileAlreadyExistsException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.StringJoiner;
 
 import static org.apache.tsfile.encrypt.EncryptUtils.hexStringToByteArray;
@@ -46,6 +55,11 @@ public class BaseTestSuiteTreeModel {
     protected long baseTime;
     /** PLM 就绪/清理等待上限（毫秒），可用 -Dplm.db-ready-timeout-ms 覆盖。 */
     private static final long PLM_DB_READY_TIMEOUT_MS = Long.getLong("plm.db-ready-timeout-ms", 120_000L);
+    /** PLM 真实 run 标识；手工运行时为空，保持旧的“每个类全库清理”行为。 */
+    private static final String PLM_RUN_ID = trimToNull(System.getenv("PLM_RUN_ID"));
+    /** run 级清理标记目录；放在 ignores 的 reports/ 下，跨测试类进程共享。 */
+    private static final Path RUN_STATE_ROOT =
+            Paths.get(System.getProperty("user.dir"), "reports", "plm-run-state");
 
     @BeforeClass
     public void beforeSuite() throws IoTDBConnectionException, ParseException, IOException {
@@ -59,25 +73,72 @@ public class BaseTestSuiteTreeModel {
         isAligned = Boolean.parseBoolean(ReadConfig.getInstance().getValue("isAligned"));
         auto_create_schema = Boolean.parseBoolean(ReadConfig.getInstance().getValue("auto_create_schema"));
         baseTime = parseDate();
-        // PLM 2026-11-04：每个测试类开始前先清干净，并确认集群已经能建库/建序列。
-        // 之前只在 @AfterClass 清理：前一次失败（如 906 schema region 不可用）留下的
-        // 数据库/模板会污染后续类，表现为 501/503/505/508 的级联失败。
-        resetClusterState();
+        // PLM 2026-11-05：生产 run 只起一个 K8s 实例，且实例由 PLM 在 run 结束后销毁。
+        // 首个类做一次全库/全模板清理并落 run 级标记；后续类只清自己的库/模板，
+        // 不再每个类都 drop 全库。手工运行（无 PLM_RUN_ID）保持旧行为。
+        if (isPlmRun()) {
+            if (requiresGlobalClean()) {
+                String message = "[plm] requiresGlobalClean 类触发全量清理: " + getClass().getSimpleName();
+                logger.info(message);
+                System.err.println(message);
+                if (resetClusterState()) {
+                    markRunClusterCleaned();
+                }
+            } else if (runAlreadyCleaned()) {
+                cleanManagedResources();
+            } else if (resetClusterState()) {
+                markRunClusterCleaned();
+            }
+        } else {
+            resetClusterState();
+        }
     }
 
-    /** 清理并探测集群；子类自定义 @BeforeClass 也应调用它，避免直接 clean 抛异常导致整类 skipped。 */
-    protected void resetClusterState() {
+    /** 是否 PLM 真实 run（手工运行返回 false，保持旧的每类全量清理）。 */
+    protected boolean isPlmRun() {
+        return PLM_RUN_ID != null;
+    }
+
+    /** 需要“干净实例”的类（如 TestDataBase 会按 CSV 删任意库）覆盖为 true。 */
+    protected boolean requiresGlobalClean() {
+        return false;
+    }
+
+    /** 本类拥有的数据库（精确名称，不含通配符）；默认空，子类按需覆盖。 */
+    protected Set<String> managedDatabases() {
+        return Collections.emptySet();
+    }
+
+    /** 本类拥有的模板（精确名称，不含通配符）；默认空，子类按需覆盖。 */
+    protected Set<String> managedTemplates() {
+        return Collections.emptySet();
+    }
+
+    /** 本类拥有的数据库前缀（只匹配 prefix 本身、prefix_ / prefix. / prefix+数字）；默认空。 */
+    protected Set<String> managedDatabasePrefixes() {
+        return Collections.emptySet();
+    }
+
+    /** 本类拥有的模板前缀（匹配规则同上）；默认空。 */
+    protected Set<String> managedTemplatePrefixes() {
+        return Collections.emptySet();
+    }
+
+    /** 清理并探测集群；返回清理和探测是否都成功，只有成功才写 run 级标记。 */
+    protected boolean resetClusterState() {
+        boolean cleaned = false;
         try {
-            cleanDatabases(verbose);
-            cleanTemplates(verbose);
+            // 两个清理都要尝试：用 &（非短路），单个失败不阻断另一个。
+            cleaned = cleanDatabases(verbose) & cleanTemplates(verbose);
         } catch (Exception e) {
             logger.warn("[plm] 启动清理失败（继续执行，后续用例可能命中残留状态）：" + e.getMessage());
         }
-        awaitClusterReady();
+        boolean ready = awaitClusterReady();
+        return cleaned && ready;
     }
 
     /** 集群就绪探测：建库 + 建一条探测序列，成功后删除；906 期间等待重试。 */
-    protected void awaitClusterReady() {
+    protected boolean awaitClusterReady() {
         long deadline = System.currentTimeMillis() + PLM_DB_READY_TIMEOUT_MS;
         long retrySleep = 500L;
         String probeDb = "root.plm_probe_" + Long.toHexString(System.nanoTime());
@@ -88,11 +149,11 @@ public class BaseTestSuiteTreeModel {
                 created = true;
                 session.createTimeseries(probeDb + ".d.s", TSDataType.BOOLEAN,
                         TSEncoding.PLAIN, CompressionType.UNCOMPRESSED);
-                return;
+                return true;
             } catch (StatementExecutionException e) {
                 if (!isRegionUnavailable(e)) {
-                    logger.warn("[plm] 集群就绪探测非 906 失败（继续执行）：" + e.getMessage());
-                    return;
+                    logger.warn("[plm] 集群就绪探测非 906 失败：" + e.getMessage());
+                    return false;
                 }
             } catch (IoTDBConnectionException e) {
                 logger.warn("[plm] 集群就绪探测连接失败（继续重试）：" + e.getMessage());
@@ -107,12 +168,163 @@ public class BaseTestSuiteTreeModel {
             }
             if (System.currentTimeMillis() >= deadline) {
                 logger.warn("[plm] 集群就绪探测超时（" + PLM_DB_READY_TIMEOUT_MS
-                        + "ms），继续执行，让用例自身暴露失败");
-                return;
+                        + "ms），让用例自身暴露失败");
+                return false;
             }
             sleepQuietly(retrySleep);
             retrySleep = Math.min(retrySleep * 2, 5_000L);
         }
+    }
+
+    /**
+     * 类级清理：只删本类声明的库/模板，默认空。首个类做过全局清理后，
+     * 后续类靠它清掉自己的残留，不再 drop 整个实例。
+     */
+    protected void cleanManagedResources() {
+        if (session == null) {
+            return;
+        }
+        String scopeLog = "[plm] scoped cleanup: " + getClass().getSimpleName()
+                + " db=" + managedDatabases() + " tpl=" + managedTemplates()
+                + " dbPrefix=" + managedDatabasePrefixes() + " tplPrefix=" + managedTemplatePrefixes();
+        logger.info(scopeLog);
+        System.err.println(scopeLog);
+        for (String database : managedDatabases()) {
+            dropDatabaseIfExists(database);
+        }
+        for (String template : managedTemplates()) {
+            dropTemplateIfExists(template);
+        }
+        for (String prefix : managedDatabasePrefixes()) {
+            dropDatabasesMatching(prefix);
+        }
+        for (String prefix : managedTemplatePrefixes()) {
+            dropTemplatesMatching(prefix);
+        }
+    }
+
+    protected void dropDatabaseIfExists(String database) {
+        if (database == null || database.trim().isEmpty() || database.contains("*")) {
+            return;
+        }
+        try {
+            if (!checkStroageGroupExists(database)) {
+                return;
+            }
+        } catch (Exception e) {
+            logger.warn("[plm] 检查库是否存在失败（跳过 scoped 清理）：" + database + " " + e.getMessage());
+            return;
+        }
+        executeCleanupWithRetry("drop database " + database, "drop database " + database);
+    }
+
+    protected void dropTemplateIfExists(String template) {
+        if (template == null || template.trim().isEmpty() || template.contains("*")) {
+            return;
+        }
+        try {
+            if (!checkTemplateExists(template)) {
+                return;
+            }
+        } catch (Exception e) {
+            logger.warn("[plm] 检查模板是否存在失败（跳过 scoped 清理）：" + template + " " + e.getMessage());
+            return;
+        }
+        executeCleanupWithRetry("drop schema template `" + template + "`", "drop template " + template);
+    }
+
+    protected void dropDatabasesMatching(String prefix) {
+        if (prefix == null || prefix.trim().isEmpty() || prefix.contains("*")) {
+            return;
+        }
+        List<String> matches = new ArrayList<>();
+        try (SessionDataSet dataSet = session.executeQueryStatement("show databases")) {
+            while (dataSet.hasNext()) {
+                String database = dataSet.next().getFields().get(0).toString();
+                if (!database.equals("root.__audit") && matchesPrefix(database, prefix)) {
+                    matches.add(database);
+                }
+            }
+        } catch (Exception e) {
+            logger.warn("[plm] 读取数据库列表失败（跳过前缀清理 " + prefix + "）：" + e.getMessage());
+            return;
+        }
+        for (String database : matches) {
+            executeCleanupWithRetry("drop database " + database, "drop database " + database);
+        }
+    }
+
+    protected void dropTemplatesMatching(String prefix) {
+        if (prefix == null || prefix.trim().isEmpty() || prefix.contains("*")) {
+            return;
+        }
+        List<String> matches = new ArrayList<>();
+        try (SessionDataSet dataSet = session.executeQueryStatement("show schema templates")) {
+            while (dataSet.hasNext()) {
+                String template = dataSet.next().getFields().get(0).toString();
+                if (matchesPrefix(template, prefix)) {
+                    matches.add(template);
+                }
+            }
+        } catch (Exception e) {
+            logger.warn("[plm] 读取模板列表失败（跳过前缀清理 " + prefix + "）：" + e.getMessage());
+            return;
+        }
+        for (String template : matches) {
+            executeCleanupWithRetry("drop schema template `" + template + "`", "drop template " + template);
+        }
+    }
+
+    /** 只匹配 prefix 本身、prefix_ / prefix. / prefix+数字，避免误删同前缀的其它资源。 */
+    private static boolean matchesPrefix(String name, String prefix) {
+        if (name == null || prefix == null || !name.startsWith(prefix)) {
+            return false;
+        }
+        if (name.length() == prefix.length()) {
+            return true;
+        }
+        char next = name.charAt(prefix.length());
+        return next == '_' || next == '.' || Character.isDigit(next);
+    }
+
+    private Path runCleanedMarker() {
+        String safeRunId = PLM_RUN_ID.replaceAll("[^A-Za-z0-9._-]", "_");
+        return RUN_STATE_ROOT.resolve(safeRunId).resolve("cluster-cleaned");
+    }
+
+    private boolean runAlreadyCleaned() {
+        return isPlmRun() && Files.exists(runCleanedMarker());
+    }
+
+    private void markRunClusterCleaned() {
+        if (!isPlmRun()) {
+            return;
+        }
+        Path marker = runCleanedMarker();
+        try {
+            Files.createDirectories(marker.getParent());
+            String content = "runId=" + PLM_RUN_ID
+                    + "\nhost=" + ReadConfig.getInstance().getValue("host")
+                    + "\nport=" + ReadConfig.getInstance().getValue("port")
+                    + "\ncleanedAt=" + Instant.now() + "\n";
+            Files.write(marker, content.getBytes(StandardCharsets.UTF_8),
+                    StandardOpenOption.CREATE_NEW, StandardOpenOption.WRITE);
+            String message = "[plm] run 级全局清理完成，后续测试类跳过全库 drop：" + marker;
+            logger.info(message);
+            System.err.println(message);
+        } catch (FileAlreadyExistsException ignored) {
+            // 另一个类已先完成清理（PLM 逐条派发时一般不会并发）。
+        } catch (Exception e) {
+            logger.warn("[plm] 写 run 级清理标记失败（后续类可能重复全局清理）：" + e.getMessage());
+        }
+    }
+
+    private static String trimToNull(String value) {
+        if (value == null) {
+            return null;
+        }
+        String trimmed = value.trim();
+        return trimmed.isEmpty() ? null : trimmed;
     }
 
     /** 建库并等待该库的 schema region 可用（兼容 906/DataRegionGroups）。 */
@@ -217,13 +429,29 @@ public class BaseTestSuiteTreeModel {
 
     @AfterClass
     public void afterSuie() throws IoTDBConnectionException, StatementExecutionException, IOException {
-        cleanDatabases(verbose);
-        cleanTemplates(verbose);
+        try {
+            if (isPlmRun()) {
+                // run 实例由 PLM 在批次结束后销毁；这里只清本类自己的库/模板，
+                // 不再每个类都 drop 全库。
+                cleanManagedResources();
+            } else {
+                cleanDatabases(verbose);
+                cleanTemplates(verbose);
+            }
+        } catch (Exception e) {
+            logger.warn("[plm] @AfterClass 清理失败（继续关闭连接）：" + e.getMessage());
+        }
         if (ReadConfig.getInstance().getValue("is_sessionPool").equals("false")) {
-            session.close();
+            if (session != null) {
+                session.close();
+            }
         } else {
-            session.close();
-            sessionPool.close();
+            if (session != null) {
+                session.close();
+            }
+            if (sessionPool != null) {
+                sessionPool.close();
+            }
         }
     }
 
@@ -417,7 +645,7 @@ public class BaseTestSuiteTreeModel {
     }
 
     // 删除数据库：先收集快照再逐个删除，单个失败不阻断其余（否则残留会级联污染后续用例）。
-    public void cleanDatabases(boolean verbose) throws IoTDBConnectionException, StatementExecutionException {
+    public boolean cleanDatabases(boolean verbose) throws IoTDBConnectionException, StatementExecutionException {
         List<String> databases = new ArrayList<>();
         SessionDataSet dataSet = session.executeQueryStatement("show databases");
         while (dataSet.hasNext()) {
@@ -427,43 +655,48 @@ public class BaseTestSuiteTreeModel {
                 databases.add(database);
             }
         }
+        boolean ok = true;
         for (String database : databases) {
             if (verbose) {
                 logger.info("drop databases: " + database);
             }
-            executeCleanupWithRetry("drop database " + database, "drop database " + database);
+            ok &= executeCleanupWithRetry("drop database " + database, "drop database " + database);
         }
+        return ok;
     }
 
     // 删除设备模板：同样先收集快照，避免边删边读导致漏删。
-    public void cleanTemplates(boolean verbose) throws IoTDBConnectionException, StatementExecutionException {
+    public boolean cleanTemplates(boolean verbose) throws IoTDBConnectionException, StatementExecutionException {
         List<String> templates = new ArrayList<>();
         SessionDataSet records = session.executeQueryStatement("show schema templates");
         while (records.hasNext()) {
             templates.add(records.next().getFields().get(0).toString());
         }
+        boolean ok = true;
         for (String template : templates) {
-            executeCleanupWithRetry("drop schema template `" + template + "`", "drop template " + template);
+            ok &= executeCleanupWithRetry("drop schema template `" + template + "`", "drop template " + template);
         }
         if (verbose) {
             logger.info("drop templates:" + templates.size());
         }
+        return ok;
     }
 
-    /** 清理语句最多重试 3 次；最终失败只记日志，不中断整轮清理。 */
-    private void executeCleanupWithRetry(String sql, String label) {
+    /** 清理语句最多重试 3 次；返回是否成功，供 run 级清理标记判断。 */
+    protected boolean executeCleanupWithRetry(String sql, String label) {
         for (int attempt = 1; attempt <= 3; attempt++) {
             try {
                 session.executeNonQueryStatement(sql);
-                return;
+                return true;
             } catch (Exception e) {
                 if (attempt >= 3 || !isRegionUnavailable(e)) {
                     logger.warn("[plm] 清理失败（" + label + "，已尝试 " + attempt + " 次）：" + e.getMessage());
-                    return;
+                    return false;
                 }
                 sleepQuietly(300L * attempt);
             }
         }
+        return false;
     }
 
     public void insertRecordSingle(String path, TSDataType tsDataType, boolean isAligned, String alias) throws IoTDBConnectionException, StatementExecutionException {

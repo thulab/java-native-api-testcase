@@ -31,6 +31,12 @@ import static java.lang.System.out;
 public class TestInsertNormalWithoutCreate extends BaseTestSuiteTreeModel {
     private static final String device = "root.non_algined.d1";
     private static final String alignedDevice = "root.algined.d2";
+    private static final Set<String> MANAGED_DATABASES = Set.of("root.non_algined", "root.algined");
+
+    @Override
+    protected Set<String> managedDatabases() {
+        return MANAGED_DATABASES;
+    }
 
     private final List<String> paths = new ArrayList<>(6);
     private final List<String> measurements = new ArrayList<>(6);
@@ -43,7 +49,7 @@ public class TestInsertNormalWithoutCreate extends BaseTestSuiteTreeModel {
 
     @BeforeClass()
     public void beforeClass() throws IoTDBConnectionException, StatementExecutionException, IOException {
-        cleanDatabases(verbose);
+        // 基类已按 managedDatabases 做过 scoped 清理（首类则做过全局清理）。
         out.println("创建序列");
         session.setStorageGroup(device.substring(0, device.lastIndexOf('.')));
         session.setStorageGroup(alignedDevice.substring(0, alignedDevice.lastIndexOf('.')));

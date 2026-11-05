@@ -17,6 +17,7 @@ import org.testng.annotations.Test;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Title：测试模板各种参数
@@ -28,9 +29,19 @@ public class TestTemplateParams extends BaseTestSuiteTreeModel {
     private String tName = "t1";
     private String database = "root.template";
 
+    @Override
+    protected Set<String> managedDatabases() {
+        return Set.of("root.template");
+    }
+
+    @Override
+    protected Set<String> managedTemplatePrefixes() {
+        return Set.of("t1");
+    }
+
     @BeforeClass
     public void beforeClass() throws IoTDBConnectionException, StatementExecutionException {
-        session.createDatabase(database);
+        createDatabaseAwaitReady(database);
     }
 
     @AfterClass

@@ -7,8 +7,25 @@ import org.apache.tsfile.file.metadata.enums.TSEncoding;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class TimeSeriesBaseTestSuite extends BaseTestSuiteTreeModel {
+
+    /**
+     * 时间序列类共用的库名（来自 timeseries-*.csv 与显式 createDatabase）。
+     * run 级首类全局清理后，后续时间序列类只删这些库，不再 drop 全实例。
+     */
+    private static final Set<String> MANAGED_DATABASES = Set.of(
+            "root.t1", "root.testDuplicate", "root.sg.d1", "root.sgt", "root.error",
+            "root.l", "root.sg", "root.t", "root.key",
+            "root.abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234",
+            "root.caseSensitive", "root.sgm", "root.sgm02", "root.sgm06",
+            "root.non", "root.root", "root.params.ts");
+
+    @Override
+    protected Set<String> managedDatabases() {
+        return MANAGED_DATABASES;
+    }
 
     public List<Object> translateString2Type(String datatypeStr, String encodingStr, String compressStr) {
         datatypeStr = datatypeStr.toLowerCase();
