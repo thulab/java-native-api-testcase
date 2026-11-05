@@ -67,12 +67,11 @@ public class TestTemplateNonAlignedAddTS extends BaseTestSuiteTreeModel {
 
     @AfterClass(enabled = true)
     public void afterClass() throws IoTDBConnectionException, StatementExecutionException {
+        // helper 内部有存在性检查并吞异常，避免连接/资源问题升级为 config FAIL。
         deleteStorageGroupIfExists(database);
         // 只清本类自己的模板，不再 drop 全实例模板（run 级首类已做过全局清理）。
         for (String templateName : templateNames) {
-            if (checkTemplateExists(templateName)) {
-                dropTemplateIfExists(templateName);
-            }
+            dropTemplateIfExists(templateName);
         }
     }
 

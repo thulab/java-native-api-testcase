@@ -70,15 +70,11 @@ public class TestBlendScenarioAddTS extends BaseTestSuiteTreeModel {
 
     @AfterClass(enabled = true)
     public void afterClass() throws IoTDBConnectionException, StatementExecutionException {
-        if (checkStroageGroupExists(database)) {
-            deleteStorageGroupIfExists(database);
-        }
+        // helper 内部有存在性检查并吞异常，避免连接/资源问题升级为 config FAIL。
+        deleteStorageGroupIfExists(database);
         for (String templateName : templateNames) {
-            if (checkTemplateExists(templateName)) {
-                dropTemplateIfExists(templateName);
-            }
+            dropTemplateIfExists(templateName);
         }
-
     }
 
     public Iterator<Object[]> getSingleNormal() throws IOException {

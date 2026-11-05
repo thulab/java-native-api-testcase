@@ -74,12 +74,9 @@ public class TestTemplateNonAligned extends BaseTestSuiteTreeModel {
 
     @AfterClass
     public void afterClass() throws IoTDBConnectionException, StatementExecutionException {
-        if (checkStroageGroupExists(database)) {
-            deleteStorageGroupIfExists(database);
-        }
-        if (checkTemplateExists(templateName)) {
-            dropTemplateIfExists(templateName);
-        }
+        // helper 内部有存在性检查并吞异常，避免连接/资源问题升级为 config FAIL。
+        deleteStorageGroupIfExists(database);
+        dropTemplateIfExists(templateName);
     }
 
     public Iterator<Object[]> getSingleNormal() throws IOException {
