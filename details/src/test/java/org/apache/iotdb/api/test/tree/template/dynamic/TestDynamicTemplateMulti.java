@@ -1,7 +1,6 @@
 package org.apache.iotdb.api.test.tree.template.dynamic;
 
 import org.apache.iotdb.api.test.BaseTestSuiteTreeModel;
-import org.apache.iotdb.api.test.utils.PrepareConnection;
 import org.apache.iotdb.isession.template.Template;
 import org.apache.iotdb.rpc.IoTDBConnectionException;
 import org.apache.iotdb.rpc.StatementExecutionException;
@@ -43,7 +42,6 @@ public class TestDynamicTemplateMulti extends BaseTestSuiteTreeModel {
 
     @BeforeClass
     public void BeforeClass() throws IOException, IoTDBConnectionException, StatementExecutionException {
-        session = PrepareConnection.getSessionTreeModel();
         // run 级首类已做过全局清理；后续类由基类按 managedDatabases/managedTemplates 做 scoped 清理。
     }
 
