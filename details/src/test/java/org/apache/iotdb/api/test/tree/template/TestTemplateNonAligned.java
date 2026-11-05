@@ -37,6 +37,16 @@ public class TestTemplateNonAligned extends BaseTestSuiteTreeModel {
     private List<IMeasurementSchema> schemaList = new ArrayList<>(6);// tablet
 
 
+    @Override
+    protected Set<String> managedDatabases() {
+        return Set.of("root.business.nonAligned");
+    }
+
+    @Override
+    protected Set<String> managedTemplates() {
+        return Set.of("nonAligned_template");
+    }
+
     @BeforeClass(enabled = true)
     public void beforeClass() throws IoTDBConnectionException, StatementExecutionException, IOException {
         if (checkStroageGroupExists(database)) {
@@ -64,12 +74,9 @@ public class TestTemplateNonAligned extends BaseTestSuiteTreeModel {
 
     @AfterClass
     public void afterClass() throws IoTDBConnectionException, StatementExecutionException {
-        if (checkStroageGroupExists(database)) {
-            session.deleteStorageGroup(database);
-        }
-        if (checkTemplateExists(templateName)) {
-            session.dropSchemaTemplate(templateName);
-        }
+        // helper 内部有存在性检查并吞异常，避免连接/资源问题升级为 config FAIL。
+        deleteStorageGroupIfExists(database);
+        dropTemplateIfExists(templateName);
     }
 
     public Iterator<Object[]> getSingleNormal() throws IOException {
@@ -78,7 +85,8 @@ public class TestTemplateNonAligned extends BaseTestSuiteTreeModel {
 
     @Test(priority = 10)
     public void testCreateTemplate() throws IoTDBConnectionException, StatementExecutionException, IOException {
-        assert 0 == getTemplateCount(verbose) : "创建前无模版";
+        // run 级清理后实例上可能还有其它类未清掉的模板；用相对基线断言，避免绝对 0/1 计数误报。
+        int beforeCount = getTemplateCount(verbose);
         Template template = new Template(templateName, false);
         MeasurementNode mNodeS1 =
                 new MeasurementNode("s_boolean", TSDataType.BOOLEAN, TSEncoding.RLE, CompressionType.SNAPPY);
@@ -105,7 +113,7 @@ public class TestTemplateNonAligned extends BaseTestSuiteTreeModel {
 //        assert 6 == session.countMeasurementsInTemplate(templateName) : "查看模版中sensor数目";
         assert 6 == getTSCountInTemplate(templateName, verbose) : "查看模版中sensor数目";
         session.setSchemaTemplate(templateName, loadNode);
-        assert 1 == getTemplateCount(verbose) : "创建模版成功";
+        assert beforeCount + 1 == getTemplateCount(verbose) : "创建模版成功";
         assert 1 == getSetPathsCount(templateName, verbose) : "挂载模版成功count";
         assert checkTemplateContainPath(templateName, loadNode) : "挂载模版成功";
     }

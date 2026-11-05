@@ -77,7 +77,7 @@ public class TestInsert extends BaseTestSuiteTreeModel {
 
     @AfterClass
     public void afterClass() throws IoTDBConnectionException, StatementExecutionException {
-        session.deleteDatabase(database);
+        deleteDatabaseIfExists(database);
     }
 
     /**

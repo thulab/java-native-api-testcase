@@ -33,6 +33,24 @@ public class TestTemplate extends BaseTestSuiteTreeModel {
     private final String tName = templatePrefix + "0";
     private final String databasePrefix = "root.template";
     private final String database = "root.parent";
+
+    @Override
+    protected Set<String> managedDatabases() {
+        return Set.of("root.parent");
+    }
+
+    @Override
+    protected Set<String> managedDatabasePrefixes() {
+        return Set.of("root.template");
+    }
+
+    @Override
+    protected Set<String> managedTemplatePrefixes() {
+        // 本类会按 ts-structures.csv 的 Index（1..219）创建 template1..template219，
+        // 还有 template_struct / template_0TS_* / template_1TS / template0Err 等；
+        // 统一用 template 前缀覆盖，避免把 ~220 个模板留给后续 TestTemplateAligned/NonAligned。
+        return Set.of("template", "duplicateNodesTemplate");
+    }
     //    private final String[] databases = new String[]{"root.template.aligned", "root.template.nonAligned"};
 //    private int expectCount = 17;
     private final Map<String, Object[]> structureInfo = new LinkedHashMap<>(6);
@@ -42,7 +60,7 @@ public class TestTemplate extends BaseTestSuiteTreeModel {
 
     @BeforeClass
     public void beforeClass() throws IoTDBConnectionException, StatementExecutionException, IOException {
-        session.createDatabase(database);
+        createDatabaseAwaitReady(database);
         structureInfo.put("s_boolean", new Object[]{TSDataType.BOOLEAN, TSEncoding.RLE, CompressionType.LZ4});
         structureInfo.put("s_int", new Object[]{TSDataType.INT32, TSEncoding.RLE, CompressionType.LZ4});
         structureInfo.put("s_long", new Object[]{TSDataType.INT64, TSEncoding.RLE, CompressionType.LZ4});

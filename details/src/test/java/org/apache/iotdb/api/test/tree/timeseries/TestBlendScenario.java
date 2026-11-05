@@ -28,6 +28,16 @@ public class TestBlendScenario extends BaseTestSuiteTreeModel {
     private List<TSDataType> dataTypes = new ArrayList<>(6);
     private List<IMeasurementSchema> schemaList = new ArrayList<>(6);// tablet
 
+    @Override
+    protected Set<String> managedDatabases() {
+        return Set.of("root.blend");
+    }
+
+    @Override
+    protected Set<String> managedTemplates() {
+        return Set.of("aligned_template", "nonAligned_template");
+    }
+
     @BeforeClass(enabled = true)
     public void beforeClass() throws IoTDBConnectionException, StatementExecutionException, IOException {
         if (checkStroageGroupExists(database)) {

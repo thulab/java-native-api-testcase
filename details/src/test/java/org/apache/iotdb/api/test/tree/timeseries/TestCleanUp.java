@@ -19,11 +19,22 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class TestCleanUp extends BaseTestSuiteTreeModel {
     private Map<String, TSDataType> measureTSTypeInfos = new LinkedHashMap<>(6);
     private String templateName = "cleanUpTemplate";
     private String database = "root.cleanUp";
+
+    @Override
+    protected Set<String> managedDatabases() {
+        return Set.of("root.cleanUp");
+    }
+
+    @Override
+    protected Set<String> managedTemplates() {
+        return Set.of("cleanUpTemplate");
+    }
     private String device = database + ".deviceNo";
     private int insertCount = 10000;
     private List<String> measurements = new ArrayList<>(6);

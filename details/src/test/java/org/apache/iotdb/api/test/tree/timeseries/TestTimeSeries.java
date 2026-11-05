@@ -88,7 +88,10 @@ public class TestTimeSeries extends TimeSeriesBaseTestSuite {
         assert count == countLines("show timeseries", verbose):"删除成功";
         session.deleteDatabase(database);
     }
-    @DataProvider(name = "createSingleTimeSeriesNormal", parallel = true)
+    // PLM 2026-11-05：142 行 DataProvider 并发会同时建库/建序列，单机 K8s 实例
+    // 的 region 分配排队后，后续 createDatabaseAwaitReady 会等满超时仍 906。
+    // 本类数据量不大，改为串行执行，优先保证稳定性。
+    @DataProvider(name = "createSingleTimeSeriesNormal", parallel = false)
     private Iterator<Object[]> getSingleTimeSeriesNormal() throws IOException {
         return new CustomDataProvider().load("data/tree/timeseries-single.csv").getData();
     }
@@ -119,7 +122,7 @@ public class TestTimeSeries extends TimeSeriesBaseTestSuite {
             s.deleteTimeseries(device+"."+tsName);
         }
     }
-    @DataProvider(name = "createSingleTimeSeriesError", parallel = true)
+    @DataProvider(name = "createSingleTimeSeriesError", parallel = false)
     private Iterator<Object[]> getSingleTimeSeriesError() throws IOException {
         return new CustomDataProvider().load("data/tree/timeseries-single-error.csv").getData();
     }
@@ -234,7 +237,7 @@ public class TestTimeSeries extends TimeSeriesBaseTestSuite {
         testCreateTimeSeries_tags(701);
     }
 
-    @DataProvider(name = "deleteTimeSeriesError", parallel = true)
+    @DataProvider(name = "deleteTimeSeriesError", parallel = false)
     private Iterator<Object[]> getDeleteTimeSeriesError() throws IOException {
         return new CustomDataProvider().load("data/tree/timeseries-delete-error.csv").getData();
     }

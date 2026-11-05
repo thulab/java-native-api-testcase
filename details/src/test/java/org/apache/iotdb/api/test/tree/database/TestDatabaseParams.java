@@ -26,7 +26,7 @@ public class TestDatabaseParams extends BaseTestSuiteTreeModel {
     }
     @AfterClass
     public void afterClass() throws IoTDBConnectionException, StatementExecutionException {
-        session.deleteDatabase(database);
+        deleteDatabaseIfExists(database);
     }
     @Test(expectedExceptions = StatementExecutionException.class)
     public void testSetStorageGroupNull() throws IoTDBConnectionException, StatementExecutionException {

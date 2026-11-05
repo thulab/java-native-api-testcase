@@ -1,7 +1,6 @@
 package org.apache.iotdb.api.test.tree.template.dynamic;
 
 import org.apache.iotdb.api.test.BaseTestSuiteTreeModel;
-import org.apache.iotdb.api.test.utils.PrepareConnection;
 import org.apache.iotdb.isession.template.Template;
 import org.apache.iotdb.rpc.IoTDBConnectionException;
 import org.apache.iotdb.rpc.StatementExecutionException;
@@ -18,6 +17,7 @@ import org.testng.log4testng.Logger;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class TestDynamicTemplateMulti extends BaseTestSuiteTreeModel {
     private Logger logger = Logger.getLogger(TestDynamicTemplateMulti.class);
@@ -30,11 +30,19 @@ public class TestDynamicTemplateMulti extends BaseTestSuiteTreeModel {
     private String tsPrefix = "sensors_";
     private String templateName_clean = templatePrefix + 2;
 
+    @Override
+    protected Set<String> managedDatabasePrefixes() {
+        return Set.of("root.db.factory");
+    }
+
+    @Override
+    protected Set<String> managedTemplatePrefixes() {
+        return Set.of("template0");
+    }
+
     @BeforeClass
     public void BeforeClass() throws IOException, IoTDBConnectionException, StatementExecutionException {
-        session = PrepareConnection.getSessionTreeModel();
-        cleanDatabases(verbose);
-        cleanTemplates(verbose);
+        // run 级首类已做过全局清理；后续类由基类按 managedDatabases/managedTemplates 做 scoped 清理。
     }
 
     private void createTemplate(int databaseCount, int deviceCount, String templateName, String suffix) throws StatementExecutionException, IoTDBConnectionException, IOException {
@@ -102,8 +110,9 @@ public class TestDynamicTemplateMulti extends BaseTestSuiteTreeModel {
         }
         for (int i = 0; i < databaseCount; i++) {
             String database = databasePrefix + "_" + i;
+            // 只在新库时等待就绪，避免重复建库依赖英文错误文案。
             if (!checkStroageGroupExists(database)) {
-                session.createDatabase(database);
+                createDatabaseAwaitReady(database);
             }
             databases.add(database);
             for (int j = 0; j < deviceCount; j++) {
@@ -112,7 +121,7 @@ public class TestDynamicTemplateMulti extends BaseTestSuiteTreeModel {
         }
         // 为了测试清理
         String database = databasePrefix + 2;
-        session.createDatabase(database);
+        createDatabaseAwaitReady(database);
         Template t = new Template(templateName_clean, isAligned);
         t.addToTemplate(new MeasurementNode("name", TSDataType.TEXT, TSEncoding.PLAIN, CompressionType.GZIP));
         schemaList_clean.add(new MeasurementSchema("name", TSDataType.TEXT, TSEncoding.PLAIN, CompressionType.GZIP));

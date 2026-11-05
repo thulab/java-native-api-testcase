@@ -29,6 +29,16 @@ public class TestTemplateNonAlignedAddTS extends BaseTestSuiteTreeModel {
     private List<TSDataType> dataTypes = new ArrayList<>(7);
     private List<IMeasurementSchema> schemaList = new ArrayList<>(7);// tablet
 
+    @Override
+    protected Set<String> managedDatabases() {
+        return Set.of("root.blendAddTS");
+    }
+
+    @Override
+    protected Set<String> managedTemplates() {
+        return Set.of("aligned_template", "nonAligned_template");
+    }
+
     @BeforeClass(enabled = true)
     public void beforeClass() throws IoTDBConnectionException, StatementExecutionException, IOException {
         if (checkStroageGroupExists(database)) {
@@ -57,8 +67,12 @@ public class TestTemplateNonAlignedAddTS extends BaseTestSuiteTreeModel {
 
     @AfterClass(enabled = true)
     public void afterClass() throws IoTDBConnectionException, StatementExecutionException {
-        session.deleteStorageGroup(database);
-        cleanTemplates(verbose);
+        // helper 内部有存在性检查并吞异常，避免连接/资源问题升级为 config FAIL。
+        deleteStorageGroupIfExists(database);
+        // 只清本类自己的模板，不再 drop 全实例模板（run 级首类已做过全局清理）。
+        for (String templateName : templateNames) {
+            dropTemplateIfExists(templateName);
+        }
     }
 
     public Iterator<Object[]> getSingleNormal() throws IOException {

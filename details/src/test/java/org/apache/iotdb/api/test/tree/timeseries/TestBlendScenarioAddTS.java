@@ -32,6 +32,16 @@ public class TestBlendScenarioAddTS extends BaseTestSuiteTreeModel {
     private List<TSDataType> dataTypes = new ArrayList<>(7);
     private List<IMeasurementSchema> schemaList = new ArrayList<>(7);// tablet
 
+    @Override
+    protected Set<String> managedDatabases() {
+        return Set.of("root.blendAddTS");
+    }
+
+    @Override
+    protected Set<String> managedTemplates() {
+        return Set.of("aligned_template", "nonAligned_template");
+    }
+
     @BeforeClass(enabled = true)
     public void beforeClass() throws IoTDBConnectionException, StatementExecutionException, IOException {
         if (checkStroageGroupExists(database)) {
@@ -60,15 +70,11 @@ public class TestBlendScenarioAddTS extends BaseTestSuiteTreeModel {
 
     @AfterClass(enabled = true)
     public void afterClass() throws IoTDBConnectionException, StatementExecutionException {
-        if (checkStroageGroupExists(database)) {
-            session.deleteStorageGroup(database);
-        }
+        // helper 内部有存在性检查并吞异常，避免连接/资源问题升级为 config FAIL。
+        deleteStorageGroupIfExists(database);
         for (String templateName : templateNames) {
-            if (checkTemplateExists(templateName)) {
-                session.dropSchemaTemplate(templateName);
-            }
+            dropTemplateIfExists(templateName);
         }
-
     }
 
     public Iterator<Object[]> getSingleNormal() throws IOException {

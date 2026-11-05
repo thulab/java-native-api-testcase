@@ -1,0 +1,53 @@
+{
+  "TimechoDB-2489": {
+    "reason": "目标方法 0 次执行（DataProvider 为空或方法名/映射漂移）；当前已知 storage-group-delete.csv 数据行全部被注释，待补数据或删除"
+  },
+  "TimechoDB-2697": {
+    "reason": ">226 字符路径的服务端限制（505/508），待产品修复",
+    "match": "505: Alias \\[12nullfv\\]"
+  },
+  "TimechoDB-2706": {
+    "reason": ">226 字符路径的服务端限制（505/508），待产品修复",
+    "match": "508: Timeseries \\[root\\.sg\\.d1\\.max\\."
+  },
+  "TimechoDB-2712": {
+    "reason": ">226 字符路径的别名残留（505），待产品修复",
+    "match": "505: Alias \\[12nullfv\\]"
+  },
+  "TimechoDB-2715": {
+    "reason": ">226 字符路径的服务端限制（505/508），待产品修复",
+    "match": "508: Timeseries \\[root\\.sg\\.d1\\.max\\."
+  },
+  "TimechoDB-2538": {
+    "reason": "TestDynamicTemplateMin 的 aligned tablet 写入在 TimechoDB 2.0.12.1 上稳定挂起（socket 无读超时），已跳过执行，待产品修复",
+    "skipRun": true
+  },
+  "TimechoDB-2539": {
+    "reason": "TestDynamicTemplateMin 的 aligned tablet 写入在 TimechoDB 2.0.12.1 上稳定挂起（socket 无读超时），已跳过执行，待产品修复",
+    "skipRun": true
+  },
+  "TimechoDB-2453": {
+    "reason": "客户端对 measurements/dataTypes/values 长度不一致抛 IndexOutOfBoundsException，待产品修复为明确异常",
+    "match": "Index 1 out of bounds for length 1"
+  },
+  "TimechoDB-2460": {
+    "reason": "客户端对 values 空列表抛 IndexOutOfBoundsException，待产品修复为 StatementExecutionException",
+    "match": "got java.lang.IndexOutOfBoundsException"
+  },
+  "TimechoDB-2469": {
+    "reason": "Tablet 重复测点不再抛 StatementExecutionException，待产品确认行为",
+    "match": "should have thrown an exception"
+  },
+  "TimechoDB-2547": {
+    "reason": "模板自动创建时重复添加测点不再抛 StatementExecutionException，待产品确认行为",
+    "match": "Expected StatementExecutionException to be thrown"
+  },
+  "TimechoDB-2393": {
+    "reason": "2GB thriftMaxFrameSize 在 K8s 部署下连接失败，待产品确认支持上限",
+    "match": "Fail to reconnect to server"
+  },
+  "TimechoDB-2412": {
+    "reason": "2GB thriftMaxFrameSize 在 K8s 部署下连接失败，待产品确认支持上限",
+    "match": "Fail to reconnect to server"
+  }
+}

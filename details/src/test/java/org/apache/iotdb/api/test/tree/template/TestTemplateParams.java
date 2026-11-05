@@ -17,6 +17,7 @@ import org.testng.annotations.Test;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Title：测试模板各种参数
@@ -28,15 +29,26 @@ public class TestTemplateParams extends BaseTestSuiteTreeModel {
     private String tName = "t1";
     private String database = "root.template";
 
+    @Override
+    protected Set<String> managedDatabases() {
+        return Set.of("root.template");
+    }
+
+    @Override
+    protected Set<String> managedTemplatePrefixes() {
+        return Set.of("t1");
+    }
+
     @BeforeClass
     public void beforeClass() throws IoTDBConnectionException, StatementExecutionException {
-        session.createDatabase(database);
+        createDatabaseAwaitReady(database);
     }
 
     @AfterClass
     public void afterClass() throws IoTDBConnectionException, StatementExecutionException {
-        session.deleteDatabase(database);
-        session.dropSchemaTemplate(tName);
+        // helper 内部有存在性检查并吞掉异常，避免连接/资源问题升级为 config FAIL（会放大整类重跑）。
+        deleteDatabaseIfExists(database);
+        dropTemplateIfExists(tName);
     }
 
     // TIMECHODB-141

@@ -58,7 +58,7 @@ public class TestAlignedTSMinus extends BaseTestSuiteTreeModel {
 
     @AfterClass
     public void afterClass() throws IoTDBConnectionException, StatementExecutionException {
-        session.deleteStorageGroup(database);
+        deleteStorageGroupIfExists(database);
     }
 
     public Iterator<Object[]> getSingleNormal() throws IOException {

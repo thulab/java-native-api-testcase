@@ -55,7 +55,7 @@ public class TestAlignedTS extends BaseTestSuiteTreeModel {
 
     @AfterClass(enabled = true)
     public void afterClass() throws IoTDBConnectionException, StatementExecutionException {
-        session.deleteDatabase(database);
+        deleteDatabaseIfExists(database);
     }
 
     public Iterator<Object[]> getSingleNormal() throws IOException {

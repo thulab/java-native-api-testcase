@@ -9,6 +9,7 @@ import org.apache.tsfile.enums.ColumnCategory;
 import org.apache.tsfile.enums.TSDataType;
 import org.apache.tsfile.utils.Binary;
 import org.apache.tsfile.write.record.Tablet;
+import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -753,6 +754,22 @@ public class TestInsertNormal extends BaseTestSuiteTableModel {
     }
 
     /**
+     * 无 Field 列写入必须被产品以 507 拒绝；不能只断言“任意 StatementExecutionException”，
+     * 否则 906 region 不可用、连接异常等基础设施故障也会被当成通过。
+     */
+    private void assertNoFieldColumnRejected(Tablet tablet) {
+        try {
+            session.insert(tablet);
+            Assert.fail("无 Field 列写入应失败（507），实际未抛异常");
+        } catch (StatementExecutionException e) {
+            Assert.assertTrue(e.getMessage() != null && e.getMessage().contains("507"),
+                    "无 Field 列写入应返回 507，实际：" + e.getMessage());
+        } catch (IoTDBConnectionException e) {
+            Assert.fail("无 Field 列写入应返回 507，实际连接异常：" + e.getMessage());
+        }
+    }
+
+    /**
      * 测试使用insert方法插入全空值数据
      */
     @Test(priority = 60)
@@ -822,18 +839,9 @@ public class TestInsertNormal extends BaseTestSuiteTableModel {
             // 切换到下一行
             rowIndex++;
         }
-        // 插入数据
-        session.insert(tablet);
-
-        // 计算实际数据的行数
-        try (SessionDataSet dataSet = session.executeQueryStatement("select * from insertAllNull")) {
-            while (dataSet.hasNext()) {
-                dataSet.next();
-                actual++;
-            }
-        }
-        // 判断是否符合预期
-        assert expect == actual : "TestInsertNormal类的insertAllNull方法实际与期待数量不一致，期待：" + expect + "，实际：" + actual;
+        // PLM 2026-11-05：产品 IT（IoTDBSessionCompressedIT）已确认无 Field 列写入返回 507，
+        // 本用例改为断言拒绝，避免把产品预期行为当成失败。
+        assertNoFieldColumnRejected(tablet);
     }
 
     /**
@@ -941,18 +949,8 @@ public class TestInsertNormal extends BaseTestSuiteTableModel {
             // 切换到下一行
             rowIndex++;
         }
-        // 插入数据
-        session.insert(tablet);
-
-        // 计算实际数据的行数
-        try (SessionDataSet dataSet = session.executeQueryStatement("select * from insertOnlyTag")) {
-            while (dataSet.hasNext()) {
-                dataSet.next();
-                actual++;
-            }
-        }
-        // 判断是否符合预期
-        assert expect == actual : "TestInsertNormal类的insertOnlyTag方法实际与期待数量不一致，期待：" + expect + "，实际：" + actual;
+        // PLM 2026-11-05：仅标签列、无 Field 列，产品返回 507；改为断言拒绝。
+        assertNoFieldColumnRejected(tablet);
     }
 
     /**
@@ -1060,18 +1058,8 @@ public class TestInsertNormal extends BaseTestSuiteTableModel {
             // 切换到下一行
             rowIndex++;
         }
-        // 插入数据
-        session.insert(tablet);
-
-        // 计算实际数据的行数
-        try (SessionDataSet dataSet = session.executeQueryStatement("select * from insertOnlyAttr")) {
-            while (dataSet.hasNext()) {
-                dataSet.next();
-                actual++;
-            }
-        }
-        // 判断是否符合预期
-        assert expect == actual : "TestInsertNormal类的insertOnlyAttr方法实际与期待数量不一致，期待：" + expect + "，实际：" + actual;
+        // PLM 2026-11-05：仅属性列、无 Field 列，产品返回 507；改为断言拒绝。
+        assertNoFieldColumnRejected(tablet);
     }
 
     /**
@@ -1179,18 +1167,8 @@ public class TestInsertNormal extends BaseTestSuiteTableModel {
             // 切换到下一行
             rowIndex++;
         }
-        // 插入数据
-        session.insert(tablet);
-
-        // 计算实际数据的行数
-        try (SessionDataSet dataSet = session.executeQueryStatement("select * from insertOnlyTagAndAttr")) {
-            while (dataSet.hasNext()) {
-                dataSet.next();
-                actual++;
-            }
-        }
-        // 判断是否符合预期
-        assert expect == actual : "TestInsertNormal类的insertOnlyTagAndAttr方法实际与期待数量不一致，期待：" + expect + "，实际：" + actual;
+        // PLM 2026-11-05：仅标签与属性列、无 Field 列，产品返回 507；改为断言拒绝。
+        assertNoFieldColumnRejected(tablet);
     }
 
     /**

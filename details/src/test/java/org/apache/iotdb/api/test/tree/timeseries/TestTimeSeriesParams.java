@@ -25,7 +25,7 @@ public class TestTimeSeriesParams extends BaseTestSuiteTreeModel {
     @AfterClass
     public void afterClass() throws IoTDBConnectionException, StatementExecutionException {
         try {
-            session.deleteDatabase(database);
+            deleteDatabaseIfExists(database);
         } catch (Exception e) {
             // 删除失败不阻断父类 @AfterClass 的全量清理。
             logger.warn("[plm] 删除 " + database + " 失败（交给父类清理）：" + e.getMessage());

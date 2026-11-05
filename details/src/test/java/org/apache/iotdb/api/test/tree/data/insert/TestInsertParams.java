@@ -38,28 +38,39 @@ public class TestInsertParams extends BaseTestSuiteTreeModel {
     @BeforeClass
     public void beforeClass() throws IoTDBConnectionException, StatementExecutionException {
         if (checkStroageGroupExists(database)) {
-            session.deleteDatabase(database);
+            try {
+                session.deleteDatabase(database);
+            } catch (StatementExecutionException e) {
+                if (!isRegionUnavailable(e)) {
+                    throw e;
+                }
+                logger.warn("[plm] TestInsertParams 清理旧库命中 906（继续）：" + e.getMessage());
+            }
         }
-        session.createDatabase(database);
+        // 建库后等 region 就绪；直接 createDatabase 后马上建序列会命中 906，
+        // 且 @BeforeClass 失败会把整类标成 skipped（原因丢失）。
+        createDatabaseAwaitReady(database);
         paths.add(device + "." + tsName);
         measurements.add(tsName);
         dataTypes.add(TSDataType.FLOAT);
         schemaList.add(new MeasurementSchema(tsName, TSDataType.FLOAT, TSEncoding.PLAIN, CompressionType.GZIP));
         values.add(33.3f);
         // 非对齐
-        session.createTimeseries(paths.get(0), dataTypes.get(0), TSEncoding.PLAIN, CompressionType.GZIP);
+        executeWithRegionRetry("createTimeseries " + paths.get(0), () ->
+                session.createTimeseries(paths.get(0), dataTypes.get(0), TSEncoding.PLAIN, CompressionType.GZIP));
 
         // 对齐
         List<TSEncoding> encodings = new ArrayList<>(1);
         List<CompressionType> compressionTypes = new ArrayList<>(1);
         encodings.add(TSEncoding.PLAIN);
         compressionTypes.add(CompressionType.GZIP);
-        session.createAlignedTimeseries(deviceAligned, measurements, dataTypes, encodings, compressionTypes, null);
+        executeWithRegionRetry("createAlignedTimeseries " + deviceAligned, () ->
+                session.createAlignedTimeseries(deviceAligned, measurements, dataTypes, encodings, compressionTypes, null));
     }
 
     //    @AfterClass
 //    public void afterClass() throws IoTDBConnectionException, StatementExecutionException {
-//        session.deleteDatabase(database);
+//        deleteDatabaseIfExists(database);
 //    }
     private void checkResult(long timestamp, TSDataType dataType, Object expect) throws IoTDBConnectionException, StatementExecutionException {
         checkQueryResult("select " + tsName + " from " + device + " where time =" + timestamp, dataType, expect);

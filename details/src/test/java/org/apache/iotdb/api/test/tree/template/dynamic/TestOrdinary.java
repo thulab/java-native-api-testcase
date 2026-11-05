@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.Vector;
 
 public class TestOrdinary extends BaseTestSuiteTreeModel {
@@ -39,13 +40,17 @@ public class TestOrdinary extends BaseTestSuiteTreeModel {
 
     @BeforeClass
     public void BeforeClass() throws IOException, IoTDBConnectionException, StatementExecutionException {
-        session.createDatabase(database);
+        createDatabaseAwaitReady(database);
     }
 
-    //    @AfterClass
-    public void AfterClass() throws IoTDBConnectionException, StatementExecutionException {
-        session.deleteDatabase(database);
-        cleanTemplates(verbose);
+    @Override
+    protected Set<String> managedDatabasePrefixes() {
+        return Set.of("root.db.factory");
+    }
+
+    @Override
+    protected Set<String> managedTemplatePrefixes() {
+        return Set.of("template01");
     }
 
     @DataProvider(name = "getNormalStructures", parallel = true)

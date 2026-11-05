@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * 单模版，多database
@@ -36,11 +37,23 @@ public class TestDynamicTemplateMin extends BaseTestSuiteTreeModel {
     private List<String> devicePaths = new ArrayList<>();
     private String databasePrefix = "root.db.factory";
     private String templateName = "template01";
+    private static final Set<String> MANAGED_DATABASES = Set.of(
+            "root.db.factory0", "root.db.factory1", "root.db.factory2");
+    private static final Set<String> MANAGED_TEMPLATES = Set.of("template01");
+
+    @Override
+    protected Set<String> managedDatabases() {
+        return MANAGED_DATABASES;
+    }
+
+    @Override
+    protected Set<String> managedTemplates() {
+        return MANAGED_TEMPLATES;
+    }
 
     @BeforeClass
     public void BeforeClass() throws IOException, IoTDBConnectionException, StatementExecutionException {
-        cleanDatabases(verbose);
-        cleanTemplates(verbose);
+        // run 级首类已做过全局清理；后续类由基类按 managedDatabases/managedTemplates 做 scoped 清理。
         structures = new CustomDataProvider().parseTSStructure("data/tree/ts-structures.csv");
         structureInfo.put("s_boolean", new Object[]{TSDataType.BOOLEAN, TSEncoding.PLAIN, CompressionType.UNCOMPRESSED});
         structureInfo.put("s_int", new Object[]{TSDataType.INT32, TSEncoding.PLAIN, CompressionType.UNCOMPRESSED});
@@ -65,8 +78,12 @@ public class TestDynamicTemplateMin extends BaseTestSuiteTreeModel {
 
     @AfterMethod
     public void afterMethod() throws IoTDBConnectionException, StatementExecutionException {
-        cleanDatabases(verbose);
-        cleanTemplates(verbose);
+        // 只清本类自己的库/模板，不再每个方法后 drop 全实例。
+        try {
+            cleanManagedResources();
+        } catch (Exception e) {
+            logger.warn("[plm] TestDynamicTemplateMin @AfterMethod scoped 清理失败（继续）：" + e.getMessage());
+        }
     }
 
     private void business(List<Object>... structs) throws IoTDBConnectionException, IOException, StatementExecutionException {
@@ -82,8 +99,10 @@ public class TestDynamicTemplateMin extends BaseTestSuiteTreeModel {
         // database0 用于主要业务，database1用于清理，database2用于普通序列的测试
         for (int i = 0; i < 3; i++) {
             databases.add(databasePrefix + i);
+            // 只在新库时等待就绪；已存在说明本类前面已建好，避免依赖
+            // “already been created as database” 这条英文文案。
             if (!checkStroageGroupExists(databases.get(i))) {
-                session.createDatabase(databases.get(i));
+                createDatabaseAwaitReady(databases.get(i));
             }
         }
         String database = databases.get(0);
@@ -393,7 +412,7 @@ public class TestDynamicTemplateMin extends BaseTestSuiteTreeModel {
         assert 0 == getSetPathsCount(templateName, verbose) : "模版挂载数目 == 0";
         // 删除database再创建，查看与模版关联是否清除
         session.deleteDatabase(database);
-        session.createDatabase(database);
+        createDatabaseAwaitReady(database);
         session.setSchemaTemplate(templateName, devicePaths.get(0));
         session.unsetSchemaTemplate(devicePaths.get(0), templateName);
         // 删除模版
