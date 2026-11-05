@@ -42,7 +42,9 @@ Apache IoTDB Java Native API 自动化测试工程，基于 Maven 与 TestNG 组
 
 ### 2. IoTDB 依赖版本
 
-IoTDB Java 客户端依赖版本统一在根目录 `pom.xml` 中维护。切换测试目标版本时，请同步修改 `iotdb.version`，并确保本地或远程 Maven 仓库中存在对应依赖。
+IoTDB Java 客户端依赖版本统一在根目录 `pom.xml` 中维护。手工切换测试目标版本时，修改 `iotdb.version`，并确保本地或远程 Maven 仓库中存在对应依赖。
+
+PLM 执行时不需要手工改 `pom.xml`：产品源码构建脚本会把本轮 TimechoDB 源码版本写入仓库根的 `.plm-dep-version`（未跟踪文件），`start.sh` 读取后用 `-Diotdb.version=<值>` 覆盖根 pom 的声明，并在文件更新时强制重新编译。该文件由 PLM 管理，**不要提交到仓库**；手工本地运行时可删除它回退到 pom 版本。
 
 ### 3. TestNG 用例范围
 
@@ -82,7 +84,8 @@ sh start.sh case <CASE_ID>          # 单条用例，产物写 $PLM_REPORT_DIR
 - `PLM_REPORT_DIR`：JUnit XML 输出目录（相对仓库根，默认 `reports/`）。
 - `IOTDB_HOST` / `IOTDB_PORT`：PLM 执行时由平台按 `k8sInstanceId` 解析 K8s 实例的 `connectionHost/connectionPort` 后注入，测试程序必须使用该地址；缺少任一项时 `start.sh case` 直接失败，**不会回退到 `config.properties` 的默认地址**。手工本地运行时可不设置，继续使用 `config.properties`。
 - `IOTDB_USER` / `IOTDB_PASSWORD` / `IOTDB_IS_CLUSTER` / `IOTDB_HOST_NODES`：可选覆盖；PLM 不注入数据库账号/口令，账号/口令由本仓库 `config.properties` 的 `user/password` 提供（默认 `root/TimechoDB@2021`，开源版可改为 `root/root`）。
-- 执行机依赖：本地 Maven 仓库需有 `iotdb.version`（当前 `2.0.11-SNAPSHOT`）对应的 `com.timecho.iotdb:session-parent`、`com.timecho.iotdb:isession-parent`、`com.timecho.iotdb:service-rpc`、`org.apache.iotdb:iotdb-jdbc`；由 TimechoDB 2.0.11 源码执行 `mvn -DskipTests -pl iotdb-client/service-rpc,iotdb-client/isession,iotdb-client/session,iotdb-client/jdbc -am install` 安装。旧版本若仍使用 `org.apache.iotdb:iotdb-session` / `isession` 坐标，需同步调整根 `pom.xml` 的依赖管理。切换目标数据库版本时同步修改根 `pom.xml` 的 `iotdb.version`。
+- 执行机依赖：本地 Maven 仓库需有 `iotdb.version`（当前 `2.0.11-SNAPSHOT`）对应的 `com.timecho.iotdb:session-parent`、`com.timecho.iotdb:isession-parent`、`com.timecho.iotdb:service-rpc`、`org.apache.iotdb:iotdb-jdbc`；由 TimechoDB 2.0.11 源码执行 `mvn -DskipTests -pl iotdb-client/service-rpc,iotdb-client/isession,iotdb-client/session,iotdb-client/jdbc -am install` 安装。旧版本若仍使用 `org.apache.iotdb:iotdb-session` / `isession` 坐标，需同步调整根 `pom.xml` 的依赖管理。手工运行且没有 `.plm-dep-version` 时，切换目标数据库版本需同步修改根 `pom.xml` 的 `iotdb.version`；PLM 构建会自动覆盖，不需要改 pom。
+- `.plm-dep-version`：PLM 产品源码构建写入的依赖版本覆盖文件（未跟踪，勿提交）。存在时 `start.sh` 用 `-Diotdb.version=<值>` 覆盖根 `pom.xml` 的 `iotdb.version`，文件比 `details/target/.plm-build-ok` 新时强制重编；手工运行时可删除该文件回退到 pom 版本。
 - 导入用例后由 `.plm-case-id-map.json` 维护 PLM 编号与 TestNG 目标（`FQCN::method`）的映射；同时支持扁平 `{自然ID: PLM编号}` 与 `{nmap, revmap}` 两种格式。
 - 导入脚本：`python3 scripts/plm/import_to_plm.py --product-id <id> --feature-id <id>`（PAT 只从环境变量读取；`--dry-run` 可先预览）。
 
