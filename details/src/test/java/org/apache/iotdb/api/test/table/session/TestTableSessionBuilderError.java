@@ -49,22 +49,24 @@ public class TestTableSessionBuilderError {
             try {
                 ITableSession session =
                         new TableSessionBuilder()
-                                .nodeUrls(Collections.singletonList("192.0.0.1:6667"))
+                                // 用本机回环别名而不是 192.0.0.1：后者在部分网络会被丢包，
+                                // Socket.connect 无超时会把整个测试类卡到类超时。
+                                .nodeUrls(Collections.singletonList("127.0.0.2:6667"))
                                 .build();
             } catch (Exception e) {
                 assert e instanceof IoTDBConnectionException : "Error and expectation are inconsistent, expect: IoTDBConnectionException, actual: " + e.getClass().getName();
-                assert e.getMessage().contains("Fail to reconnect to server. Please check server status.192.0.0.1:6667") : "Error and expectation are inconsistent, expect: Fail to reconnect to server. Please check server status.192.0.0.1:6667, actual: " + e.getMessage();
+                assert e.getMessage().contains("Fail to reconnect to server. Please check server status.127.0.0.2:6667") : "Error and expectation are inconsistent, expect: Fail to reconnect to server. Please check server status.127.0.0.2:6667, actual: " + e.getMessage();
             }
         } else {
             // 多个节点的url集群
             try {
                 ITableSession session =
                         new TableSessionBuilder()
-                                .nodeUrls(Arrays.asList("192.0.0.1:6667", "192.0.0.2:6667", "192.0.0.3:6667"))
+                                .nodeUrls(Arrays.asList("127.0.0.2:6667", "127.0.0.3:6667", "127.0.0.4:6667"))
                                 .build();
             } catch (Exception e) {
                 assert e instanceof IoTDBConnectionException : "Error and expectation are inconsistent, expect: IoTDBConnectionException, actual: " + e.getClass().getName();
-//                assert e.getMessage().contains("Fail to reconnect to server. Please check server status.192.0.0.1:6667") : "Error and expectation are inconsistent, expect: Fail to reconnect to server. Please check server status.192.0.0.1:6667, actual: " + e.getMessage();
+//                assert e.getMessage().contains("Fail to reconnect to server. Please check server status.127.0.0.2:6667") : "Error and expectation are inconsistent, expect: Fail to reconnect to server. Please check server status.127.0.0.2:6667, actual: " + e.getMessage();
             }
         }
     }
