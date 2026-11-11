@@ -110,6 +110,7 @@ public class TestTableSessionBuilderError {
                         new TableSessionBuilder()
                                 .username("error")
                                 .password("error")
+                                .nodeUrls(Collections.singletonList(LOCAL_URL))
                                 .build();
             } catch (Exception e) {
                 assert e instanceof IoTDBConnectionException : "Error and expectation are inconsistent, expect: IoTDBConnectionException, actual: " + e.getClass().getName();

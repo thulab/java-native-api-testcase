@@ -2,6 +2,7 @@ package org.apache.iotdb.api.test.table.data;
 
 import org.apache.iotdb.api.test.BaseTestSuiteTableModel;
 import org.apache.iotdb.api.test.utils.CustomDataProvider;
+import org.apache.iotdb.api.test.utils.ReadConfig;
 
 import org.apache.iotdb.isession.ITableSession;
 import org.apache.iotdb.isession.SessionDataSet;
@@ -23,6 +24,7 @@ import java.nio.charset.Charset;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -39,6 +41,20 @@ public class TestSelectNormal extends BaseTestSuiteTableModel {
     private final List<ColumnCategory> columnCategoryList = new ArrayList<>();
     private final int expectNum1 = 10;
     private final int expectNum2 = 0;
+
+    /**
+     * 新建会话时使用的节点地址。
+     * <p>
+     * 必须显式传入配置中的地址：TableSessionBuilder 不传 nodeUrls 时会回退到客户端默认的
+     * localhost:6667，在 PLM 执行机上会连到执行机本地而不是平台分配的 PVE 实例。
+     */
+    private static List<String> localNodeUrls() {
+        try {
+            return Collections.singletonList(ReadConfig.getInstance().getValue("url"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     /**
      * 创建测试环境
@@ -565,7 +581,7 @@ public class TestSelectNormal extends BaseTestSuiteTableModel {
     @Test(priority = 110)
     public void testExtractTimeFunction() {
         // 在 UTC+8 时区下插入数据并查询
-        try (ITableSession session_utc8 = new TableSessionBuilder().zoneId(ZoneId.of("UTC+8")).build()) {
+        try (ITableSession session_utc8 = new TableSessionBuilder().zoneId(ZoneId.of("UTC+8")).nodeUrls(localNodeUrls()).build()) {
             session_utc8.executeNonQueryStatement("drop database if exists test_extract");
             session_utc8.executeNonQueryStatement("create database test_extract");
             session_utc8.executeNonQueryStatement("use test_extract");
@@ -584,7 +600,7 @@ public class TestSelectNormal extends BaseTestSuiteTableModel {
         }
 
         // 在 UTC+0 时区下查询相同数据
-        try (ITableSession session_utc0 = new TableSessionBuilder().zoneId(ZoneId.of("UTC+0")).build()) {
+        try (ITableSession session_utc0 = new TableSessionBuilder().zoneId(ZoneId.of("UTC+0")).nodeUrls(localNodeUrls()).build()) {
             session_utc0.executeNonQueryStatement("use test_extract");
             SessionDataSet dataSet = session_utc0.executeQueryStatement("select extract(hour from s1) from Extract_table");
             while (dataSet.hasNext()) {
@@ -597,7 +613,7 @@ public class TestSelectNormal extends BaseTestSuiteTableModel {
         }
 
         // 在 UTC-8 时区下查询相同数据
-        try (ITableSession session_utc0 = new TableSessionBuilder().zoneId(ZoneId.of("UTC-8")).build()) {
+        try (ITableSession session_utc0 = new TableSessionBuilder().zoneId(ZoneId.of("UTC-8")).nodeUrls(localNodeUrls()).build()) {
             session_utc0.executeNonQueryStatement("use test_extract");
             SessionDataSet dataSet = session_utc0.executeQueryStatement("select extract(hour from s1) from Extract_table");
             while (dataSet.hasNext()) {

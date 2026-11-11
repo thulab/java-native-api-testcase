@@ -131,6 +131,10 @@ public class TestSessionBuilderNormal {
     public void testSessionBuilderPartParam() throws IoTDBConnectionException {
         // 1、enableAutoFetch为false
         try (Session session1 = new Session.Builder()
+                .host(config.getValue("host"))
+                .port(Integer.parseInt(config.getValue("port")))
+                .username(config.getValue("user"))
+                .password(config.getValue("password"))
                 .enableAutoFetch(false)
                 .build()) {
             session1.open(false);
