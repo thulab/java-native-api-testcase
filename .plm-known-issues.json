@@ -1,10 +1,10 @@
 {
   "TimechoDB-2538": {
-    "reason": "TestDynamicTemplateMin 的 aligned tablet 写入在 TimechoDB 2.0.12.1 上稳定挂起（socket 无读超时）；已改为真实执行并设 1200s 类超时，超时产出 ERROR 而非 SKIPPED",
+    "reason": "TestDynamicTemplateMin 整类实际耗时约 700s（76 上 2.0.12.1 实测），超过默认 600s 类超时，曾误判为挂起并 skipRun；设 1200s 后真实执行并通过（6.0s）",
     "timeoutSec": 1200
   },
   "TimechoDB-2539": {
-    "reason": "TestDynamicTemplateMin 的 aligned tablet 写入在 TimechoDB 2.0.12.1 上稳定挂起（socket 无读超时）；原环境（2.0.5 单机）整类约 954s，已设 1200s 类超时，超时产出 ERROR 而非 SKIPPED",
+    "reason": "TestDynamicTemplateMin 整类实际耗时约 700s（76 上 2.0.12.1 实测，本用例 694.8s），超过默认 600s 类超时，曾误判为挂起并 skipRun；设 1200s 后真实执行并通过",
     "timeoutSec": 1200
   }
 }
