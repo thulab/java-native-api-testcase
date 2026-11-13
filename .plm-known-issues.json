@@ -1,7 +1,4 @@
 {
-  "TimechoDB-2489": {
-    "reason": "目标方法 0 次执行（DataProvider 为空或方法名/映射漂移）；当前已知 storage-group-delete.csv 数据行全部被注释，待补数据或删除"
-  },
   "TimechoDB-2697": {
     "reason": ">226 字符路径的服务端限制（505/508），待产品修复",
     "match": "505: Alias \\[12nullfv\\]"
