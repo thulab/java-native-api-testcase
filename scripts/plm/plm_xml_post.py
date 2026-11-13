@@ -224,6 +224,25 @@ def cmd_known_skip(output: str, case_id: str, fqcn: str, method: str) -> int:
     return 0
 
 
+def cmd_timeout_sec(case_id: str) -> int:
+    """输出该用例的类执行超时（秒）；未配置时输出空，调用方沿用默认值。
+
+    用于「会挂起但不应直接跳过」的用例：让测试类真实执行，超时后由
+    start.sh 产出带原因的 ERROR，而不是在上报结果里伪装成 SKIPPED。
+    """
+    issue = known_issue_for(load_known_issues(), case_id)
+    if not issue:
+        return 0
+    value = issue.get("timeoutSec")
+    try:
+        seconds = int(value)
+    except (TypeError, ValueError):
+        return 0
+    if seconds > 0:
+        sys.stdout.write(str(seconds))
+    return 0
+
+
 def atomic_write(tree: ET.ElementTree, target: Path) -> None:
     target.parent.mkdir(parents=True, exist_ok=True)
     fd, tmp = tempfile.mkstemp(prefix=".plm-", suffix=".xml.tmp", dir=str(target.parent))
@@ -304,10 +323,10 @@ def cmd_single(surefire_dir: str, output: str, case_id: str, fqcn: str, method: 
             if matches(testcase, fqcn, method):
                 selected.append(with_case_id(testcase, case_id))
     if not selected:
-        # 只有“停用/挂起”类已知问题允许在目标方法 0 次执行时合成 SKIPPED。
-        # 带 match 的已知问题必须看到真实错误消息才能转换；否则可能是配置失败/方法没跑，
-        # 不能拿已知问题当遮羞布。
-        if issue and (issue.get("skipRun") or not issue.get("match")):
+        # 只有 skipRun（明确停用/无法执行）才允许在目标方法 0 次执行时合成 SKIPPED。
+        # 带 match 的条目必须看到真实错误消息才能转换；配置了 timeoutSec 的条目
+        # 由 start.sh 在类超时后写 ERROR，不能在这里被当成跳过吞掉。
+        if issue and issue.get("skipRun"):
             reason = issue.get("reason") or "已知问题"
             sys.stderr.write(f"[plm] 目标用例未执行，按已知问题记为 SKIPPED: {case_id}（{reason}）\n")
             atomic_write(synthetic_skipped(fqcn, method, case_id, reason), Path(output))
@@ -361,6 +380,8 @@ def main(argv: list) -> int:
         return cmd_timeout_reason(argv[2], argv[3], argv[4], argv[5], " ".join(argv[6:]))
     if len(argv) >= 6 and argv[1] == "known-skip":
         return cmd_known_skip(argv[2], argv[3], argv[4], argv[5])
+    if len(argv) >= 3 and argv[1] == "timeout-sec":
+        return cmd_timeout_sec(argv[2])
     if len(argv) >= 4 and argv[1] == "merge":
         return cmd_merge(argv[2], argv[3])
     sys.stderr.write(
@@ -368,6 +389,7 @@ def main(argv: list) -> int:
         "       plm_xml_post.py timeout <output> <caseId> <fqcn> <method> <seconds>\n"
         "       plm_xml_post.py timeout-reason <output> <caseId> <fqcn> <method> <reason...>\n"
         "       plm_xml_post.py known-skip <output> <caseId> <fqcn> <method>\n"
+        "       plm_xml_post.py timeout-sec <caseId>\n"
         "       plm_xml_post.py merge <reportsDir> <output>\n"
     )
     return 2

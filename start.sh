@@ -261,6 +261,14 @@ case_one() {
         return 0
     fi
 
+    # 会挂起但不应直接跳过的用例：按 case 配置的 timeoutSec 覆盖类超时，
+    # 让测试类真实执行；超时后仍写带原因的 ERROR（不伪装成 SKIPPED）。
+    case_timeout=$("$PYTHON" scripts/plm/plm_xml_post.py timeout-sec "$normalized" 2>/dev/null || true)
+    case "$case_timeout" in
+        ''|*[!0-9]*) ;;
+        *) CLASS_TIMEOUT_SEC="$case_timeout" ;;
+    esac
+
     # 构建结果按源码时间戳缓存：PLM 逐条派发时只做一次 install/test-compile/classpath，
     # 后续用例直接用 java + TestNG 运行单条，避免 379 条用例重复启动 Maven 把批次拖过总时限。
     # 必须在计算类缓存键之前执行：程序更新后 BUILD_MARKER 会变，键随之变化，不会复用旧结果。

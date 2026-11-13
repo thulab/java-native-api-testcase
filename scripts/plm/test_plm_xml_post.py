@@ -4,6 +4,7 @@
 运行：python3 -m unittest discover -s scripts/plm -p 'test_*.py'
 """
 
+import io
 import json
 import sys
 import tempfile
@@ -26,6 +27,7 @@ class PlmXmlPostTest(unittest.TestCase):
             "TIMECHODB-2489": {"reason": "empty data provider"},
             "TIMECHODB-2469": {"reason": "known duplicate", "match": "should have thrown"},
             "TIMECHODB-2538": {"reason": "known hang", "skipRun": True},
+            "TIMECHODB-2539": {"reason": "hang but must run", "timeoutSec": 1200},
         }), encoding="utf-8")
         self.original_known = post.KNOWN_ISSUES_FILE
         post.KNOWN_ISSUES_FILE = self.known
@@ -78,19 +80,26 @@ class PlmXmlPostTest(unittest.TestCase):
         self.assertIsNotNone(ET.parse(self.output()).getroot().find(".//error"))
 
     def test_no_match_known_issue_does_not_hide_real_error(self):
-        # 2489 没有 match：只允许“目标方法 0 次执行”合成 SKIPPED，真实错误必须保留。
+        # 2489 没有 match：只能靠 skipRun 跳过；真实错误必须保留。
         error = ET.Element("error", {"message": "a real regression"})
         self.write_report([self._testcase("testKnown", error)])
         code = post.cmd_single(str(self.reports), str(self.output()), "TIMECHODB-2489", "Demo", "testKnown")
         self.assertEqual(0, code)
         self.assertIsNotNone(ET.parse(self.output()).getroot().find(".//error"))
 
-    def test_known_issue_without_target_is_synthetic_skip(self):
+    def test_known_issue_without_target_fails(self):
+        # 没有 match 也没有 skipRun 的条目不能把“目标方法 0 次执行”吞成 SKIPPED。
         self.write_report([])
-        code = post.cmd_single(str(self.reports), str(self.output()), "TIMECHODB-2489", "Demo", "missing")
-        self.assertEqual(0, code)
-        skipped = ET.parse(self.output()).getroot().find(".//skipped")
-        self.assertIn("empty data provider", skipped.get("message"))
+        with self.assertRaises(SystemExit) as raised:
+            post.cmd_single(str(self.reports), str(self.output()), "TIMECHODB-2489", "Demo", "missing")
+        self.assertEqual(1, raised.exception.code)
+
+    def test_timeout_sec_case_without_target_fails(self):
+        # 配置了 timeoutSec 的用例必须真实执行；目标方法 0 次执行是执行故障，不能报 SKIPPED。
+        self.write_report([])
+        with self.assertRaises(SystemExit) as raised:
+            post.cmd_single(str(self.reports), str(self.output()), "TIMECHODB-2539", "Demo", "missing")
+        self.assertEqual(1, raised.exception.code)
 
     def test_matching_known_issue_without_target_fails(self):
         # 2469 带 match：没有真实错误消息时不能合成已知问题跳过。
@@ -113,6 +122,26 @@ class PlmXmlPostTest(unittest.TestCase):
 
     def test_known_skip_run_ignores_unlisted_case(self):
         self.assertEqual(2, post.cmd_known_skip(str(self.output()), "TIMECHODB-9999", "Demo", "testA"))
+
+    def _timeout_sec(self, case_id):
+        buffer = io.StringIO()
+        original = sys.stdout
+        sys.stdout = buffer
+        try:
+            self.assertEqual(0, post.cmd_timeout_sec(case_id))
+        finally:
+            sys.stdout = original
+        return buffer.getvalue()
+
+    def test_timeout_sec_reads_configured_value(self):
+        self.assertEqual("1200", self._timeout_sec("TIMECHODB-2539"))
+
+    def test_timeout_sec_ignores_unlisted_case(self):
+        self.assertEqual("", self._timeout_sec("TIMECHODB-9999"))
+
+    def test_timeout_sec_ignores_skip_run_case(self):
+        # 2538 只有 skipRun，没有 timeoutSec：不输出超时值。
+        self.assertEqual("", self._timeout_sec("TIMECHODB-2538"))
 
     def test_timeout_writes_error(self):
         code = post.cmd_timeout(str(self.output()), "CASE-1", "Demo", "testA", "120")

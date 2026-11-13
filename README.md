@@ -84,7 +84,11 @@ sh start.sh case <CASE_ID>          # 单条用例，产物写 $PLM_REPORT_DIR
 - `PLM_REPORT_DIR`：JUnit XML 输出目录（相对仓库根，默认 `reports/`）。真实 run 中，执行机上 `reports/plm-exec` 下超过 2 天的逐用例目录会按年龄回收（产物已由 PLM 下载归档）。
 - `PLM_RUN_ID`：PLM 真实执行时注入的 run 标识。同一个 run 内，同一个 TestNG 类的**可缓存结果只真正执行一次**，其余用例从 `reports/plm-class-cache/<runId>/...` 复用结果（键包含 FQCN、HEAD、工作区改动、构建标记、DB 地址与依赖版本；可用 `PLM_CLASS_CACHE_DIR` 改缓存根，默认仓库内 `reports/plm-class-cache`）。`PLM_CLASS_CACHE=0` 可关闭复用；只有 operationKey 为 `run:<id>` 的真实执行会注入，sync/check 等非 run 操作不注入（任何创建 `test_run` 的执行都会带 `run:` 前缀并注入）。配置失败不缓存，后续用例重跑整类；类超时不缓存普通结果，而是缓存超时结论，后续同类用例直接复用 ERROR；目标方法不在报告里会作废缓存并重跑。
 - `PLM_CLASS_TIMEOUT_SEC`：单个测试类的硬超时（默认 600 秒），依赖 coreutils `timeout`；缺失时 `start.sh` 会在 stderr 告警并退化为无硬超时。客户端对服务端 socket 读没有超时，服务端卡住时用 `timeout` 终止整类，并写出带原因的 ERROR；同一 run 内后续同类用例复用该超时结论，下个 run 重新尝试，避免挂住 PLM 整轮。
-- `.plm-known-issues.json`：已知产品限制/待确认行为的用例清单，**必须随仓库提交到执行机**。`match`（错误消息正则）把匹配的 failure/error 改写成带原因的 SKIPPED；**没有 `match` 的条目只用于“目标方法 0 次执行”的停用用例**（如空 DataProvider），不会吞掉真实运行出来的失败；`skipRun=true` 直接跳过会挂起的用例（如 `TestDynamicTemplateMin` 的 aligned tablet 写入）。清单只做“可见的已知问题”，不要用来掩盖普通失败。
+- `.plm-known-issues.json`：已知产品限制/待确认行为的用例清单，**必须随仓库提交到执行机**。只做“可见的已知问题”，不要用来掩盖普通失败：
+  - `match`（错误消息正则）：把匹配的 failure/error 改写成带原因的 SKIPPED。**不得用于掩盖真实回归**——被测版本/拓扑变化导致的失败应保留为 FAILED/ERROR。
+  - `skipRun=true`：直接跳过会挂起且无法安全执行的用例（如会崩溃的 C 用例）。仅在没有更好的执行隔离手段时使用。
+  - `timeoutSec`：不跳过、按该秒数覆盖类超时真实执行；超时后由 `start.sh` 写带原因的 ERROR（如 `TestDynamicTemplateMin` 的 aligned tablet 写入在 2.0.12.1 上挂起，原环境整类约 954s，故设 1200s）。
+  - 配置了 `timeoutSec` 或 `match`、但目标方法 0 次执行时，`plm_xml_post.py` 会直接失败，不会合成 SKIPPED。
 - **清理策略**：PLM run 的首个测试类做一次全库/全模板清理并写 `reports/plm-run-state/<runId>/cluster-cleaned`；后续类只按 `managedDatabases()` / `managedTemplates()` / `managed*Prefixes()` 删自己的资源。`TestDataBase` 这种需要干净实例的类用 `requiresGlobalClean()` 仍会触发一次全量清理。手工运行（无 `PLM_RUN_ID`）保持旧的“每个类全库清理”行为。新增测试类请在类里声明自己拥有的库/模板，不要再在 `@BeforeClass` 里调用 `cleanDatabases`/`cleanTemplates`；`@AfterClass` 清理请直接用基类 helper `deleteDatabaseIfExists` / `deleteStorageGroupIfExists` / `dropTemplateIfExists`，避免“资源不存在/连接异常”升级成 config FAIL。`reports/plm-run-state` 与 `reports/plm-exec` 一样按 2 天年龄回收。
 - `IOTDB_HOST` / `IOTDB_PORT`：PLM 执行时由平台按 `k8sInstanceId` 解析 K8s 实例的 `connectionHost/connectionPort` 后注入，测试程序必须使用该地址；缺少任一项时 `start.sh case` 直接失败，**不会回退到 `config.properties` 的默认地址**。手工本地运行时可不设置，继续使用 `config.properties`。
 - `IOTDB_USER` / `IOTDB_PASSWORD` / `IOTDB_IS_CLUSTER` / `IOTDB_HOST_NODES`：可选覆盖；PLM 不注入数据库账号/口令，账号/口令由本仓库 `config.properties` 的 `user/password` 提供（默认 `root/TimechoDB@2021`，开源版可改为 `root/root`）。
